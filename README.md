@@ -1,7 +1,7 @@
-Project Mobile Media Workstation of Epicness (Temp Title)
+Project PhatLab (Temp Title)
 =========================================
 *Note: I am leaving the Group Title and Project Title for Jake to edit.*  
-**Project Title:** *Mobile Media Workstation of Epicness (* ***Really*** *Temp Title)*  
+**Project Title:** *PhatLab (* ***Really*** *Temp Title)*  
 **Group Title:** *Team 4-bits of 8 (* ***Really*** *Temp Title)*  
 
 **Group Members:**
