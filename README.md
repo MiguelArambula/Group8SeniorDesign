@@ -1,15 +1,15 @@
 Project PhatLab (Working Title)
 =========================================
 **Project Title:** *PhatLab (Working Title)*   
-**Group Title:** *Team 4-bits of 8 (Working Title)*
-
+**Group Title:** *Team 4-bits of 8 (Working Title)*   
+This is just a test
 **Group Members:**
 *   Jake Harper
 *   Miguel Arambula
 *   Patrick Weingardt
 *   Reuben Shea
 
-**Project Description:**  
+**Project Description:**   
   The PhatLab (Working Title) is an on-the-fly mobile audio workstation that runs on Andriod, with the goal of providing an easy yet effective way of capturing musical inspiration. This project does not aim to become a platform for production-level exports, but rather a means to act as a relatively quick compositional tool and/or loop station, the latter only if time permits.  
   
   This piece of software will contain a means to loop audio samples that are placed via a sequencer, an interactive sample pad where you can trigger samples using touch, as well as a means to record and insert personal audio samples. We are aiming for an intuative and effective interface that splits the screen into a local and global interface, the local interface switching between the sequencer and trigger pads, while the global interface handles items such as BPM and other project-related settings.
