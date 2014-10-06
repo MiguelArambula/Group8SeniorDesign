@@ -2,7 +2,7 @@ Project PhatLab (Working Title)
 =========================================
 **Project Title:** *PhatLab (Working Title)*   
 **Group Title:** *Team 4-bits of 8 (Working Title)*   
-This is just a test
+
 **Group Members:**
 *   Jake Harper
 *   Miguel Arambula
