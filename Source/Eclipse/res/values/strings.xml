@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PhatLab</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">PhatLabs</string>
+    <string name="hello_world">And here is a base project! Woot. Feel free to delete it if I set something up wrong, I just wanted to make sure this worked right. Oh yeah, Hello World!</string>
 
 </resources>
