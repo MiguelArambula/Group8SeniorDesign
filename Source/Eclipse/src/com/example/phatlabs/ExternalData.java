@@ -30,20 +30,27 @@ public class ExternalData
 	private FileInputStream openInFile = null;
 	
 	/**
-	 * Checks whether or not the file system is writable or not.
+	 * Returns if the last function call threw an error
 	 * @return
 	 */
-	
 	public boolean isError()
 	{
 		return wasError;
 	}
 	
+	/**
+	 * Returns the exception that was thrown if there was an error
+	 * @return
+	 */
 	public Exception getError()
 	{
 		return ex;
 	}
 	
+	/**
+	 * Checks whether or not the file system is writable or not.
+	 * @return
+	 */
 	private boolean isWritable()
 	{
 		String state = Environment.getExternalStorageState();
@@ -68,13 +75,16 @@ public class ExternalData
 	 * @param filename	Name of the DOCUMENT file to open
 	 * @return	whether or not there was an error
 	 */
-	public boolean openw(String filename)
+	public boolean opendocw(String filename)
 	{
 		wasError = false;
 		try
 		{
-			closew();
-			openOutFile = new FileOutputStream(new File(Environment.getExternalStorageDirectory(),filename+".ini"));
+			closedocw();
+			File dir = new File(Environment.getExternalStorageDirectory()+File.separator+"PhatLabs");
+			if (!dir.exists())
+				dir.mkdir();
+			openOutFile = new FileOutputStream(new File(Environment.getExternalStorageDirectory()+File.separator+"PhatLabs/"+filename+".ini"));
 		}
 		catch (Exception e)
 		{
@@ -87,7 +97,10 @@ public class ExternalData
 		return true;
 	}
 	
-	public void closew()
+	/**
+	 * Closes the current document, if there is one, that is being written to.
+	 */
+	public void closedocw()
 	{
 		wasError = false;
 		try
@@ -109,13 +122,13 @@ public class ExternalData
 	 * @param filename	Name of the DOCUMENT file to open
 	 * @return	whether or not there was an error
 	 */
-	public boolean openr(String filename)
+	public boolean opendocr(String filename)
 	{
 		wasError = false;
 		try
 		{
-			closer();
-			openInFile = new FileInputStream(new File(Environment.getExternalStorageDirectory(),filename+".ini"));
+			closedocr();
+			openInFile = new FileInputStream(new File(Environment.getExternalStorageDirectory()+File.separator+"PhatLabs/"+filename+".ini"));
 		}
 		catch (Exception e)
 		{
@@ -128,7 +141,10 @@ public class ExternalData
 		return true;
 	}
 	
-	public void closer()
+	/**
+	 * Closes the current document, if there is one, that is being read from.
+	 */
+	public void closedocr()
 	{
 		wasError = false;
 		try
@@ -162,6 +178,7 @@ public class ExternalData
 			//Will need to actually write into the key:
 			file.setProperty(key,value);
 			file.store(openOutFile, null);
+			
 		}
 		
 		catch (Exception e)
