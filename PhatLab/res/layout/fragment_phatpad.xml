@@ -1,0 +1,17 @@
+<!-- xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_phat_pad_root_container" -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <edu.cosc4950.phatlab.PadView
+	    android:id="@+id/padView1"
+	    android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+    
+</LinearLayout>
