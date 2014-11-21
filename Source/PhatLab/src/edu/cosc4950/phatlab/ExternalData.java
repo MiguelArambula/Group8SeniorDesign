@@ -13,9 +13,12 @@
 
 package edu.cosc4950.phatlab;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Properties;
 
 import android.os.Environment;
@@ -68,6 +71,51 @@ public class ExternalData
 			return true;
 		
 		return false;
+	}
+	
+	/**
+	 * Loads raw data from a file into an array and returns the array.
+	 * Does not actually matter what format the data is in, but should
+	 * load 16-bit PCM just fine. Just pass the array into an AudioTrack
+	 * @param filename	The name of the audio file to load
+	 * @return	byte array of data, or null if error
+	 */
+	public byte[] loadPCM16bit(String filename)
+	{
+		wasError = false;
+		byte audio[] = new byte[8192]; // Create audio array
+		try
+		{
+			InputStream	impS = new FileInputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLabs/"+filename+".pcm");
+			BufferedInputStream	buffImp = new BufferedInputStream(impS);
+			DataInputStream	dataImp = new DataInputStream(buffImp);
+			
+			//Stream the data into an array
+			for (int i = 0; dataImp.available() > 0; ++i)
+			{
+				//Exceeded the buffer and need to expand
+				if (i != 0 && i%8192 == 0)
+				{
+					byte[] __newArray = new byte[i+8192];
+					System.arraycopy(audio,0,__newArray,0,i);
+					audio = __newArray;
+				}
+				
+				audio[i] = dataImp.readByte();
+			}
+			
+			//Close the stream
+			dataImp.close();
+			return audio;
+		}
+		catch (Exception e)
+		{
+			wasError = true;
+			ex = e;
+			Log.e("Phat Lab","Exception:",e);
+			return null;
+		}
+		
 	}
 	
 	/**

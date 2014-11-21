@@ -1,17 +1,12 @@
 package edu.cosc4950.phatlab;
 
-import android.app.Fragment;
-import android.content.Intent;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 
 public class MainActivity extends FragmentActivity {
 	
@@ -22,6 +17,16 @@ public class MainActivity extends FragmentActivity {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		ExternalData demo = new ExternalData();
+		byte[] bob = demo.loadPCM16bit("test");
+		
+		PCM pcm = new PCM(bob, 44100, false);
+		pcm.stream();
+		
+		
+		
+		//mAudioTrack.write(bob, 0, bob.length);
 		
 		if (savedInstanceState == null) {
 
