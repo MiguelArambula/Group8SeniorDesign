@@ -86,7 +86,7 @@ public class ExternalData
 		byte audio[] = new byte[8192]; // Create audio array
 		try
 		{
-			InputStream	impS = new FileInputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLabs/"+filename+".pcm");
+			InputStream	impS = new FileInputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".pcm");
 			BufferedInputStream	buffImp = new BufferedInputStream(impS);
 			DataInputStream	dataImp = new DataInputStream(buffImp);
 			
@@ -129,10 +129,10 @@ public class ExternalData
 		try
 		{
 			closedocw();
-			File dir = new File(Environment.getExternalStorageDirectory()+File.separator+"PhatLabs");
+			File dir = new File(Environment.getExternalStorageDirectory()+File.separator+"PhatLab");
 			if (!dir.exists())
 				dir.mkdir();
-			openOutFile = new FileOutputStream(new File(Environment.getExternalStorageDirectory()+File.separator+"PhatLabs/"+filename+".ini"));
+			openOutFile = new FileOutputStream(new File(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".ini"));
 		}
 		catch (Exception e)
 		{
@@ -176,7 +176,7 @@ public class ExternalData
 		try
 		{
 			closedocr();
-			openInFile = new FileInputStream(new File(Environment.getExternalStorageDirectory()+File.separator+"PhatLabs/"+filename+".ini"));
+			openInFile = new FileInputStream(new File(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".ini"));
 		}
 		catch (Exception e)
 		{
