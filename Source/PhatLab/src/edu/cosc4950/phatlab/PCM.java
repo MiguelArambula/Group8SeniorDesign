@@ -14,22 +14,31 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.util.Log;
 
-public class PCM {
+public class PCM{
 	
-	private AudioTrack audio;
+	private AudioTrack audio = null;
 	private byte[] stream;
 	private boolean _hasSet = false;
+	private int bo, l;
 	
 	public PCM(){}
-	public PCM(byte[] stream, int bitrate, boolean staticMode)
+	public PCM(byte[] stream, int bitrate, boolean stereo, boolean staticMode)
 	{
-		set16bit(stream,bitrate,staticMode);
+		set16bit(stream,bitrate,stereo,staticMode);
 	}
 	
-	
-	public void set16bit(byte[] stream,boolean staticMode)
+	//Frees the resources
+	public void release()
 	{
-		set16bit(stream, 44100,staticMode);
+		if (audio != null)
+			audio.release();
+		_hasSet = false;
+		audio = null;
+	}
+	
+	public void set16bit(byte[] stream,boolean stereo,boolean staticMode)
+	{
+		set16bit(stream, 44100,stereo, staticMode);
 	}
 	
 	/**
@@ -38,14 +47,21 @@ public class PCM {
 	 * @param bitrate	Bitrate of the audio file
 	 * @param staticMode	Whether to play in static or stream mode
 	 */
-	public void set16bit(byte[] stream, int bitrate, boolean staticMode)
+	public void set16bit(byte[] stream, int bitrate,boolean stereo, boolean staticMode)
 	{
 		try
 		{
-			int bufferSize = AudioTrack.getMinBufferSize(bitrate, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT);
-			audio = new AudioTrack(AudioManager.STREAM_MUSIC, bitrate, AudioFormat.CHANNEL_CONFIGURATION_MONO, AudioFormat.ENCODING_PCM_16BIT,
+			if (stream == null)
+			{
+				Log.e("Phat Lab","Cannot set null audio file!");
+				throw null;
+			}
+			
+			int bufferSize = AudioTrack.getMinBufferSize(bitrate, (stereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO:AudioFormat.CHANNEL_CONFIGURATION_MONO), AudioFormat.ENCODING_PCM_16BIT);
+			audio = new AudioTrack(AudioManager.STREAM_MUSIC, bitrate, (stereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO:AudioFormat.CHANNEL_CONFIGURATION_MONO), AudioFormat.ENCODING_PCM_16BIT,
 					 			   bufferSize, (staticMode? AudioTrack.MODE_STATIC: AudioTrack.MODE_STREAM));
 			this.stream = stream;
+			
 			_hasSet = true;
 		}
 		catch (Exception E)
@@ -78,13 +94,30 @@ public class PCM {
 				Log.e("Phat Lab","Audio has not been set, so cannot play!");
 				throw null;
 			}
-			audio.play();
-			audio.write(stream, byteOffset, length);
+			bo = byteOffset;
+			l = length;
+			new Thread()
+			{
+				public void run()
+				{
+					try {
+						audio.play();
+						audio.write(stream, bo, l);
+						audio.stop();
+					}
+					catch (Exception E)
+					{
+						Log.e("Phat Lab","Exception:",E);
+					}
+					
+				}
+			}.start();
+			
 		}
 		catch (Exception E)
 		{
 			Log.e("Phat Lab","Exception:",E);
 		}
-	}
 
+	}
 }

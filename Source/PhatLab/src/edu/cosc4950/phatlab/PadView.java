@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,6 +30,12 @@ public class PadView extends View {
 	
 	int col1_left, col1_right, col2_left, col2_right, col3_left, col3_right, col4_left, col4_right;
 	int row1_top, row1_bot, row2_top, row2_bot, row3_top, row3_bot;
+	
+	ExternalData ed = new ExternalData();
+	byte[] tmp = ed.loadPCM16bit("airhorn");
+	PCM sample1 = new PCM(tmp, 44100,true, false);
+	byte[] tmp2 = ed.loadPCM16bit("what");
+	PCM sample2 = new PCM(tmp2, 44100,true, false);
 	
 	Bitmap bg, loadedPadBmp, pressedPadBmp;
 	
@@ -153,11 +159,10 @@ public class PadView extends View {
 					// ROW 1, COL 1
 					
 					//padTracks.play(0,0);
-					/*
-					ExternalData ed = new ExternalData();
-					byte[] tmp = ed.loadPCM16bit("airhorn.PCM");
-					PCM sample = new PCM(tmp, 44100, false);
-					sample.stream();*/
+					
+					
+					sample1.stream();
+					//sample.release();
 					
 					//myPad[0][0] = 2; // draw red
 					invalidate(); // redraws screen
@@ -165,6 +170,8 @@ public class PadView extends View {
 				}
 				else if(x > col2_left && x < col2_right/* && myPad[1][0] != 0*/) {
 					// ROW 1 COL 2
+					sample2.stream();
+					
 					Toast.makeText(getContext(), "PAD 02", Toast.LENGTH_SHORT).show();
 				}
 				else if(x > col3_left && x < col3_right/* && myPad[2][0] != 0*/) {

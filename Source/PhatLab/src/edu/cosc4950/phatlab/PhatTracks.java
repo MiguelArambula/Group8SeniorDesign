@@ -27,7 +27,7 @@ public class PhatTracks {
 		
 		ExternalData ed = new ExternalData();
 		byte[] tmp = ed.loadPCM16bit(sample);
-		myTracks[padRow][padCol] = new PCM(tmp, 44100, false);
+		myTracks[padRow][padCol] = new PCM(tmp, 44100,true, false);
 	}
 
 	public PCM getTrack(int padRow, int padCol) {
