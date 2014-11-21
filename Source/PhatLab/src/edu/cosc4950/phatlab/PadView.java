@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +24,14 @@ public class PadView extends View {
      * padding size: 12px
 	 */
 	
+	/*
+	ExternalData ed = new ExternalData();
+	byte[] tmp = ed.loadPCM16bit("airhorn");
+	PCM sample = new PCM(tmp, 44100, true, false);
+	
+	String env = Environment.getExternalStorageDirectory().toString();
+	*/
+	
 	public Context myContext;
 	float scale;
 	
@@ -30,12 +40,6 @@ public class PadView extends View {
 	
 	int col1_left, col1_right, col2_left, col2_right, col3_left, col3_right, col4_left, col4_right;
 	int row1_top, row1_bot, row2_top, row2_bot, row3_top, row3_bot;
-	
-	ExternalData ed = new ExternalData();
-	byte[] tmp = ed.loadPCM16bit("airhorn");
-	PCM sample1 = new PCM(tmp, 44100,true, false);
-	byte[] tmp2 = ed.loadPCM16bit("what");
-	PCM sample2 = new PCM(tmp2, 44100,true, false);
 	
 	Bitmap bg, loadedPadBmp, pressedPadBmp;
 	
@@ -100,8 +104,13 @@ public class PadView extends View {
 	}
 	
 	private void loadSamples() {
-		String pad01 = "airhorn";
-		padTracks.setTrack(0, 0, pad01);
+		padTracks.setTrack(0, 0, "airhorn");
+		
+		padTracks.setTrack(0, 1, "snare");
+		
+		padTracks.setTrack(1, 1, "what");
+		
+		padTracks.setTrack(2, 1, "blame_the_coders");
 
 		for(int i=0; i<4; i++) {
 			for(int j=0; j<3; j++) {
@@ -158,20 +167,17 @@ public class PadView extends View {
 				if (x > col1_left && x < col1_right && myPad[0][0] != 0) {
 					// ROW 1, COL 1
 					
-					//padTracks.play(0,0);
-					
-					
-					sample1.stream();
-					//sample.release();
-					
+					padTracks.play(0,0);
 					//myPad[0][0] = 2; // draw red
-					invalidate(); // redraws screen
+					//invalidate(); // redraws screen
+					
+					//sample.stream(0,tmp.length/4);
+					
+					
 					Toast.makeText(getContext(), "PAD 01", Toast.LENGTH_SHORT).show();
 				}
 				else if(x > col2_left && x < col2_right/* && myPad[1][0] != 0*/) {
 					// ROW 1 COL 2
-					sample2.stream();
-					
 					Toast.makeText(getContext(), "PAD 02", Toast.LENGTH_SHORT).show();
 				}
 				else if(x > col3_left && x < col3_right/* && myPad[2][0] != 0*/) {
@@ -186,14 +192,17 @@ public class PadView extends View {
 			else if(y > row2_top && y < row2_bot) { 
 				if (x > col1_left && x < col1_right/* && myPad[0][1] != 0*/) {
 					// ROW 2 COL 1
+					padTracks.play(0, 1);
 					Toast.makeText(getContext(), "PAD 05", Toast.LENGTH_SHORT).show();
 				}
 				else if(x > col2_left && x < col2_right/* && myPad[1][1] != 0*/) {
 					// ROW 2 COL 2
+					padTracks.play(1, 1);
 					Toast.makeText(getContext(), "PAD 06", Toast.LENGTH_SHORT).show();
 				}
 				else if(x > col3_left && x < col3_right/* && myPad[2][1] != 0*/) {
 					// ROW 2 COL 3
+					padTracks.play(2, 1);
 					Toast.makeText(getContext(), "PAD 07", Toast.LENGTH_SHORT).show();
 				}
 				else if(x > col4_left && x < col4_right/* && myPad[3][1] != 0*/) {
@@ -219,6 +228,8 @@ public class PadView extends View {
 					Toast.makeText(getContext(), "PAD 12", Toast.LENGTH_SHORT).show();
 				}
 			}
+			break;
+		
 		/*
 		case MotionEvent.ACTION_UP:
 			for(int i=0; i<4; i++) {
@@ -228,7 +239,9 @@ public class PadView extends View {
 				}
 			}
 			invalidate();
+			break;
 		*/
+			
 		}
 		
 		return false;
