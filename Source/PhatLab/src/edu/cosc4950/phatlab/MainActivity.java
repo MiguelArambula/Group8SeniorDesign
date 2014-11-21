@@ -18,11 +18,11 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		ExternalData demo = new ExternalData();
+		/*ExternalData demo = new ExternalData();
 		byte[] bob = demo.loadPCM16bit("test");
 		
 		PCM pcm = new PCM(bob, 44100, false);
-		pcm.stream();
+		pcm.stream();*/
 		
 		
 		
