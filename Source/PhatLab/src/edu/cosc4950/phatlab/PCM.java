@@ -4,6 +4,7 @@
  * 
  * Description:
  * This class plays loaded PCM byte streams
+ * One thread is dedicated to each sound clip
  * 
  */
 
@@ -17,7 +18,7 @@ import android.util.Log;
 public class PCM{
 	
 	private AudioTrack audio = null;
-	private byte[] stream;
+	private byte[] stream = null;
 	private boolean _hasSet = false;
 	private int bo, l;
 	
@@ -36,9 +37,15 @@ public class PCM{
 		audio = null;
 	}
 	
+	public byte[] getStream()
+	{
+		return stream;
+	}
+	
 	public void set16bit(byte[] stream,boolean stereo,boolean staticMode)
 	{
 		set16bit(stream, 44100,stereo, staticMode);
+		
 	}
 	
 	/**
@@ -89,6 +96,7 @@ public class PCM{
 	{
 		try
 		{
+			
 			if (_hasSet == false)
 			{
 				Log.e("Phat Lab","Audio has not been set, so cannot play!");
@@ -101,6 +109,8 @@ public class PCM{
 				public void run()
 				{
 					try {
+						
+						audio.stop();
 						audio.play();
 						audio.write(stream, bo, l);
 						audio.stop();

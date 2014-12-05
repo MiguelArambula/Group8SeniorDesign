@@ -14,11 +14,14 @@
 package edu.cosc4950.phatlab;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Properties;
 
 import android.os.Environment;
@@ -106,6 +109,8 @@ public class ExternalData
 			
 			//Close the stream
 			dataImp.close();
+			buffImp.close();
+			impS.close();
 			return audio;
 		}
 		catch (Exception e)
@@ -116,6 +121,57 @@ public class ExternalData
 			return null;
 		}
 		
+	}
+	
+	/**
+	 * Saves a PCM sound as a .pcm
+	 * @param pcm		PCM Object to save
+	 * @param filename	Name of the file that will be saved
+	 * @return	whether or not there was an error
+	 */
+	
+	public boolean savePCM16Bit(PCM pcm, String filename)
+	{
+		return savePCM16Bit(pcm.getStream(),filename,0,pcm.getStream().length);
+	}
+	public boolean savePCM16Bit(byte[] pcm, String filename)
+	{
+		return savePCM16Bit(pcm,filename,0,pcm.length);
+	}
+	public boolean savePCM16Bit(PCM pcm, String filename,int offset, int len)
+	{
+		return savePCM16Bit(pcm.getStream(),filename,offset, len);
+	}
+	
+	public boolean savePCM16Bit(byte[] stream, String filename,int offset, int len)
+	{
+		//STUB
+		wasError = false;
+		try
+		{
+			//Check if we can write or not
+			if (!isWritable())
+				throw new Exception();
+			
+			OutputStream outS = new FileOutputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".pcm");
+			BufferedOutputStream	buffOut = new BufferedOutputStream(outS);
+			DataOutputStream	dataOut = new DataOutputStream(buffOut);
+			
+			dataOut.write(stream,offset,len); //Write stream to buffer
+			dataOut.flush(); // Flush the buffer to the SD
+			
+			dataOut.close();
+			buffOut.close();
+			outS.close();
+			
+		}
+		catch (Exception e)
+		{
+			wasError=true;
+			Log.e("Phat Lab","Exception:",e);
+			return true;
+		}
+		return false;
 	}
 	
 	/**

@@ -106,11 +106,11 @@ public class PadView extends View {
 	private void loadSamples() {
 		padTracks.setTrack(0, 0, "airhorn");
 		
-		padTracks.setTrack(0, 1, "snare");
+		//padTracks.setTrack(0, 1, "snare");
 		
 		padTracks.setTrack(1, 1, "what");
 		
-		padTracks.setTrack(2, 1, "blame_the_coders");
+		//padTracks.setTrack(2, 1, "blame_the_coders");
 
 		for(int i=0; i<4; i++) {
 			for(int j=0; j<3; j++) {
