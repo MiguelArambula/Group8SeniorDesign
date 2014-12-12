@@ -338,7 +338,7 @@ public class PhatPadFragment extends Fragment {
 	/* temporary function until we have our file manager */
 	public void loadTracks() {
 		//TODO
-		padTracks.setTrack(1, 0, "wuuuh");			//pad02
+		padTracks.setTrack(1, 0, "airhorn");			//pad02
 		padTracks.setTrack(2, 0, "come_on1");		//pad03
 		padTracks.setTrack(3, 0, "amen_crash1");	//pad04
 		

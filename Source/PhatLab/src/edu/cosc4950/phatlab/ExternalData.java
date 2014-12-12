@@ -89,7 +89,7 @@ public class ExternalData
 		byte audio[] = new byte[8192]; // Create audio array
 		try
 		{
-			InputStream	impS = new FileInputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".pcm");
+			InputStream	impS = new FileInputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".wav");
 			BufferedInputStream	buffImp = new BufferedInputStream(impS);
 			DataInputStream	dataImp = new DataInputStream(buffImp);
 			
@@ -124,7 +124,7 @@ public class ExternalData
 	}
 	
 	/**
-	 * Saves a PCM sound as a .pcm
+	 * Saves a PCM sound as a .wav using 16-bit PCM
 	 * @param pcm		PCM Object to save
 	 * @param filename	Name of the file that will be saved
 	 * @return	whether or not there was an error
@@ -153,7 +153,7 @@ public class ExternalData
 			if (!isWritable())
 				throw new Exception();
 			
-			OutputStream outS = new FileOutputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".pcm");
+			OutputStream outS = new FileOutputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".wav");
 			BufferedOutputStream	buffOut = new BufferedOutputStream(outS);
 			DataOutputStream	dataOut = new DataOutputStream(buffOut);
 			

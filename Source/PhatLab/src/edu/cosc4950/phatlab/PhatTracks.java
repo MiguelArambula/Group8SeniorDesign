@@ -29,6 +29,11 @@ public class PhatTracks {
 		byte[] tmp = ed.loadPCM16bit(sample);
 		myTracks[padRow][padCol] = new PCM(tmp, 44100, true, false);
 	}
+	
+	public void setTrack(int padRow, int padCol, PCM pcm)
+	{
+		myTracks[padRow][padCol] = pcm;
+	}
 
 	public PCM getTrack(int padRow, int padCol) {
 		return myTracks[padRow][padCol];
