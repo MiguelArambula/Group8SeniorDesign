@@ -2,16 +2,126 @@
     android:id="@+id/fragment_phat_pad_root_container" -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
+    <!--  
     <edu.cosc4950.phatlab.PadView
 	    android:id="@+id/padView1"
 	    android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
+        -->
+        
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_weight="1"
+		android:orientation="horizontal" >
+	    
+	    <ImageButton
+	        
+	        android:id="@+id/pad01"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+	        
+	    <ImageButton
+	        android:id="@+id/pad02"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+	    
+	    <ImageButton
+	        android:id="@+id/pad03"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+	    
+	    <ImageButton
+	        android:id="@+id/pad04"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />"
+	    
+	</LinearLayout>
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_weight="1"
+		android:orientation="horizontal" >
+	    
+	    <ImageButton
+	        android:id="@+id/pad05"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+	        
+	    <ImageButton
+	        android:id="@+id/pad06"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+	    
+	    <ImageButton
+	        android:id="@+id/pad07"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+	    
+	    <ImageButton
+	        android:id="@+id/pad08"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+	    
+	</LinearLayout>
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_weight="1"
+		android:orientation="horizontal" >
+	    
+	    <ImageButton
+	        android:id="@+id/pad09"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+	        
+	    <ImageButton
+	        android:id="@+id/pad10"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+	    
+	    <ImageButton
+	        android:id="@+id/pad11"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+	    
+	    <ImageButton
+	        android:id="@+id/pad12"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+	    
+	</LinearLayout>
     
 </LinearLayout>
