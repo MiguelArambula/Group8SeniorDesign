@@ -338,7 +338,7 @@ public class PhatPadFragment extends Fragment {
 	/* temporary function until we have our file manager */
 	public void loadTracks() {
 		//TODO
-		padTracks.setTrack(0, 0, "airhorn");
+		/*padTracks.setTrack(0, 0, "airhorn");
 		padTracks.setTrack(1, 0, "chant_hey1");
 		padTracks.setTrack(2, 0, "bass_dred");
 		
@@ -348,10 +348,10 @@ public class PhatPadFragment extends Fragment {
 		
 		padTracks.setTrack(0, 2, "amen_kick1");
 		padTracks.setTrack(1, 2, "amen_kick2");
-		padTracks.setTrack(2, 2, "amen_hat1");
-		/*
+		padTracks.setTrack(2, 2, "amen_hat1");*/
+		
 		padTracks.setTrack(1, 0, "airhorn");			//pad02
-		padTracks.setTrack(2, 0, "come_on1");		//pad03
+		padTracks.setTrack(2, 0, "blame_the_coders");		//pad03
 		padTracks.setTrack(3, 0, "amen_crash1");	//pad04
 		
 		padTracks.setTrack(0, 1, "hackd_kick1");	//pad05
@@ -362,9 +362,9 @@ public class PhatPadFragment extends Fragment {
 		padTracks.setTrack(1, 2, "amen_kick2");		//pad10
 		padTracks.setTrack(3, 2, "909_hat1");		//pad12
 		
+		padTracks.setTrack(0, 0, padTracks.getTrack(1, 0).mergePCM(padTracks.getTrack(2,0)));		//pad12
 		//padTracks.setTrack(2, 2, "snare"); 			//pad11
-		 * 
-		 */
+
 		
 		
 		/* update myPad */

@@ -60,101 +60,78 @@ public class PCM{
 		return bitrate;
 	}
 	
+	public boolean getStereo()
+	{
+		return stereo;
+	}
+	
 	//Converts a 16-bit PCM sample of bytes into a short
 	//for manipulation
-	public short[] getSampleAsShort()
-	{
-		if (stream == null)
-			return null;
-
-		short [] _return = new short[stream.length / 2];
-		ByteBuffer bb = ByteBuffer.wrap(stream);
-		bb.order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
-		for (int i = 0; i < _return.length; ++i)
-			_return[i] = bb.getShort();
-		
-		return _return;
-	}
 	
-	//If an error, it doesn't change the buffer
-	private void shortToBuffer(short [] sh)
+	public PCM mergePCM(PCM pcm)
 	{
-		try {
-			if (sh == null)
-				return;
-			
-			ByteBuffer bb = ByteBuffer.allocate(sh.length * 2);
-			bb.order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
-			//Put the shorts all into the byte buffer:
-
-			for (int i = 0; i < sh.length; ++i)
-				bb.putShort(sh[i]);
-			
-			//Grab the buffer's array
-			if (! bb.hasArray())
-				throw new Exception();
-			
-			byte[] newBuff = bb.array();
-			
-			//Set the new sound:
-			release();
-			set16bit(newBuff,bitrate,stereo,staticMode);
-			
-		}
-		catch(Exception e)
-		{
-			Log.e("Phat Lab","Error in PCM.shortToBuffer() : Exception:",e);
-		}
-	}
-	
-	/**
-	 * Merges the audio data from one sample into this sample.
-	 * The olsd oudio data IS OVERWRITTEN
-	 * @param sample	The PCM to add to this one
-	 * @return	Whether there was an error
-	 */
-	public boolean mergeSample(PCM sample)
-	{
+		PCM newpcm;
+		byte [] audio;
 		try
 		{
-			if (bitrate == -1 || sample.getBitrate() == -1 ||
-				bitrate != sample.getBitrate())
+			
+			if (bitrate != pcm.getBitrate())
 			{
-				Log.e("Phat Lab","Incorrect bitrate(s)!");
+				Log.e("Phat Lab","Cannot merge PCMs with different bit rates!");
+				throw new Exception();
+			}
+			if (stereo != pcm.getStereo())
+			{
+				Log.e("Phat Lab","Cannot merge PCMs with different number of channels!");
 				throw new Exception();
 			}
 			
-			//Grab manipulative versions of the audio stream:
-			short [] sample1,sample2,finalSample;
-			sample1 = getSampleAsShort();
-			sample2 = sample.getSampleAsShort();
-			finalSample = new short [sample1.length > sample2.length ? 
-									 sample1.length : sample2.length];
+			byte[] larger, smaller;
+			larger = (getStream().length >= pcm.getStream().length ? stream : pcm.getStream());
+			smaller = (getStream().length >= pcm.getStream().length ?  pcm.getStream() : stream);
 			
-			//Average samples together:
-				//Mix first half of one sample is shorter:
-			int i;
-			for (i = 0; i < (sample1.length > sample2.length ? 
-							 sample2.length : sample1.length);
-				 ++i)
-				finalSample[i] =(short) ((sample1[i] + sample2[i]) / 2);
+			audio = new byte[larger.length];
 			
-				//Tack the rest of the sample on:
-			short [] longerSample =(sample1.length > sample2.length ? sample1 : sample2);
-			for(; i < longerSample.length; ++i)
-				finalSample[i] = longerSample[i];
+			//Copy header data from larger file:
+			for (int i = 0; i < 44; ++i)
+				audio[i] = larger[i];
 			
-			//Set this PCM to use the new mixed sample
-			//shortToBuffer(finalSample);
-			shortToBuffer(getSampleAsShort());
+			//Create shorts for audio merging
+			short[] a1, a2;
+			a1 = new short[(larger.length - 44) / 2];
+			a2 = new short[(smaller.length - 44) / 2];
+			
+			ByteBuffer bb;
+			bb = ByteBuffer.wrap(larger,44,larger.length - 44);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			
+			for (int i = 0; i < a1.length; ++i)
+				a1[i] = bb.getShort();
+			
+			bb = ByteBuffer.wrap(smaller,44,smaller.length - 44);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			
+			for (int i = 0; i < a2.length; ++i)
+				a2[i] = bb.getShort();
+			
+			//Merge samples:
+			for (int i = 0; i < a2.length; ++i)
+				a1[i] = (short) (a1[i] + a2[i]);
+			
+			//Convert back into the byte array:
+			bb = ByteBuffer.wrap(audio, 44, audio.length - 44);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			bb.asShortBuffer().put(a1);
+			
+			newpcm = new PCM(audio, bitrate, stereo, false);
 			
 		}
 		catch (Exception e)
 		{
-			return true;
+			return null;
 		}
-				
-		return false;
+		
+		return newpcm;
 	}
 	
 	public void set16bit(byte[] stream,boolean stereo,boolean staticMode)

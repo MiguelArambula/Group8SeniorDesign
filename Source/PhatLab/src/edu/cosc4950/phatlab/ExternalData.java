@@ -22,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Properties;
 
 import android.os.Environment;
@@ -121,6 +123,42 @@ public class ExternalData
 			return null;
 		}
 		
+	}
+	
+	
+	/**
+	 * Loads and returns a PCM object with the sample rate and channels
+	 * precalculated
+	 * @param filename
+	 * @return	The PCM object or null if an error
+	 */
+	public PCM loadPCM(String filename)
+	{
+		PCM pcm;
+		byte[] audio;
+		try
+		{
+			audio = loadPCM16bit(filename);
+			if (audio == null)
+				return null;
+			
+			ByteBuffer bb;
+			bb = ByteBuffer.wrap(audio, 22, 2);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			short channels = bb.getShort();
+			
+			bb = ByteBuffer.wrap(audio, 24, 4);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			int sampleRate= bb.getInt();
+			
+			pcm = new PCM(audio, sampleRate, (channels == 2 ? true : false), false);
+			
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+		return pcm;
 	}
 	
 	/**
