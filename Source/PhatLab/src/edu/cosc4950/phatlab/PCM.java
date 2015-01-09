@@ -26,7 +26,7 @@ public class PCM{
 					stereo = false,
 					staticMode = false;
 	private int bo, l, bitrate=-1;
-	
+
 	public PCM(){}
 	public PCM(byte[] stream, int bitrate, boolean stereo, boolean staticMode)
 	{

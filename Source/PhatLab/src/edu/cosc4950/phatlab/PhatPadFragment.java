@@ -21,6 +21,8 @@ public class PhatPadFragment extends Fragment {
 	PhatTracks padTracks;
 	Bitmap bmpEmpty, bmpLoaded, bmpPressed;
 	
+	boolean editEnable = ConsoleFragment.editOn;
+	
 	public PhatPadFragment() {}
 	
 	@Override
@@ -53,7 +55,6 @@ public class PhatPadFragment extends Fragment {
 		pad01.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad01.setImageBitmap(bmpPressed);
@@ -76,7 +77,6 @@ public class PhatPadFragment extends Fragment {
 		pad02.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad02.setImageBitmap(bmpPressed);
@@ -99,7 +99,6 @@ public class PhatPadFragment extends Fragment {
 		pad03.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad03.setImageBitmap(bmpPressed);
@@ -122,7 +121,6 @@ public class PhatPadFragment extends Fragment {
 		pad04.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad04.setImageBitmap(bmpPressed);
@@ -145,7 +143,6 @@ public class PhatPadFragment extends Fragment {
 		pad05.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad05.setImageBitmap(bmpPressed);
@@ -168,7 +165,6 @@ public class PhatPadFragment extends Fragment {
 		pad06.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad06.setImageBitmap(bmpPressed);
@@ -191,7 +187,6 @@ public class PhatPadFragment extends Fragment {
 		pad07.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad07.setImageBitmap(bmpPressed);
@@ -214,7 +209,6 @@ public class PhatPadFragment extends Fragment {
 		pad08.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad08.setImageBitmap(bmpPressed);
@@ -237,7 +231,6 @@ public class PhatPadFragment extends Fragment {
 		pad09.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad09.setImageBitmap(bmpPressed);
@@ -260,7 +253,6 @@ public class PhatPadFragment extends Fragment {
 		pad10.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad10.setImageBitmap(bmpPressed);
@@ -283,7 +275,6 @@ public class PhatPadFragment extends Fragment {
 		pad11.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad11.setImageBitmap(bmpPressed);
@@ -306,7 +297,6 @@ public class PhatPadFragment extends Fragment {
 		pad12.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					pad12.setImageBitmap(bmpPressed);
