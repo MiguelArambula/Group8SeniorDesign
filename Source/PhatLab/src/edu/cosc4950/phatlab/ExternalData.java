@@ -79,6 +79,46 @@ public class ExternalData
 	}
 	
 	/**
+	 * Returns whether or not the specified file exists:
+	 * @param filename	Full path of the file
+	 * @return			Whether or not the file exists
+	 */
+	public boolean fileExists(String filename)
+	{
+		File f = null;
+		try 
+		{
+			f = new File(filename);
+			if (!f.exists())
+				return false;
+			return true;
+		}
+		catch (Exception e)
+		{
+			System.out.println("No file found: "+e);
+			return false;
+		}
+	}
+	
+	public long getFileSize(String filename)
+	{
+		if (!fileExists(filename))
+			return 0;
+		
+		File f = null;
+		try 
+		{
+			f = new File(filename);
+			return f.length();
+		}
+		catch (Exception e)
+		{
+			System.out.println("Error reading file: "+e);
+			return 0;
+		}
+	}
+	
+	/**
 	 * Loads raw data from a file into an array and returns the array.
 	 * Does not actually matter what format the data is in, but should
 	 * load 16-bit PCM just fine. Just pass the array into an AudioTrack
@@ -88,15 +128,18 @@ public class ExternalData
 	public byte[] loadPCM16bit(String filename)
 	{
 		wasError = false;
-		byte audio[] = new byte[8192]; // Create audio array
+		byte audio[];// = new byte[8192]; // Create audio array
 		try
 		{
+			if (!fileExists(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".wav"))
+				throw new Exception();
+			
 			InputStream	impS = new FileInputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".wav");
 			BufferedInputStream	buffImp = new BufferedInputStream(impS);
 			DataInputStream	dataImp = new DataInputStream(buffImp);
 			
 			//Stream the data into an array
-			for (int i = 0; dataImp.available() > 0; ++i)
+			/*for (int i = 0; dataImp.available() > 0; ++i)
 			{
 				//Exceeded the buffer and need to expand
 				if (i != 0 && i%8192 == 0)
@@ -107,7 +150,11 @@ public class ExternalData
 				}
 				
 				audio[i] = dataImp.readByte();
-			}
+			}*/
+			
+			//MUCH faster, but can cause issues when converting long to int:
+			audio = new byte[(int) getFileSize(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".wav")];
+			dataImp.readFully(audio);
 			
 			//Close the stream
 			dataImp.close();

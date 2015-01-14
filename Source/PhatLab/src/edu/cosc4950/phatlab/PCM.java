@@ -156,9 +156,16 @@ public class PCM{
 				throw null;
 			}
 			
-			int bufferSize = AudioTrack.getMinBufferSize(bitrate, (stereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO:AudioFormat.CHANNEL_CONFIGURATION_MONO), AudioFormat.ENCODING_PCM_16BIT);
-			audio = new AudioTrack(AudioManager.STREAM_MUSIC, bitrate, (stereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO:AudioFormat.CHANNEL_CONFIGURATION_MONO), AudioFormat.ENCODING_PCM_16BIT,
-					 			   bufferSize, (staticMode? AudioTrack.MODE_STATIC: AudioTrack.MODE_STREAM));
+			int bufferSize = AudioTrack.getMinBufferSize(bitrate, 
+							 (stereo ? AudioFormat.CHANNEL_OUT_STEREO : AudioFormat.CHANNEL_OUT_MONO), 
+							 AudioFormat.ENCODING_PCM_16BIT);
+			
+			audio = new AudioTrack(AudioManager.STREAM_MUSIC, 
+								   bitrate, 
+								   (stereo ? AudioFormat.CHANNEL_OUT_STEREO:AudioFormat.CHANNEL_OUT_MONO), 
+								   AudioFormat.ENCODING_PCM_16BIT,
+					 			   bufferSize * 2, 
+					 			   (staticMode? AudioTrack.MODE_STATIC: AudioTrack.MODE_STREAM));
 			this.stream = stream;
 			this.bitrate = bitrate;
 			this.stereo = stereo;
@@ -203,10 +210,11 @@ public class PCM{
 				public void run()
 				{
 					try {
-						
-						audio.stop();
+						if (audio.getPlayState() != AudioTrack.PLAYSTATE_STOPPED)
+							audio.stop();
 						audio.play();
 						audio.write(stream, bo, l);
+						
 						audio.stop();
 						return; // Unlikely needed, but just in case
 					}
@@ -216,6 +224,7 @@ public class PCM{
 					}
 					
 				}
+				
 			}.start();
 			
 		}
