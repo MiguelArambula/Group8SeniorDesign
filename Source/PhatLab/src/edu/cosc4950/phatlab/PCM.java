@@ -24,7 +24,8 @@ public class PCM{
 	private byte[] stream = null;
 	private boolean _hasSet = false,
 					stereo = false,
-					staticMode = false;
+					staticMode = false,
+					isPlaying = false;
 	private int bo, l, bitrate=-1;
 
 	public PCM(){}
@@ -65,11 +66,18 @@ public class PCM{
 		return stereo;
 	}
 	
+	private int clamp(int value,  int from, int to)
+	{
+		return (value > to ? to : (value < from ? from : value));
+	}
+	
 	//Converts a 16-bit PCM sample of bytes into a short
 	//for manipulation
 	
 	public PCM mergePCM(PCM pcm)
 	{
+		if (!isSet())
+			return null;
 		PCM newpcm;
 		byte [] audio;
 		try
@@ -150,15 +158,21 @@ public class PCM{
 	{
 		try
 		{
+		
 			if (stream == null)
 			{
 				Log.e("Phat Lab","Cannot set null audio file!");
 				throw null;
 			}
 			
+			if (isSet())
+				clear();
+			
+			// Divided by 10 because the write writes a 10th of the buffer size.
+			// Doesn't really have much of an effect
 			int bufferSize = AudioTrack.getMinBufferSize(bitrate, 
 							 (stereo ? AudioFormat.CHANNEL_OUT_STEREO : AudioFormat.CHANNEL_OUT_MONO), 
-							 AudioFormat.ENCODING_PCM_16BIT);
+							 AudioFormat.ENCODING_PCM_16BIT) / 10;
 			
 			audio = new AudioTrack(AudioManager.STREAM_MUSIC, 
 								   bitrate, 
@@ -171,6 +185,26 @@ public class PCM{
 			this.stereo = stereo;
 			this.staticMode = staticMode;
 			_hasSet = true;
+			
+			/*if (audio.getPlayState() != AudioTrack.PLAYSTATE_STOPPED)
+			{
+				audio.stop();
+				
+				while (audio.getPlayState() != AudioTrack.PLAYSTATE_STOPPED);
+				
+				audio.flush();
+				
+			}*/
+			
+			try 
+			{
+				audio.play();
+			}
+			catch (Exception e)
+			{
+				Log.e("Phat Lab","Failed to play audio!", e);
+				return;
+			}
 		}
 		catch (Exception E)
 		{
@@ -186,6 +220,18 @@ public class PCM{
 	public void stream(int stop)
 	{
 		stream(0,stop);
+	}
+	
+	public void clear()
+	{
+		if (!isSet())
+			return;
+		
+		audio.flush();
+		if(audio.getPlayState() != AudioTrack.PLAYSTATE_STOPPED);
+			audio.stop();
+		audio.release();
+		_hasSet = false;
 	}
 	
 	/**
@@ -205,27 +251,46 @@ public class PCM{
 			}
 			bo = byteOffset;
 			l = length;
+			
+			audio.flush();
+			
+			if (isPlaying)
+			{
+				isPlaying = false;
+				audio.stop();
+				while (audio.getPlayState() != AudioTrack.PLAYSTATE_STOPPED);
+				
+				audio.play();
+			}
+			
+			isPlaying = true;
+			
 			new Thread()
 			{
 				public void run()
 				{
-					try {
-						if (audio.getPlayState() != AudioTrack.PLAYSTATE_STOPPED)
-							audio.stop();
-						audio.play();
-						audio.write(stream, bo, l);
-						
-						audio.stop();
-						return; // Unlikely needed, but just in case
+					try 
+					{
+						//audio.write(stream, bo, l);
+						for (int i = bo, il = bo; i < stream.length; i = clamp((il = i) + (bitrate / 10), bo, l))
+						{
+							if (isPlaying == false)
+								return;
+							audio.write(stream, il, i - il);
+						}
 					}
 					catch (Exception E)
 					{
 						Log.e("Phat Lab","Exception:",E);
 					}
+					isPlaying = false;
 					
 				}
 				
 			}.start();
+			
+			
+			//audio.stop();
 			
 		}
 		catch (Exception E)
