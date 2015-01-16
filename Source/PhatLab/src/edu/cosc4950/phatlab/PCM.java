@@ -168,16 +168,25 @@ public class PCM{
 			if (isSet())
 				clear();
 			
+			//bitrate is actually sample rate. Bad naming
+			//br is the actual bitrate
+			short br; //Actual bitrate
+			ByteBuffer bb;
+			bb = ByteBuffer.wrap(stream, 34, 2);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			br= bb.getShort();
+			
+			
 			// Divided by 10 because the write writes a 10th of the buffer size.
 			// Doesn't really have much of an effect
 			int bufferSize = AudioTrack.getMinBufferSize(bitrate, 
 							 (stereo ? AudioFormat.CHANNEL_OUT_STEREO : AudioFormat.CHANNEL_OUT_MONO), 
-							 AudioFormat.ENCODING_PCM_16BIT) / 10;
+							 (br == 8 ? AudioFormat.ENCODING_PCM_8BIT: AudioFormat.ENCODING_PCM_16BIT)) / 10;
 			
 			audio = new AudioTrack(AudioManager.STREAM_MUSIC, 
 								   bitrate, 
 								   (stereo ? AudioFormat.CHANNEL_OUT_STEREO:AudioFormat.CHANNEL_OUT_MONO), 
-								   AudioFormat.ENCODING_PCM_16BIT,
+								   (br == 8 ? AudioFormat.ENCODING_PCM_8BIT: AudioFormat.ENCODING_PCM_16BIT),
 					 			   bufferSize * 2, 
 					 			   (staticMode? AudioTrack.MODE_STATIC: AudioTrack.MODE_STREAM));
 			this.stream = stream;
@@ -210,6 +219,16 @@ public class PCM{
 		{
 			Log.e("Phat Lab","Excepton:",E);
 		}
+	}
+	
+	public void resample(int sampleRate)
+	{
+		if (sampleRate < 8000)
+			sampleRate = 8000;
+		if (sampleRate > 96000)
+			sampleRate = 96000;
+		
+		// -- STUB -- // Resample here
 	}
 	
 	public void stream()
@@ -251,6 +270,14 @@ public class PCM{
 			}
 			bo = byteOffset;
 			l = length;
+			
+			//Skip the header
+			if (bo < 44)
+			{
+				int dif = 44 - bo;
+				length -= dif;
+				bo = 44;
+			}
 			
 			audio.flush();
 			
