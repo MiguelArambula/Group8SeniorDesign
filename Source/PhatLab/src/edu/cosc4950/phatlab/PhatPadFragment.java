@@ -2,18 +2,15 @@ package edu.cosc4950.phatlab;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class PhatPadFragment extends Fragment {
 	
@@ -352,9 +349,35 @@ public class PhatPadFragment extends Fragment {
 		padTracks.setTrack(1, 2, "amen_kick2");		//pad10
 		padTracks.setTrack(3, 2, "909_hat1");		//pad12
 		
-		padTracks.setTrack(0, 0, padTracks.getTrack(1, 0).mergePCM(padTracks.getTrack(2,0)));		//pad12
-		//padTracks.setTrack(2, 2, "snare"); 			//pad11
-
+		/*
+		// Attaches a merged PCM to the first pad
+		padTracks.setTrack(0, 0, padTracks.getTrack(1, 0).mergePCM(padTracks.getTrack(2,0));
+		*/
+		
+		/*
+		// Currently, audio is not snappy enough. Must find a fix
+		SequenceTimer demo = new SequenceTimer(140, 16); //Create sequence
+		demo.setSample(padTracks.getTrack(2,1), 0); // Sets track 1's sound
+		demo.setSample(padTracks.getTrack(3,2), 1); //Sets track 2's sound
+		
+		//Add times to play the sounds:
+		for (int i = 0; i < 3; ++i)
+		{
+			//Sound 1 at whole beat intervals at 1/16 time
+			demo.addTrigger(0, i, 0);
+			demo.addTrigger(0, i, 4);
+			demo.addTrigger(0, i, 8);
+			demo.addTrigger(0, i, 12);
+			
+			//Sound 2:
+			demo.addTrigger(1, i, 10);
+		}
+		
+		//What segment to play. -1 means begin and end respectively
+		demo.setPlayTime(-1, 0, -1, 0);
+		demo.start(); // Starts the sequence.
+		//Can be stopped early with demo.stop() or demo.pause()
+		*/
 		
 		
 		/* update myPad */
