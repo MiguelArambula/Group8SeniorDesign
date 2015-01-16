@@ -37,6 +37,8 @@ public class ExternalData
 	private FileOutputStream openOutFile = null;
 	private FileInputStream openInFile = null;
 	
+	
+	
 	/**
 	 * Returns if the last function call threw an error
 	 * @return

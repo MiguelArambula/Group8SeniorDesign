@@ -2,6 +2,7 @@ package edu.cosc4950.phatlab;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,7 +24,6 @@ public class ConsoleFragment extends Fragment {
 	
 	ConsoleView cv;
 	static boolean editOn;
-	FileList files;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,14 +43,13 @@ public class ConsoleFragment extends Fragment {
 			}
 			
 		});
-		changeSamp.setOnTouchListener(new OnTouchListener(){
+		changeSamp.setOnClickListener(new OnClickListener(){
 
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
+			public void onClick(View v) {
 				// TODO Auto-generated method stub
+
 				
-				
-				return false;
 			}
 			
 		});
@@ -81,7 +80,7 @@ public class ConsoleFragment extends Fragment {
 			
 		});
 		
-		final TextView current = (TextView) myView.findViewById(R.id.current);
+		
 		
 		return myView;
 	}
@@ -96,4 +95,5 @@ public class ConsoleFragment extends Fragment {
 			editOn=false;
 		}
 	}
+	
 }
