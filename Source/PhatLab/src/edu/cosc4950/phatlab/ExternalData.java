@@ -80,6 +80,77 @@ public class ExternalData
 		return false;
 	}
 	
+	public boolean isValidWav(String filename)
+	{
+
+		//Error loading, also checks if file exists:
+		byte[] data = loadPCM16bit(filename);
+		if (data == null)
+			return false;
+		
+		long bytes = getFileSize(filename);
+		
+		//No sound data:
+		if (bytes <= 44)
+			return false;
+		
+		ByteBuffer bb;
+		
+		//Riff header:
+		bb = ByteBuffer.wrap(data, 0, 4);
+		String str = "";
+		for (int i = 0; i < 4; ++i)
+			str += bb.getChar(i);
+		if (!str.equals("RIFF"))
+			return false;
+		
+		//WAVE header:
+		bb = ByteBuffer.wrap(data, 8, 4);
+		str = "";
+		for (int i = 0; i < 4; ++i)
+			str += bb.getChar(i);
+		if (!str.equals("WAVE"))
+			return false;
+		
+		//Audio format:
+		bb = ByteBuffer.wrap(data, 20, 2);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		short shrt;
+		shrt = bb.getShort();
+		if (shrt != 1)
+			return false;
+		
+		//Channels:
+		bb = ByteBuffer.wrap(data, 22, 2);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		shrt = bb.getShort();
+		if (shrt != 1 && shrt != 2)
+			return false;
+		
+		//Sample Rate:
+		bb = ByteBuffer.wrap(data, 24, 4);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		int it = bb.getInt();
+		if (it < 1000 || it > 96000)
+			return false;
+		
+		//Bit rate:
+		bb = ByteBuffer.wrap(data, 34, 4);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		it = bb.getInt();
+		if (it != 16)
+			return false;
+		
+		//Data length:
+		bb = ByteBuffer.wrap(data, 40, 4);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		it = bb.getInt();
+		if (it != bytes - 44)
+			return false;
+
+		return true;
+	}
+	
 	/**
 	 * Returns whether or not the specified file exists:
 	 * @param filename	Full path of the file
