@@ -1,5 +1,6 @@
 package edu.cosc4950.phatlab;
 
+import edu.cosc4950.phatlab.*;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +25,6 @@ public class ConsoleFragment extends Fragment {
 	
 	ConsoleView cv;
 	static boolean editOn;
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -33,6 +33,16 @@ public class ConsoleFragment extends Fragment {
 		//cv = (ConsoleView) myView.findViewById(R.id.consoleView1);
 		final ToggleButton edit = (ToggleButton) myView.findViewById(R.id.edit);
 		final Button changeSamp = (Button) myView.findViewById(R.id.changeSamp);
+		changeSamp.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent();
+				startActivity(new Intent());
+			}
+			
+		});
 		edit.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
 
 			@Override
