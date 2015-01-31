@@ -58,7 +58,7 @@ public class ExternalData
 	}
 	
 	/**
-	 * Checks whether or not the file system is writable or not.
+	 * Returns whether or not the file system is writable or not.
 	 * @return
 	 */
 	private boolean isWritable()
@@ -70,6 +70,10 @@ public class ExternalData
 		return false;
 	}
 	
+	/**
+	 * Returns whether or not the file system is readable.
+	 * @return
+	 */
 	private boolean isReadable()
 	{
 		String state = Environment.getExternalStorageState();
@@ -80,6 +84,12 @@ public class ExternalData
 		return false;
 	}
 	
+	/**
+	 * Returns whether or not the specified file is a WAV file that this
+	 * program can process.
+	 * @param filename
+	 * @return
+	 */
 	public boolean isValidWav(String filename)
 	{
 
@@ -141,7 +151,7 @@ public class ExternalData
 		if (it != 16)
 			return false;
 		
-		//Data length:
+		//Data length = filesize:
 		bb = ByteBuffer.wrap(data, 40, 4);
 		bb.order(ByteOrder.LITTLE_ENDIAN);
 		it = bb.getInt();
@@ -173,6 +183,11 @@ public class ExternalData
 		}
 	}
 	
+	/**
+	 * Returns the number of bytes in the file.
+	 * @param filename
+	 * @return
+	 */
 	public long getFileSize(String filename)
 	{
 		if (!fileExists(filename))
@@ -193,12 +208,11 @@ public class ExternalData
 	
 	/**
 	 * Loads raw data from a file into an array and returns the array.
-	 * Does not actually matter what format the data is in, but should
-	 * load 16-bit PCM just fine. Just pass the array into an AudioTrack
+	 * Error handling for WAV is not done here.
 	 * @param filename	The name of the audio file to load
 	 * @return	byte array of data, or null if error
 	 */
-	public byte[] loadPCM16bit(String filename)
+	private byte[] loadPCM16bit(String filename)
 	{
 		wasError = false;
 		byte audio[];// = new byte[8192]; // Create audio array
@@ -211,21 +225,7 @@ public class ExternalData
 			BufferedInputStream	buffImp = new BufferedInputStream(impS);
 			DataInputStream	dataImp = new DataInputStream(buffImp);
 			
-			//Stream the data into an array
-			/*for (int i = 0; dataImp.available() > 0; ++i)
-			{
-				//Exceeded the buffer and need to expand
-				if (i != 0 && i%8192 == 0)
-				{
-					byte[] __newArray = new byte[i+8192];
-					System.arraycopy(audio,0,__newArray,0,i);
-					audio = __newArray;
-				}
-				
-				audio[i] = dataImp.readByte();
-			}*/
-			
-			//MUCH faster, but can cause issues when converting long to int:
+			//Loads file into byte array
 			audio = new byte[(int) getFileSize(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".wav")];
 			dataImp.readFully(audio);
 			
@@ -248,7 +248,8 @@ public class ExternalData
 	
 	/**
 	 * Loads and returns a PCM object with the sample rate and channels
-	 * precalculated
+	 * precalculated. If the file is not a useable WAV or there is an error,
+	 * null is returned.
 	 * @param filename
 	 * @return	The PCM object or null if an error
 	 */
@@ -258,6 +259,9 @@ public class ExternalData
 		byte[] audio;
 		try
 		{
+			if (!isValidWav(filename))
+				return null;
+			
 			audio = loadPCM16bit(filename);
 			if (audio == null)
 				return null;
@@ -271,7 +275,12 @@ public class ExternalData
 			bb.order(ByteOrder.LITTLE_ENDIAN);
 			int sampleRate= bb.getInt();
 			
-			pcm = new PCM(audio, sampleRate, (channels == 2 ? true : false), false);
+			//Cuts off header data:
+			byte[] finalAudio = new byte[audio.length];
+			for (int i = 44; i < audio.length; ++i)
+				finalAudio[i - 44] = audio[i];
+			
+			pcm = new PCM(finalAudio, sampleRate, (channels == 2 ? true : false));
 			
 		}
 		catch (Exception e)
@@ -303,8 +312,9 @@ public class ExternalData
 	
 	public boolean savePCM16Bit(byte[] stream, String filename,int offset, int len)
 	{
-		//STUB
-		wasError = false;
+		// -- STUB -- // Currently no longer works! Must handle rewriting the WAV header
+		return true;
+		/*wasError = false;
 		try
 		{
 			//Check if we can write or not
@@ -329,7 +339,7 @@ public class ExternalData
 			Log.e("Phat Lab","Exception:",e);
 			return true;
 		}
-		return false;
+		return false;*/
 	}
 	
 	/**
