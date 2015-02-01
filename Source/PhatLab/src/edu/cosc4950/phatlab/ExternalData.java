@@ -14,14 +14,11 @@
 package edu.cosc4950.phatlab;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Properties;
@@ -92,73 +89,84 @@ public class ExternalData
 	 */
 	public boolean isValidWav(String filename)
 	{
-
-		//Error loading, also checks if file exists:
-		byte[] data = loadPCM16bit(filename);
-		if (data == null)
+		try{
+			//Error loading, also checks if file exists:
+			byte[] data = loadPCM16bit(filename);
+			if (data == null)
+				return false;
+		
+			long bytes = data.length;
+			//No sound data:
+			if (bytes <= 44)
+				return false;
+		
+			
+			ByteBuffer bb;
+			//Riff header:
+			bb = ByteBuffer.wrap(data, 0, 4);
+			int str = 0;
+			str += bb.getInt();
+			if (str != 1380533830) // RIFF
+				return false;
+			//Had trouble with chars, since they were 2-bytes instead of 1
+			
+			//WAVE header:
+			bb = ByteBuffer.wrap(data, 8, 4);
+			str = 0;
+			//for (int i = 0; i < 4; ++i)
+			str += bb.getInt();
+			if (str != 1463899717) // WAVE
+				return false;
+			
+			//Audio format:
+			bb = ByteBuffer.wrap(data, 20, 2);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			short shrt;
+			shrt = bb.getShort();
+			if (shrt != 1)
+				return false;
+			
+			
+			//Channels:
+			bb = ByteBuffer.wrap(data, 22, 2);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			shrt = bb.getShort();
+			if (shrt != 1 && shrt != 2)
+				return false;
+			
+			
+			//Sample Rate:
+			bb = ByteBuffer.wrap(data, 24, 4);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			int it = bb.getInt();
+			if (it < 1000 || it > 96000)
+				return false;
+			
+			//Bit rate:
+			bb = ByteBuffer.wrap(data, 34, 2);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			it = bb.getShort();
+			if (it != 16)
+				return false;
+			
+			Log.i("Phat Lab","E");
+			
+			//Data length = filesize:
+			bb = ByteBuffer.wrap(data, 40, 4);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			it = bb.getInt();
+			if (it != bytes - 44)
+				return false;
+			
+			Log.i("Phat Lab","F");
+		
+			return true;
+		}
+		catch(Exception e)
+		{
+			Log.e("Phat Lab","Error checking WAV file!",e);
 			return false;
-		
-		long bytes = getFileSize(filename);
-		
-		//No sound data:
-		if (bytes <= 44)
-			return false;
-		
-		ByteBuffer bb;
-		
-		//Riff header:
-		bb = ByteBuffer.wrap(data, 0, 4);
-		String str = "";
-		for (int i = 0; i < 4; ++i)
-			str += bb.getChar(i);
-		if (!str.equals("RIFF"))
-			return false;
-		
-		//WAVE header:
-		bb = ByteBuffer.wrap(data, 8, 4);
-		str = "";
-		for (int i = 0; i < 4; ++i)
-			str += bb.getChar(i);
-		if (!str.equals("WAVE"))
-			return false;
-		
-		//Audio format:
-		bb = ByteBuffer.wrap(data, 20, 2);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		short shrt;
-		shrt = bb.getShort();
-		if (shrt != 1)
-			return false;
-		
-		//Channels:
-		bb = ByteBuffer.wrap(data, 22, 2);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		shrt = bb.getShort();
-		if (shrt != 1 && shrt != 2)
-			return false;
-		
-		//Sample Rate:
-		bb = ByteBuffer.wrap(data, 24, 4);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		int it = bb.getInt();
-		if (it < 1000 || it > 96000)
-			return false;
-		
-		//Bit rate:
-		bb = ByteBuffer.wrap(data, 34, 4);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		it = bb.getInt();
-		if (it != 16)
-			return false;
-		
-		//Data length = filesize:
-		bb = ByteBuffer.wrap(data, 40, 4);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		it = bb.getInt();
-		if (it != bytes - 44)
-			return false;
-
-		return true;
+		}
 	}
 	
 	/**
@@ -261,7 +269,6 @@ public class ExternalData
 		{
 			if (!isValidWav(filename))
 				return null;
-			
 			audio = loadPCM16bit(filename);
 			if (audio == null)
 				return null;

@@ -35,7 +35,7 @@ public class PCM{
 	private byte[] stream = null;
 	private boolean _hasSet = false,
 					stereo = false;
-	private int bo, l, bitrate=-1, startPlay, endPlay;
+	private int bitrate=-1, startPlay, endPlay;
 	
 	public PCM(byte[] stream, int bitrate, boolean stereo)
 	{
@@ -96,6 +96,8 @@ public class PCM{
 		end *= 2 * (stereo ? 2 : 1);
 		start = clamp(start, 0, stream.length);
 		end = clamp(end, start, stream.length - start);
+		startPlay = start;
+		endPlay = end;
 		
 		//Write new data to the buffer
 		audio.write(stream, start, end-start);
