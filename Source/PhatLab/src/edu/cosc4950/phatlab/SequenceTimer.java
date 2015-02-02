@@ -8,6 +8,7 @@ import android.util.Log;
  * This will be used for the overal sequencer or any other sub sequences we might need
  * @author Reuben Shea
  *
+ *
  */
 
 public class SequenceTimer implements Runnable
