@@ -38,8 +38,8 @@ public class ConsoleFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent();
-				startActivity(new Intent());
+				Intent i = new Intent(getActivity(),FileFinder.class);
+				startActivity(i);
 			}
 			
 		});
