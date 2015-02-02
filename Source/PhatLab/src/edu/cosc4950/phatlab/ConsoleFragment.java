@@ -48,8 +48,8 @@ public class ConsoleFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-
-				
+				Intent i = new Intent(getActivity(),FileExplorer.class);
+				startActivity(i);	
 			}
 			
 		});
