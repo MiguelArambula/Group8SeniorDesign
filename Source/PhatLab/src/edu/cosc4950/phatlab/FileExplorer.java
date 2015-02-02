@@ -21,12 +21,12 @@ public class FileExplorer extends ListActivity{
 	private List<String> item = null;
 	private List<String> path = null;
 	private String root;
-	private TextView myPath;
+	
 	
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.file_list);
-		myPath = (TextView) findViewById(R.id.path);
+		//myPath = (TextView) findViewById(R.id.path);
 		
 		root = Environment.getExternalStorageDirectory().getPath();
 		
@@ -37,14 +37,13 @@ public class FileExplorer extends ListActivity{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				//popup.dismiss();
 			}
 			
 		});
 	}
 	
 	private void getDir(String dirPath){
-		myPath.setText("Location"  + dirPath);
+		//myPath.setText("Location"  + dirPath);
 		item = new ArrayList<String>();
 		path = new ArrayList<String>();
 		File f = new File(dirPath);
@@ -92,5 +91,8 @@ public class FileExplorer extends ListActivity{
 			.setPositiveButton("ok",null).show();
 		}
 	}
-
+	
+	public List<String> getItems(){
+		return item;
+	}
 }

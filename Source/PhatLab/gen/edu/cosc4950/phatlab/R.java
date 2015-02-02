@@ -31,7 +31,6 @@ public final class R {
         public static final int action_settings=0x7f080015;
         public static final int activity_main_console_container=0x7f080001;
         public static final int activity_main_phat_pad_container=0x7f080000;
-        public static final int changeSamp=0x7f080005;
         public static final int close=0x7f080003;
         public static final int current=0x7f080006;
         public static final int edit=0x7f080004;
@@ -49,6 +48,7 @@ public final class R {
         public static final int pad12=0x7f080013;
         public static final int path=0x7f080002;
         public static final int rowtext=0x7f080014;
+        public static final int spin=0x7f080005;
         public static final int volume=0x7f080007;
     }
     public static final class layout {
