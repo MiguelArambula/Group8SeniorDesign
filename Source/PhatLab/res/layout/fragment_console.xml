@@ -21,7 +21,8 @@
        	android:layout_width="match_parent"
        	android:layout_height="wrap_content"
        	android:layout_weight="1"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="10dp">
         
             <ToggleButton 
                 android:id="@+id/edit"
@@ -31,17 +32,12 @@
                 android:textOff="EDIT"
 			/>
             
-            <!--  <Button 
-                android:id="@+id/changeSamp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Change Sample"
-                android:enabled="false"
-                /> -->
+
             <Spinner 
                 android:id="@+id/spin"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                
                 />
             
         </LinearLayout>
@@ -51,12 +47,20 @@
             android:layout_width="match_parent"
        		android:layout_height="wrap_content"
        		android:layout_weight="1"
-        	android:orientation="horizontal">
+        	android:orientation="horizontal"
+        	android:padding="10dp">
 			<TextView 
 			    android:id="@+id/current"
 		   	 	android:layout_width="match_parent"
 		   	 	android:layout_height="wrap_content"
 		   	 	android:text="Current Sample"
+		    />
+			
+			<TextView 
+			    android:id="@+id/pad_num"
+		   	 	android:layout_width="match_parent"
+		   	 	android:layout_height="wrap_content"
+		   	 	android:text="No Pad picked"
 		    />
 		</LinearLayout>
     
