@@ -18,11 +18,11 @@
         
     <!-- Edit and Change Sample buttons -->
         <LinearLayout 
-       	android:layout_width="match_parent"
-       	android:layout_height="wrap_content"
-       	android:layout_weight="1"
-        android:orientation="horizontal"
-        android:padding="10dp">
+       		android:layout_width="match_parent"
+       		android:layout_height="wrap_content"
+       		android:layout_weight="1"
+        	android:orientation="horizontal"
+        	android:padding="5dp">
         
             <ToggleButton 
                 android:id="@+id/edit"
@@ -44,11 +44,12 @@
         
         <!-- Current Sample Display -->
         <LinearLayout 
+            android:id="@+id/current_display"
             android:layout_width="match_parent"
        		android:layout_height="wrap_content"
        		android:layout_weight="1"
         	android:orientation="horizontal"
-        	android:padding="10dp">
+        	android:padding="5dp">
 			<TextView 
 			    android:id="@+id/current"
 		   	 	android:layout_width="match_parent"
@@ -66,14 +67,17 @@
     
        	<!-- Volume Control -->
         <LinearLayout 
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/current_display"
         android:layout_weight="1"
-        android:orientation="horizontal" >
+        android:orientation="horizontal" 
+        android:padding="5dp">
         
         <TextView 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            
             android:text="Volume"/>
         
         <SeekBar
