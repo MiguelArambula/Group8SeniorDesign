@@ -57,6 +57,33 @@ public class SequenceTimer implements Runnable
 		sampleList[track] = sample;
 	}
 	
+	
+	/**
+	 * Finds a node in a track if it exists. Returns null if it does not.
+	 * @param startNode	The node to start searching at. null starts at the beginning
+	 * @param track
+	 * @param beat
+	 * @param step
+	 * @return
+	 */
+	public sNode findNode(sNode startNode, int track, long beat, int step)
+	{
+		track = clamp(track, 0,11);
+		long globalStep = (beat * spb) + step;
+		
+		if (triggerList[track] == null)
+			return null;
+		if (sampleList[track] == null)
+			return null;
+		
+		if (startNode == null)
+			triggerList[track].find(globalStep);
+		else
+			return startNode.find(globalStep);
+		
+		return null;
+	}
+	
 	public void setPlayTime(long startBeat, int startStep, long endBeat, int endStep )
 	{
 		
