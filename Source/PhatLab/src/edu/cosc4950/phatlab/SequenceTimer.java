@@ -4,10 +4,10 @@ import android.util.Log;
 
 
 /**
- * Sequencer timer is responsible for sorting and playing sequences of samples.
- * This will be used for the overal sequencer or any other sub sequences we might need
  * @author Reuben Shea
  *
+ *	The SequenceTimer class is responsible for creating, sorting, and playing
+ *	A series of PCM samples in a sequence.
  *
  */
 
@@ -58,6 +58,11 @@ public class SequenceTimer implements Runnable
 	}
 	
 	
+	public sNode findTrigger(int track, long beat, int step)
+	{
+		return findTrigger(null, track, beat, step);
+	}
+	
 	/**
 	 * Finds a node in a track if it exists. Returns null if it does not.
 	 * @param startNode	The node to start searching at. null starts at the beginning
@@ -66,7 +71,7 @@ public class SequenceTimer implements Runnable
 	 * @param step
 	 * @return
 	 */
-	public sNode findNode(sNode startNode, int track, long beat, int step)
+	public sNode findTrigger(sNode startNode, int track, long beat, int step)
 	{
 		track = clamp(track, 0,11);
 		long globalStep = (beat * spb) + step;
