@@ -14,7 +14,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent" 
         android:layout_weight="3"
-        class="edu.cosc4950.phatlab.PhatPadFragment">
+        class="edu.cosc4950.phatlab.SequencerFragment">
     </fragment>
         
 	 

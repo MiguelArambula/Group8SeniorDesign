@@ -15,6 +15,8 @@ import android.os.Build;
 
 public class MainActivity extends FragmentActivity {
 	
+	SequenceTimer sequence; 
+	String butts;
 	private ViewGroup mPadLayout, mConsoleLayout;
 
 	@Override
@@ -23,14 +25,35 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		// TEST CODE
+		sequence = new SequenceTimer(130, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
+		PCM sample = new ExternalData().loadPCM("amen_kick1");
+		
+		sequence.setSample(sample, 1);
+		sequence.addTrigger(1, 0, 4);
+		sequence.addTrigger(1, 0, 5);
+		sequence.addTrigger(1, 0, 7);
+		sequence.setPlayTime(0, 0, -1, -1);
+		butts = "butts";
+		// END OF TEST CODE
+		
 		if (savedInstanceState == null) {
 
 			mPadLayout = (ViewGroup) findViewById(R.id.activity_main_phat_pad_container);
 			if(mPadLayout != null) {
 				
+				/*
 				PhatPadFragment phatPadFragment = new PhatPadFragment();
 				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 				fragmentTransaction.replace(mPadLayout.getId(), phatPadFragment, PhatPadFragment.class.getName());
+				
+				fragmentTransaction.commit();*/
+				
+				
+				// THIS IS TEST CODE USE THE STUFF ABOVE ^^^
+				SequencerFragment sequencerFragment = new SequencerFragment();
+				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+				fragmentTransaction.replace(mPadLayout.getId(), sequencerFragment, SequencerFragment.class.getName());
 				
 				fragmentTransaction.commit();
 			}

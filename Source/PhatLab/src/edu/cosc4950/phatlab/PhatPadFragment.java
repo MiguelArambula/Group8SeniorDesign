@@ -336,6 +336,7 @@ public class PhatPadFragment extends Fragment {
 		padTracks.setTrack(1, 2, "amen_kick2");
 		padTracks.setTrack(2, 2, "amen_hat1");*/
 		
+		padTracks.setTrack(0, 0, "amen_kick1");		//pad01
 		padTracks.setTrack(1, 0, "airhorn");			//pad02
 		padTracks.setTrack(2, 0, "blame_the_coders");		//pad03
 		padTracks.setTrack(3, 0, "amen_crash1");	//pad04
