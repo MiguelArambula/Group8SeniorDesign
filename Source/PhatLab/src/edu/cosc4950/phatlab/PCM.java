@@ -3,8 +3,8 @@
  * Date: Nov 20, 2014
  * 
  * Description:
- * This class plays loaded PCM byte streams
- * One thread is dedicated to each sound clip
+ * The PCM class is designed to handle audio playback and manipulation for
+ * individual audio tracks.
  * 
  */
 
@@ -18,72 +18,210 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.util.Log;
 
+
+/*
+ * Look up "Lossless resampling algorithm" for resampling. May need to
+ * do float manip rather than short manip to prevent artifacts.
+ * 
+ * Also, need a way to find native device sample rate. If I can't find it,
+ * it might be a good idea to auto-resample all loaded data to
+ * either 44.1khz. Not sure if 44.1khz or 48khz is the better option.
+ * Do research.
+ */
+
 public class PCM{
 	
 	private AudioTrack audio = null;
 	private byte[] stream = null;
 	private boolean _hasSet = false,
-					stereo = false,
-					staticMode = false,
-					isPlaying = false;
-	private int bo, l, bitrate=-1;
-
-	public PCM(){}
-	public PCM(byte[] stream, int bitrate, boolean stereo, boolean staticMode)
+					stereo = false;
+	private int bitrate=-1;//, startPlay, endPlay;
+	
+	public PCM(byte[] stream, int bitrate, boolean stereo)
 	{
-		set16bit(stream,bitrate,stereo,staticMode);
+		set16bit(stream,bitrate,stereo);
 	}
 	
-	//Frees the resources
-	public void release()
-	{
-		if (audio != null)
-			audio.release();
-		_hasSet = false;
-		audio = null;
-		bitrate = -1;
-	}
-	
-	//Returns whether there has been audio data set yet or not
+	/**
+	 * Returns whether or not the audio is ready for playback.
+	 * @return
+	 */
 	public boolean isSet()
 	{
 		return _hasSet;
 	}
 	
+	/**
+	 * Returns the audio bytestream
+	 * @return
+	 */
 	public byte[] getStream()
 	{
 		return stream;
 	}
 	
-	//Returns -1 if not set
-	public int getBitrate()
+	/**
+	 * Returns the number of samples in a second
+	 * @return
+	 */
+	public int getSamplerate()
 	{
 		return bitrate;
 	}
 	
+	/**
+	 * Returns whether or not this PCM object is stereo (true) or mono (false)
+	 * @return
+	 */
 	public boolean getStereo()
 	{
 		return stereo;
 	}
+	
+	/**
+	 * Sets the start / end samples to play from the PCM object.
+	 * @param start		Sample to start at
+	 * @param end		Sample to end at
+	 */
+	
+	public void setPlaybackRange(int start, int end)
+	{
+		if (!isSet())
+			return;
+		
+		//Wipe all data in the buffer:
+		audio.flush();
+		
+		start *= 2 * (stereo ? 2 : 1);
+		end *= 2 * (stereo ? 2 : 1);
+		start = clamp(start, 0, stream.length);
+		end = clamp(end, start, stream.length - start);
+		//startPlay = start;
+		//endPlay = end;
+		
+		//Write new data to the buffer
+		audio.write(stream, start, end-start);
+	}
+	
+	/**
+	 * Takes an int and limits it between two values
+	 * @param value
+	 * @param from
+	 * @param to
+	 * @return
+	 */
 	
 	private int clamp(int value,  int from, int to)
 	{
 		return (value > to ? to : (value < from ? from : value));
 	}
 	
-	//Converts a 16-bit PCM sample of bytes into a short
-	//for manipulation
+	/**
+	 * Performs a fast-fourier transform on a single channel of samples
+	 * Code credit to: https://sites.google.com/site/mikescoderama/pitch-shifting
+	 * @param samples		List of samples to use
+	 * @param framesize		Framesize in samples (power of 2)
+	 * @param inverse		Whether or not to use inverse fourier transform
+	 * @return				The converted samples
+	 */
+	private short[] fft(short[] osamples, long framesize, boolean inverse)
+	{
+		//Make sure is a power of 2:
+		double isPowerOf2 = Math.log10((double) framesize) / Math.log10(2);
+		if (Math.floor(isPowerOf2) != isPowerOf2)
+		{
+			Log.e("Phat Lab","Frame size not a power of 2! Skipping...");
+			return osamples;
+		}
+		//Convert samples to floats:
+		float[] samples = new float[osamples.length];
+		for (int i = 0; i < samples.length; ++i)
+			samples[i] = ((float) osamples[i]) / 32768;
+		
+		for (int i = 2; i < (2 * framesize) - 2; i += 2)
+		{
+			int k = 0;
+			for (int j = 2; j < 2 * framesize; j <<= 1)
+			{
+				if ((i & j) !=0)
+					++k;
+				
+				k <<= 1;
+			}
+			
+			//Shift
+			if (i < k)
+			{
+				float _temp = samples[i];
+				samples[i] = samples[k];
+				samples[k] = _temp;
+				
+				_temp = samples[i + 1];
+				samples[i + 1] = samples[k + 1];
+				samples[k + 1] = _temp;
+			}
+		}
+		
+		int max = (int) (Math.log(framesize) / Math.log(2.f) + 0.5);
+		
+		for (int l = 0, le = 2; l < max; ++l)
+		{
+			le <<= 1;
+			int le2 = le >> 1;
+			float ur =1.f,
+				  ui = 0.f,
+				  arg = (float) (Math.PI / (le2 >> 1));
+			float wr = (float) Math.cos(arg),
+				  wi = (float) ((inverse ? 1: -1) * Math.sin(arg)),
+				  tr,ti;
+			
+			for (int j = 0; j < le2; j += 2)
+			{
+				for (int i = j; i < 2 * framesize; i += le)
+				{
+					tr = samples[i + le2] * ur - samples[i + le2 + 1] * ui;
+					ti = samples[i + le2] * ui + samples[i + le2 + 1] * ur;
+					
+					samples[i + le2] = samples[i] - tr;
+					samples[i + le2 + 1] = samples[i + 1] - ti;
+					samples[i] += tr;
+					samples[i + 1] += ti;
+				}
+				
+				tr = (ur * wr) - (ui * wi);
+				ui = (ur * wi) + (ui * wr);
+				ur = tr;
+			}
+		}
+		
+		//Convert samples back to shorts:
+		for (int i = 0; i < samples.length; ++i)
+			osamples[i] = (short) (samples[i] * 32768);
+		
+		return osamples;
+	}
 	
+	/**
+	 * Merges the current and provided PCM objects into a single PCM audio
+	 * object and returns the object. Null is returned if there is a problem.
+	 * Both PCM objects must have equal sample rates and channels to merge.
+	 * 
+	 * @param pcm
+	 * @return
+	 */
 	public PCM mergePCM(PCM pcm)
 	{
 		if (!isSet())
 			return null;
+		if (!pcm.isSet())
+			return null;
+		
 		PCM newpcm;
 		byte [] audio;
 		try
 		{
 			
-			if (bitrate != pcm.getBitrate())
+			if (bitrate != pcm.getSamplerate())
 			{
 				Log.e("Phat Lab","Cannot merge PCMs with different bit rates!");
 				throw new Exception();
@@ -131,7 +269,7 @@ public class PCM{
 			bb.order(ByteOrder.LITTLE_ENDIAN);
 			bb.asShortBuffer().put(a1);
 			
-			newpcm = new PCM(audio, bitrate, stereo, false);
+			newpcm = new PCM(audio, bitrate, stereo);
 			
 		}
 		catch (Exception e)
@@ -142,19 +280,20 @@ public class PCM{
 		return newpcm;
 	}
 	
-	public void set16bit(byte[] stream,boolean stereo,boolean staticMode)
+	
+	
+	public void set16bit(byte[] stream,boolean stereo)
 	{
-		set16bit(stream, 44100,stereo, staticMode);
-		
+		set16bit(stream, 44100,stereo);
 	}
 	
 	/**
 	 * Sets an audio file to play, but does not play the file
 	 * @param stream	Set of audio bytes to play
-	 * @param bitrate	Bitrate of the audio file
+	 * @param bitrate	Samplerate of the audio file
 	 * @param staticMode	Whether to play in static or stream mode
 	 */
-	public void set16bit(byte[] stream, int bitrate,boolean stereo, boolean staticMode)
+	public void set16bit(byte[] stream, int samplerate,boolean stereo)
 	{
 		try
 		{
@@ -168,52 +307,19 @@ public class PCM{
 			if (isSet())
 				clear();
 			
-			//bitrate is actually sample rate. Bad naming
-			//br is the actual bitrate
-			short br; //Actual bitrate
-			ByteBuffer bb;
-			bb = ByteBuffer.wrap(stream, 34, 2);
-			bb.order(ByteOrder.LITTLE_ENDIAN);
-			br= bb.getShort();
-			
-			
-			// Divided by 10 because the write writes a 10th of the buffer size.
-			// Doesn't really have much of an effect
-			int bufferSize = AudioTrack.getMinBufferSize(bitrate, 
-							 (stereo ? AudioFormat.CHANNEL_OUT_STEREO : AudioFormat.CHANNEL_OUT_MONO), 
-							 (br == 8 ? AudioFormat.ENCODING_PCM_8BIT: AudioFormat.ENCODING_PCM_16BIT)) / 10;
-			
 			audio = new AudioTrack(AudioManager.STREAM_MUSIC, 
-								   bitrate, 
+								   samplerate, 
 								   (stereo ? AudioFormat.CHANNEL_OUT_STEREO:AudioFormat.CHANNEL_OUT_MONO), 
-								   (br == 8 ? AudioFormat.ENCODING_PCM_8BIT: AudioFormat.ENCODING_PCM_16BIT),
-					 			   bufferSize * 2, 
-					 			   (staticMode? AudioTrack.MODE_STATIC: AudioTrack.MODE_STREAM));
+								   AudioFormat.ENCODING_PCM_16BIT,
+					 			   stream.length,  // Perhaps not a good idea if long samples are added
+					 			   AudioTrack.MODE_STATIC);
 			this.stream = stream;
-			this.bitrate = bitrate;
+			this.bitrate = samplerate; // poor labling
 			this.stereo = stereo;
-			this.staticMode = staticMode;
 			_hasSet = true;
 			
-			/*if (audio.getPlayState() != AudioTrack.PLAYSTATE_STOPPED)
-			{
-				audio.stop();
-				
-				while (audio.getPlayState() != AudioTrack.PLAYSTATE_STOPPED);
-				
-				audio.flush();
-				
-			}*/
+			setPlaybackRange(0, stream.length);
 			
-			try 
-			{
-				audio.play();
-			}
-			catch (Exception e)
-			{
-				Log.e("Phat Lab","Failed to play audio!", e);
-				return;
-			}
 		}
 		catch (Exception E)
 		{
@@ -221,105 +327,188 @@ public class PCM{
 		}
 	}
 	
+	/**
+	 * Resamples the current PCM into a different sample rate permanently.
+	 * Cannot be undone without data loss
+	 * @param sampleRate
+	 */
+	
 	public void resample(int sampleRate)
 	{
-		if (sampleRate < 8000)
-			sampleRate = 8000;
-		if (sampleRate > 96000)
-			sampleRate = 96000;
+		sampleRate = clamp(sampleRate, 1000, 96000);
 		
-		//
-		// -- STUB -- // Resample here
-		//
+		clear(); // Clear the audio if it exists
+		if (stream == null || bitrate == -1)
+		{
+			Log.e("Phat Lab", "Cannot resample empty PCM object");
+			return;
+		}
+
+		//Split channels and resample separately:
+		byte [] channelSample1 = null,
+				channelSample2 = null;
+		if (!stereo)
+			channelSample1 = stream;
+		else
+		{
+			channelSample1 = new byte[stream.length / 2];
+			channelSample2 = new byte[stream.length / 2];
+			
+			//Copy in each stream of samples
+			//2 bytes for ea. sample = 4 bytes:
+			boolean flip = false;
+			int inc = 0;
+			for (int i = 0; i < stream.length; i += 2)
+			{
+				if (!flip)
+				{
+					channelSample1[inc] = stream[i];
+					channelSample1[inc + 1] = stream[i + 1];
+				}
+				else
+				{
+					channelSample2[inc] = stream[i];
+					channelSample2[inc + 1] = stream[i + 1];
+				}
+				
+				if (flip)
+					inc += 2;
+				flip = !flip;
+				
+			}
+		}
+
+
+		//Convert from bytes to samples:
+		short [] channelsSample1 = new short[channelSample1.length / 2],
+				 channelsSample2 = null;
+		if (stereo)
+			channelsSample2 = new short[channelSample2.length / 2];
+		
+		ByteBuffer bb;
+		bb = ByteBuffer.wrap(channelSample1);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		for (int i = 0; i < channelsSample1.length; ++i)
+			channelsSample1[i] = bb.getShort(i);
+		
+		if (stereo)
+		{
+			bb = ByteBuffer.wrap(channelSample2);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			for (int i = 0; i < channelsSample2.length; ++i)
+				channelsSample2[i] = bb.getShort(i);
+		}
+		
+		// -- STUB -- // Need to do a check to see if the sample length < window size
+		//fftransform:
+		channelsSample1 = fft(channelsSample1, 1024, false);
+		if (stereo)
+			channelsSample2 = fft(channelsSample2, 1024, false);
+		
+		// -- STUB -- // Resample algorithm here:
+		
+		//inverse fftransform
+		channelsSample1 = fft(channelsSample1, 1024, true);
+		if (stereo)
+			channelsSample2 = fft(channelsSample2, 1024, true);
+		
+		
+		//Convert back into bytes:
+		bb = ByteBuffer.allocate(channelsSample1.length << 1);
+		bb.wrap(channelSample1);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		bb.asShortBuffer().put(channelsSample1);
+		
+		if (stereo)
+		{
+			bb = ByteBuffer.allocate(channelsSample2.length << 1);
+			bb.wrap(channelSample2);
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			bb.asShortBuffer().put(channelsSample2);
+		}
+
+		
+		if (!stereo)
+			stream = channelSample1;
+		else
+		{
+			stream = new byte[channelSample1.length + channelSample2.length];
+			int inc = 0;
+			for (int i = 0; i < channelSample1.length; i += 2)
+			{
+				stream[inc] = channelSample1[i];
+				stream[inc + 1] = channelSample1[i + 1];
+				
+				stream[inc + 2] = channelSample2[i];
+				stream[inc + 3] = channelSample2[i + 1];
+				
+				inc += 4;
+			}
+		}
+
+		
+		//Set the new sample:
+		set16bit(stream, sampleRate, stereo);
 	}
 	
-	public void stream()
-	{
-		stream(0,stream.length);
-	}
 	
-	public void stream(int stop)
-	{
-		stream(0,stop);
-	}
-	
+	/**
+	 * Releases all data from the PCM audio object. The PCM will need to be
+	 * reinitialized with set16bit to be useful again.
+	 */
 	public void clear()
 	{
 		if (!isSet())
 			return;
+		if (audio.getState() == AudioTrack.STATE_UNINITIALIZED)
+			return;
+		
+		if(audio.getPlayState() == AudioTrack.PLAYSTATE_PLAYING);
+			audio.stop();
 		
 		audio.flush();
-		if(audio.getPlayState() != AudioTrack.PLAYSTATE_STOPPED);
-			audio.stop();
 		audio.release();
 		_hasSet = false;
 	}
 	
 	/**
-	 * Plays the audio file
+	 * Plays the audio file through the speakers
 	 * @param byteOffset	Where to start playing the file, in bytes
 	 * @param length	How many bytes to play
 	 */
-	public void stream(int byteOffset, int length)
+	public void stream()
 	{
 		try
 		{
-			
-			if (_hasSet == false)
+			if (isSet() == false)
 			{
 				Log.e("Phat Lab","Audio has not been set, so cannot play!");
 				throw null;
 			}
-			bo = byteOffset;
-			l = length;
-			
-			//Skip the header
-			if (bo < 44)
-			{
-				int dif = 44 - bo;
-				length -= dif;
-				bo = 44;
-			}
-			
-			audio.flush();
-			
-			if (isPlaying)
-			{
-				isPlaying = false;
-				audio.stop();
-				while (audio.getPlayState() != AudioTrack.PLAYSTATE_STOPPED);
-				
-				audio.play();
-			}
-			
-			isPlaying = true;
-			
+
 			new Thread()
 			{
 				public void run()
 				{
+					if (audio.getPlayState() != AudioTrack.PLAYSTATE_STOPPED)
+					{
+						audio.stop();
+						audio.reloadStaticData();
+					}
+					
 					try 
 					{
-						//audio.write(stream, bo, l);
-						for (int i = bo, il = bo; i < stream.length; i = clamp((il = i) + (bitrate / 10), bo, l))
-						{
-							if (isPlaying == false)
-								return;
-							audio.write(stream, il, i - il);
-						}
+						audio.play();
 					}
+					
 					catch (Exception E)
 					{
 						Log.e("Phat Lab","Exception:",E);
 					}
-					isPlaying = false;
-					
 				}
-				
 			}.start();
 			
-			
-			//audio.stop();
+
 			
 		}
 		catch (Exception E)
