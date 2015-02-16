@@ -78,8 +78,8 @@ public class SequenceTimer implements Runnable
 		
 		if (triggerList[track] == null)
 			return null;
-		if (sampleList[track] == null)
-			return null;
+		/*if (sampleList[track] == null)
+			return null;*/
 		
 		if (startNode == null)
 			triggerList[track].find(globalStep);
@@ -95,13 +95,6 @@ public class SequenceTimer implements Runnable
 		//Clamping:
 		startPos = (startBeat * spb) + startStep;
 		endPos = (endBeat * spb) + endStep;
-		if (endPos > totalSteps || endPos < 0)
-			endPos = totalSteps;
-		
-		if (startPos > endPos)
-			startPos = endPos;
-		if (startPos < 0)
-			startPos = 0;
 		
 		curPos = startPos;
 		isPlaying = false;
@@ -192,6 +185,16 @@ public class SequenceTimer implements Runnable
 			return;
 		
 		isPlaying = true;
+		
+		// Wrap / clamp timer if needed before playing:
+		if (endPos > totalSteps || endPos < 0)
+			endPos = totalSteps;
+		
+		if (startPos > endPos)
+			startPos = endPos;
+		if (startPos < 0)
+			startPos = 0;
+		
 		run();
 		
 	}
@@ -263,6 +266,13 @@ public class SequenceTimer implements Runnable
 }
 
 
+/**
+ * 
+ * @author reuben
+ *	Class acts as a sample trigger object. It is a linked list of timers that
+ *	specify when a sample should or shouldn't play.
+ *	The "priority" is the beat / step to play at.
+ */
 class sNode
 {
 	sNode next = null,
