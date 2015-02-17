@@ -14,11 +14,14 @@
 package edu.cosc4950.phatlab;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Properties;
@@ -286,6 +289,9 @@ public class ExternalData
 			
 			pcm = new PCM(finalAudio, sampleRate, (channels == 2 ? true : false));
 			
+			if (sampleRate != 44100)
+				pcm.linearResample(44100);
+			
 		}
 		catch (Exception e)
 		{
@@ -301,35 +307,23 @@ public class ExternalData
 	 * @return	whether or not there was an error
 	 */
 	
-	public boolean savePCM16Bit(PCM pcm, String filename)
+	public boolean savePCM(PCM pcm, String filename)
 	{
-		return savePCM16Bit(pcm.getStream(),filename,0,pcm.getStream().length);
-	}
-	public boolean savePCM16Bit(byte[] pcm, String filename)
-	{
-		return savePCM16Bit(pcm,filename,0,pcm.length);
-	}
-	public boolean savePCM16Bit(PCM pcm, String filename,int offset, int len)
-	{
-		return savePCM16Bit(pcm.getStream(),filename,offset, len);
-	}
-	
-	public boolean savePCM16Bit(byte[] stream, String filename,int offset, int len)
-	{
-		// -- STUB -- // Currently no longer works! Must handle rewriting the WAV header
-		return true;
-		/*wasError = false;
 		try
 		{
-			//Check if we can write or not
+			if (pcm == null)
+				throw null;
+			if (!pcm.isSet())
+				throw null;
 			if (!isWritable())
-				throw new Exception();
+				throw null;
 			
 			OutputStream outS = new FileOutputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".wav");
 			BufferedOutputStream	buffOut = new BufferedOutputStream(outS);
 			DataOutputStream	dataOut = new DataOutputStream(buffOut);
 			
-			dataOut.write(stream,offset,len); //Write stream to buffer
+			dataOut.write(pcm.generateHeader()); //Write header to buffer
+			dataOut.write(pcm.getStream()); // Write audio data
 			dataOut.flush(); // Flush the buffer to the SD
 			
 			dataOut.close();
@@ -337,13 +331,13 @@ public class ExternalData
 			outS.close();
 			
 		}
-		catch (Exception e)
+		catch(Exception e)
 		{
-			wasError=true;
-			Log.e("Phat Lab","Exception:",e);
-			return true;
+			Log.e("Phat Lab", "Failed to export PCM", e);
+			return false;
 		}
-		return false;*/
+		return true;
+		//return savePCM16Bit(pcm.getStream(),filename,0,pcm.getStream().length);
 	}
 	
 	/**
