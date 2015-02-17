@@ -128,6 +128,8 @@ public class PCM{
 	/**
 	 * Performs a fast-fourier transform on a single channel of samples
 	 * Code credit to: https://sites.google.com/site/mikescoderama/pitch-shifting
+	 * 
+	 * NOTE: Not currently used, but may be needed if we use better resampling
 	 * @param samples		List of samples to use
 	 * @param framesize		Framesize in samples (power of 2)
 	 * @param inverse		Whether or not to use inverse fourier transform
@@ -289,6 +291,49 @@ public class PCM{
 		return newpcm;
 	}
 	
+	public byte[] generateHeader()
+	{
+		byte[] header;
+		
+		if (isSet() == false)
+		{
+			Log.e("Phat Lab","Audio has not been set, so cannot generate header!");
+			return null;
+		}
+		
+		try
+		{
+			ByteBuffer bb = ByteBuffer.allocate(44);
+			bb.putInt(1380533830); // RIFF
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			bb.putInt(stream.length + 36); // FILE SIZE
+			bb.order(ByteOrder.BIG_ENDIAN);
+			bb.putInt(1463899717); // WAVE
+			bb.putInt(1718449184); // fmt 
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			bb.putInt(16); // Sumbchunk1 Size
+			bb.putShort((short)1); // PCM
+			bb.putShort((short)(getStereo()? 2:1)); //Channels
+			bb.putInt(getSamplerate()); // Sample rate
+			bb.putInt(getSamplerate()*(getStereo() ? 2 : 1) * 2); //Bit rate
+			bb.putShort((short)((getStereo() ? 2 : 1) * 2)); // Block align
+			bb.putShort((short)16); // Bits per sample
+			bb.order(ByteOrder.BIG_ENDIAN);
+			bb.putInt(1684108385); // data
+			bb.order(ByteOrder.LITTLE_ENDIAN);
+			bb.putInt(stream.length); // Length of stream
+			
+			header = bb.array();
+		}
+		catch(Exception e)
+		{
+			Log.e("Phat Lab", "Failed to generate header.",e);
+			return null;
+		}
+		
+		return header;
+	}
+	
 	public void set16bit(short[] stream, boolean stereo)
 	{
 		ByteBuffer bb = ByteBuffer.allocate(stream.length*2);
@@ -396,6 +441,12 @@ public class PCM{
 	 */
 	public boolean linearResample(int targetRate)
 	{
+		if (isSet() == false)
+		{
+			Log.e("Phat Lab","Audio has not been set, so resample!");
+			return false;
+		}
+		
 		try
 		{
 			int totalSamples = stream.length / 2;
