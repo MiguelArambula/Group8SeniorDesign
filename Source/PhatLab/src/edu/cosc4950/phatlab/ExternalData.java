@@ -3,8 +3,8 @@
  * Date: Oct 31, 2014
  * 
  * Description:
- * This class is used to load and save data that is "outside the app."
- * This would involve things like profiles and samples
+ * The ExternalData class is designed to handle any data that is not 
+ * immediately part of the app. This will include any file IO.
  * 
  * Requires:
  * 	Manifest entry: <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -148,8 +148,7 @@ public class ExternalData
 			it = bb.getShort();
 			if (it != 16)
 				return false;
-			
-			Log.i("Phat Lab","E");
+		
 			
 			//Data length = filesize:
 			bb = ByteBuffer.wrap(data, 40, 4);
@@ -157,9 +156,7 @@ public class ExternalData
 			it = bb.getInt();
 			if (it != bytes - 44)
 				return false;
-			
-			Log.i("Phat Lab","F");
-		
+
 			return true;
 		}
 		catch(Exception e)

@@ -3,9 +3,16 @@
  * Date: Nov 20, 2014
  * 
  * Description:
- * This class plays and manipulates loaded PCM byte streams
- * One thread is dedicated to each sound clip
+ * The PCM class is designed to handle audio playback and manipulation for
+ * individual audio tracks.
  * 
+ */
+
+/*
+ *  TODO: Make sure ALL AUDIO is resampled to 44100hz upon load.
+ *  We will only export to 44100 as well. We are limiting this because that
+ *  is the only guaranteed frequency that can be RECORDED from the mic. This
+ *  should keep everything equal.
  */
 
 package edu.cosc4950.phatlab;
@@ -35,11 +42,13 @@ public class PCM{
 	private byte[] stream = null;
 	private boolean _hasSet = false,
 					stereo = false;
-	private int bitrate=-1, startPlay, endPlay;
+	private int bitrate=-1;//, startPlay, endPlay;
 	
-	public PCM(byte[] stream, int bitrate, boolean stereo)
+	
+	
+	public PCM(byte[] stream, int samplerate, boolean stereo)
 	{
-		set16bit(stream,bitrate,stereo);
+		set16bit(stream,samplerate,stereo);
 	}
 	
 	/**
@@ -96,8 +105,8 @@ public class PCM{
 		end *= 2 * (stereo ? 2 : 1);
 		start = clamp(start, 0, stream.length);
 		end = clamp(end, start, stream.length - start);
-		startPlay = start;
-		endPlay = end;
+		//startPlay = start;
+		//endPlay = end;
 		
 		//Write new data to the buffer
 		audio.write(stream, start, end-start);
@@ -280,7 +289,13 @@ public class PCM{
 		return newpcm;
 	}
 	
-	
+	public void set16bit(short[] stream, boolean stereo)
+	{
+		ByteBuffer bb = ByteBuffer.allocate(stream.length*2);
+		for (int i = 0; i < stream.length; ++i)
+			bb.putShort(stream[i]);
+		set16bit(bb.array(), stereo);
+	}
 	
 	public void set16bit(byte[] stream,boolean stereo)
 	{
@@ -307,16 +322,22 @@ public class PCM{
 			if (isSet())
 				clear();
 			
+			int minBuffer = AudioTrack.getMinBufferSize(samplerate,
+														(stereo ? AudioFormat.CHANNEL_OUT_STEREO:AudioFormat.CHANNEL_OUT_MONO),
+														AudioFormat.ENCODING_PCM_16BIT);
+			
 			audio = new AudioTrack(AudioManager.STREAM_MUSIC, 
 								   samplerate, 
 								   (stereo ? AudioFormat.CHANNEL_OUT_STEREO:AudioFormat.CHANNEL_OUT_MONO), 
 								   AudioFormat.ENCODING_PCM_16BIT,
-					 			   stream.length,  // Perhaps not a good idea if long samples are added
+					 			   (minBuffer > stream.length ? minBuffer:stream.length),  // Perhaps not a good idea if long samples are added
 					 			   AudioTrack.MODE_STATIC);
 			this.stream = stream;
-			this.bitrate = samplerate; // poor labling
+			this.bitrate = samplerate; // poor labeling for global variable
 			this.stereo = stereo;
 			_hasSet = true;
+			if (audio.getState() == AudioTrack.STATE_UNINITIALIZED)
+				Log.e("Phat Lab", "Failed to initialize audio for PCM!");
 			
 			setPlaybackRange(0, stream.length);
 			
