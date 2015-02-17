@@ -142,8 +142,8 @@ public class SequenceTimer implements Runnable
 		track = clamp(track, 0, 11);
 		if (triggerList[track] == null)
 			return false;
-		if (sampleList[track] == null)
-			return false;
+		/*if (sampleList[track] == null)
+			return false;*/
 		
 		sNode node = triggerList[track].find(globalStep);
 		if (node != null)

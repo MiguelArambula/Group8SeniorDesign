@@ -286,6 +286,11 @@ public class ExternalData
 			
 			pcm = new PCM(finalAudio, sampleRate, (channels == 2 ? true : false));
 			
+			if (sampleRate != 44100)
+			{
+				pcm.linearResample(44100);
+			}
+			
 		}
 		catch (Exception e)
 		{
