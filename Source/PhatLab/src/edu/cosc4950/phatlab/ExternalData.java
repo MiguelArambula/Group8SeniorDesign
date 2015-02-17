@@ -148,8 +148,7 @@ public class ExternalData
 			it = bb.getShort();
 			if (it != 16)
 				return false;
-			
-			Log.i("Phat Lab","E");
+		
 			
 			//Data length = filesize:
 			bb = ByteBuffer.wrap(data, 40, 4);
@@ -157,9 +156,7 @@ public class ExternalData
 			it = bb.getInt();
 			if (it != bytes - 44)
 				return false;
-			
-			Log.i("Phat Lab","F");
-		
+
 			return true;
 		}
 		catch(Exception e)
