@@ -158,8 +158,6 @@ public class Recorder {
 				
 				streamData.clear(); // Wipe all audio data.
 				
-				recordedSample.stream();
-				
 			}
 			catch (Exception e)
 			{
