@@ -14,6 +14,13 @@ import android.widget.ImageButton;
 
 public class SequencerFragment extends Fragment{
 	
+	/* TODO
+	 * update button names and functionality
+	 * update display of sequencer everytime beat is changed
+	 * unity between sample on pad and in sequencer
+	 * be able to swap between sequencer and phatpad
+	 */
+	
 	MainActivity data;
 	Bitmap bmpPressed, bmpEmpty;
 	
@@ -38,29 +45,110 @@ public class SequencerFragment extends Fragment{
 		// eight buttons in a row for each sample
 		// store values in array
 		// stored in an ArrayList of frames
-		final ImageButton btnTrack01Step01 = (ImageButton) myView.findViewById(R.id.btn_track01_step01);
-		btnTrack01Step01.setOnTouchListener(new OnTouchListener() {
+		final ImageButton btnTrack00Step00 = (ImageButton) myView.findViewById(R.id.btn_track00_step00);
+		btnTrack00Step00.setOnTouchListener(new OnTouchListener() {
+			// establish the track and step related to the button being pressed
+			int track = 0; int step = 0;
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					// if boolean false add trigger set boolean true update image
+					if(data.sequence.findTrigger(track, data.currentBeat, step) == null) {
+						data.sequence.addTrigger(track, data.currentBeat, step);
+						btnTrack00Step00.setImageBitmap(bmpPressed);
+					}
+					// if boolean true remove trigger set boolean false update image
+					else {
+						data.sequence.clearTrigger(track, data.currentBeat, step);
+						btnTrack00Step00.setImageBitmap(bmpEmpty);
+					}
+					return true;
+				case MotionEvent.ACTION_UP:
+					// nothing
+					return true;
+				}
+				return false;
+			}
+		});
+		
+		final ImageButton btnTrack00Step01 = (ImageButton) myView.findViewById(R.id.btn_track00_step01);
+		btnTrack00Step01.setOnTouchListener(new OnTouchListener() {
+			int track = 0; int step = 1;
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					// if boolean false add trigger set boolean true update image
+					if(data.sequence.findTrigger(track, data.currentBeat, step) == null) {
+						data.sequence.addTrigger(track, data.currentBeat, step);
+						btnTrack00Step01.setImageBitmap(bmpPressed);
+					}
+					else {
+						data.sequence.clearTrigger(track, data.currentBeat, step);
+						btnTrack00Step01.setImageBitmap(bmpEmpty);
+					}
+					return true;
+				case MotionEvent.ACTION_UP:
+					// nothing
+					return true;
+				}
+				return false;
+			}
+		});
+		
+		final ImageButton btnTrack00Step02 = (ImageButton) myView.findViewById(R.id.btn_track00_step02);
+		btnTrack00Step02.setOnTouchListener(new OnTouchListener() {
+			int track = 0; int step = 2;
+			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// SWITCH CASE
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					// if boolean false add trigger set boolean true update image
-					// TODO if find() false
-					data.sequence.addTrigger(0, 0, 4);
-					data.sequence.addTrigger(0, 1, 4);
-					Log.i("Phat Lab", "sample 0 : " + data.sequence.sampleList[0]);
-					Log.i("Phat Lab", "sample 1 : " + data.sequence.sampleList[1]);
-					Log.i("Phat Lab", data.butts);
-					btnTrack01Step01.setImageBitmap(bmpPressed);
-					// if boolean true remove trigger set boolean false update image
-
+					if(data.sequence.findTrigger(track, data.currentBeat, step) == null) {
+						data.sequence.addTrigger(track, data.currentBeat, step);
+						btnTrack00Step02.setImageBitmap(bmpPressed);
+					}
+					else {
+						data.sequence.clearTrigger(track, data.currentBeat, step);
+						btnTrack00Step02.setImageBitmap(bmpEmpty);
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					// nothing
 					return true;
 				}
-				
+				return false;
+			}
+		});
+		
+		final ImageButton btnTrack00Step03 = (ImageButton) myView.findViewById(R.id.btn_track00_step03);
+		btnTrack00Step03.setOnTouchListener(new OnTouchListener() {
+			int track = 0; int step = 3;
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// SWITCH CASE
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					// if boolean false add trigger set boolean true update image
+					if(data.sequence.findTrigger(track, data.currentBeat, step) == null) {
+						data.sequence.addTrigger(track, data.currentBeat, step);
+						btnTrack00Step03.setImageBitmap(bmpPressed);
+					}
+					else {
+						data.sequence.clearTrigger(track, data.currentBeat, step);
+						btnTrack00Step03.setImageBitmap(bmpEmpty);
+					}
+					return true;
+				case MotionEvent.ACTION_UP:
+					// nothing
+					return true;
+				}
 				return false;
 			}
 		});
@@ -74,12 +162,10 @@ public class SequencerFragment extends Fragment{
 				
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
-					data.sequence.start();
-					Log.i("Phat Lab", "start");
-					if(data.sequence.isPlaying)
-						Log.i("Phat Lab", "now playing");
-					Log.i("Phat Lab", ""+data.sequence.isPlaying);
 					btnStart.setImageBitmap(bmpPressed);
+					data.sequence.setPlayTime(0, 0, -1, -1);
+					data.sequence.start();
+					//Log.i("Phat Lab", "start");
 					return true;
 				case MotionEvent.ACTION_UP:
 					// nothing functionally
@@ -99,9 +185,7 @@ public class SequencerFragment extends Fragment{
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					data.sequence.stop();
-					if(data.sequence.isPlaying)
-						Log.i("Phat Lab", "now playing");
-					Log.i("Phat Lab", "stop");
+					//Log.i("Phat Lab", "stop");
 					btnStop.setImageBitmap(bmpPressed);
 					return true;
 				case MotionEvent.ACTION_UP:

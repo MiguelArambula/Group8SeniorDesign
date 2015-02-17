@@ -10,14 +10,42 @@
 		android:orientation="horizontal" >
 		
         <ImageButton
-	        android:id="@+id/btn_track01_step01"
+	        android:id="@+id/btn_track00_step00"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
 	        android:src="@drawable/pad_empty"
-	        android:layout_weight="2"
-	        android:padding="10dp" />
+	        android:layout_weight="1" />
         
         <ImageButton
+	        android:id="@+id/btn_track00_step01"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+        
+        <ImageButton
+	        android:id="@+id/btn_track00_step02"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+        
+        <ImageButton
+	        android:id="@+id/btn_track00_step03"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:src="@drawable/pad_empty"
+	        android:layout_weight="1" />
+        
+	</LinearLayout>
+	
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_weight="2"
+		android:orientation="horizontal" >
+    
+    	<ImageButton
 	        android:id="@+id/btn_start"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
@@ -30,18 +58,18 @@
 	        android:layout_height="match_parent"
 	        android:src="@drawable/pad_empty"
 	        android:layout_weight="2" />
+    	
+    	<Space 
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1" />
+    	
+    </LinearLayout>
     
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-        
-	</LinearLayout>
-	
     <Space 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="3" />
     
     
 	

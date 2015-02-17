@@ -16,7 +16,8 @@ import android.os.Build;
 public class MainActivity extends FragmentActivity {
 	
 	SequenceTimer sequence; 
-	String butts;
+	int maxBeat, currentBeat;
+	
 	private ViewGroup mPadLayout, mConsoleLayout;
 
 	@Override
@@ -29,12 +30,15 @@ public class MainActivity extends FragmentActivity {
 		sequence = new SequenceTimer(130, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
 		PCM sample = new ExternalData().loadPCM("amen_kick1");
 		
-		sequence.setSample(sample, 1);
+		maxBeat = 1;
+		currentBeat = 0;
+		
+		sequence.setSample(sample, 0); // set to amen kick
+		/*
 		sequence.addTrigger(1, 0, 4);
 		sequence.addTrigger(1, 0, 5);
 		sequence.addTrigger(1, 0, 7);
-		sequence.setPlayTime(0, 0, -1, -1);
-		butts = "butts";
+		sequence.setPlayTime(0, 0, -1, -1);*/
 		// END OF TEST CODE
 		
 		if (savedInstanceState == null) {

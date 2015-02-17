@@ -28,12 +28,15 @@ public final class R {
         public static final int pad_pressed=0x7f020003;
     }
     public static final class id {
-        public static final int action_settings=0x7f080018;
+        public static final int action_settings=0x7f08001b;
         public static final int activity_main_console_container=0x7f080001;
         public static final int activity_main_phat_pad_container=0x7f080000;
-        public static final int btn_start=0x7f080015;
-        public static final int btn_stop=0x7f080016;
-        public static final int btn_track01_step01=0x7f080014;
+        public static final int btn_start=0x7f080018;
+        public static final int btn_stop=0x7f080019;
+        public static final int btn_track00_step00=0x7f080014;
+        public static final int btn_track00_step01=0x7f080015;
+        public static final int btn_track00_step02=0x7f080016;
+        public static final int btn_track00_step03=0x7f080017;
         public static final int changeSamp=0x7f080005;
         public static final int close=0x7f080003;
         public static final int current=0x7f080006;
@@ -51,7 +54,7 @@ public final class R {
         public static final int pad11=0x7f080012;
         public static final int pad12=0x7f080013;
         public static final int path=0x7f080002;
-        public static final int rowtext=0x7f080017;
+        public static final int rowtext=0x7f08001a;
         public static final int volume=0x7f080007;
     }
     public static final class layout {

@@ -73,20 +73,26 @@ public class SequenceTimer implements Runnable
 	 */
 	public sNode findTrigger(sNode startNode, int track, long beat, int step)
 	{
+		Log.i("Phat Lab", "looking for trigger");
 		track = clamp(track, 0,11);
 		long globalStep = (beat * spb) + step;
 		
-		if (triggerList[track] == null)
+		if (triggerList[track] == null) {
+			Log.i("Phat Lab", "trigger list is null");
 			return null;
-		if (sampleList[track] == null)
+		}
+		/*
+		if (sampleList[track] == null) {
+			Log.i("Phat Lab", "sample list is null");
 			return null;
+		}*/
 		
 		if (startNode == null)
-			triggerList[track].find(globalStep);
-		else
+			return triggerList[track].find(globalStep);
+		else {
+			Log.i("Phat Lab", "else");
 			return startNode.find(globalStep);
-		
-		return null;
+		}
 	}
 	
 	public void setPlayTime(long startBeat, int startStep, long endBeat, int endStep )
@@ -326,14 +332,18 @@ class sNode
 	
 	public sNode find(long priority)
 	{
+		Log.i("Phat Lab", "finding priority thing");
 		sNode curNode = this;
 		while (true)
 		{
-			if (curNode.priority == priority)
+			if (curNode.priority == priority) {
+				Log.i("Phat Lab", ""+curNode);
 				return curNode;
+			}
 			
 			if (curNode.priority > priority)
 			{
+				Log.i("Phat Lab", "currNode priority > priority");
 				if (curNode.prev == null)
 					return null;
 				if (curNode.prev.priority < priority)
@@ -344,6 +354,7 @@ class sNode
 			
 			if (curNode.priority < priority)
 			{
+				Log.i("Phat Lab", "currNode priority < priority");
 				if (curNode.next == null)
 					return null;
 				if (curNode.next.priority > priority)
