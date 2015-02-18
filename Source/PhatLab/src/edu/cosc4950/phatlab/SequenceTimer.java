@@ -82,11 +82,10 @@ public class SequenceTimer implements Runnable
 			return null;*/
 		
 		if (startNode == null)
-			triggerList[track].find(globalStep);
+			return triggerList[track].find(globalStep);
 		else
 			return startNode.find(globalStep);
-		
-		return null;
+
 	}
 	
 	public void setPlayTime(long startBeat, int startStep, long endBeat, int endStep )
