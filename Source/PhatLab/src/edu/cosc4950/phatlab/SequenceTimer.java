@@ -147,7 +147,7 @@ public class SequenceTimer implements Runnable
 		
 		sNode node = triggerList[track].find(globalStep);
 		if (node != null)
-			node.clear();
+			triggerList[track] = node.clear();
 		
 		return (node == null ? false : true);
 	}
@@ -364,7 +364,7 @@ class sNode
 		}
 	}
 	
-	public void clear()
+	public sNode clear()
 	{
 		sNode node = this;
 		
@@ -372,5 +372,10 @@ class sNode
 			node.next.setPrev(node.prev);
 		if (node.prev != null)
 			node.prev.setNext(node.next);
+		
+		if (node.prev != null)
+			return node.prev;
+		else
+			return node.next;
 	}
 }
