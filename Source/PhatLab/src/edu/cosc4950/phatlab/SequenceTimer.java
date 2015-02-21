@@ -241,8 +241,8 @@ public class SequenceTimer implements Runnable
 						continue;
 					
 					sNode curNode = triggerList[i].find(curPos);
-					if (curNode != null)
-						sampleList[i].stream();
+					if (curNode != null) // If there is a trigger at this time
+						sampleList[i].stream(); //Play the sound on this track
 					
 				}
 				
