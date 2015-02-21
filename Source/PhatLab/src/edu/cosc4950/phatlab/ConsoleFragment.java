@@ -14,6 +14,8 @@ import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -44,10 +46,9 @@ public class ConsoleFragment extends Fragment{
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		MainActivity data = (MainActivity) getActivity();
+		final MainActivity data = (MainActivity) getActivity();
 		View myView = inflater.inflate(R.layout.fragment_console, container, false);
 		//cv = (ConsoleView) myView.findViewById(R.id.consoleView1);
-
 		root = Environment.getExternalStorageDirectory()+"/PhatLab/";
 		data.getDir(root);
 		
@@ -116,15 +117,32 @@ public class ConsoleFragment extends Fragment{
 				seekBar.setProgress(x);
 			}
 		});
-		final ScrollView scroll = (ScrollView)myView.findViewById(R.id.scroll);
-		scroll.setOnDragListener(new OnDragListener(){
+		final TextView maxText = (TextView) myView.findViewById(R.id.max_text);
+		maxText.setText(Integer.toString(data.getMaxBeat()));
+		final Button decMax = (Button) myView.findViewById(R.id.dec_max);
+		decMax.setOnClickListener(new OnClickListener(){
+
 			@Override
-			public boolean onDrag(View v, DragEvent event) {
+			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				return false;
+				int x = data.changeMax("sub");
+				maxText.setText(Integer.toString(x));
 			}
+			
 		});
+		final Button addMax = (Button) myView.findViewById(R.id.in_max);
+		addMax.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				int x = data.changeMax("add");
+				maxText.setText(Integer.toString(x));
+			}
+			
+		});
+		final TextView currPad = (TextView) myView.findViewById(R.id.pad_num);
+		currPad.setText(data.getCurrPad());
 		return myView;
 	}
-	
 }

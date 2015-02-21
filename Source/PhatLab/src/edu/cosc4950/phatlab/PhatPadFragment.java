@@ -18,6 +18,8 @@ public class PhatPadFragment extends Fragment {
 	Bitmap bmpEmpty, bmpLoaded, bmpPressed;
 	
 	boolean editEnable = ConsoleFragment.editOn;
+	String currPad = "";
+	String currSamp = "";
 	
 	public PhatPadFragment() {}
 	
@@ -31,7 +33,7 @@ public class PhatPadFragment extends Fragment {
 			Bundle savedInstanceState) {
 		
 		View myView = inflater.inflate(R.layout.fragment_phatpad, container, false);
-
+		final MainActivity data = (MainActivity) getActivity();
 		/* pad bitmaps */
 		bmpEmpty = BitmapFactory.decodeResource(getResources(), R.drawable.pad_empty);
 		bmpLoaded = BitmapFactory.decodeResource(getResources(), R.drawable.pad_loaded);
@@ -232,6 +234,7 @@ public class PhatPadFragment extends Fragment {
 					pad09.setImageBitmap(bmpPressed);
 					if(myPad[0][2] != 0)
 	            		padTracks.play(0, 2);
+						data.setCurrPad("Pad 9");
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[0][2] == 0)

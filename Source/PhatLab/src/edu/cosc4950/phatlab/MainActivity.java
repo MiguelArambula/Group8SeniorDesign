@@ -22,11 +22,14 @@ import android.os.Build;
 public class MainActivity extends FragmentActivity {
 	
 	private ViewGroup mPadLayout, mConsoleLayout;
+	private ExternalData data = new ExternalData();
 	private Point p;
 	private List<String> item = null;
 	private List<String> path = null;
 	private String root=Environment.getExternalStorageDirectory()+"/PhatLab/";
 	
+	String currPad, currSamp;
+	boolean c=false;
 	int maxBeat, currentBeat;
 
 	@Override
@@ -41,14 +44,14 @@ public class MainActivity extends FragmentActivity {
 		if (savedInstanceState == null) {
 
 			mPadLayout = (ViewGroup) findViewById(R.id.activity_main_phat_pad_container);
-			if(mPadLayout != null) {
+			/*if(mPadLayout != null) {
 				
 				PhatPadFragment phatPadFragment = new PhatPadFragment();
 				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 				fragmentTransaction.replace(mPadLayout.getId(), phatPadFragment, PhatPadFragment.class.getName());
 				
 				fragmentTransaction.commit();
-			}
+			}*/
 			
 			mConsoleLayout = (ViewGroup) findViewById(R.id.activity_main_console_container);
 			/*if(mConsoleLayout != null) {
@@ -115,7 +118,11 @@ public class MainActivity extends FragmentActivity {
 				if(temp.isDirectory()){
 					item.add(temp.getName()+"/");
 				} else {
-					item.add(temp.getName());
+					String wav = temp.getName();
+					wav = wav.substring(0, wav.length()-4);
+					if(data.isValidWav(wav)){
+					item.add(wav);
+					}
 				}
 			}
 		}
@@ -133,12 +140,28 @@ public class MainActivity extends FragmentActivity {
 		if(c=="add"){
 			maxBeat += 1;
 		} else if(c=="sub"){
-			if(maxBeat>0){
+			if(maxBeat>1){
 				maxBeat -= 1;
 			} else {
 				maxBeat += 0;
 			}
 		}
 		return maxBeat;
+	}
+	
+	public void setCurrPad(String s){
+		currPad = s;
+	}
+	
+	public void setCurrSamp(String s){
+		currSamp = s;
+	}
+	
+	public String getCurrPad(){
+		return currPad;
+	}
+	
+	public String getCurrSamp(){
+		return currSamp;
 	}
 }
