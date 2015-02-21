@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.os.Build;
 
 public class MainActivity extends FragmentActivity {
@@ -24,17 +25,20 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		
 		// TEST CODE
 		sequence = new SequenceTimer(130, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
 		sequence.setPlayTime(0, 0, -1, -1);
-		PCM sample = new ExternalData().loadPCM("amen_kick1");
+		PCM sample1 = new ExternalData().loadPCM("amen_kick1");
+		PCM sample2 = new ExternalData().loadPCM("amen_snare1");
 		
 		maxBeat = 1;
 		currentBeat = 0;
 		
-		sequence.setSample(sample, 0); // set to amen kick
+		sequence.setSample(sample1, 0); // set to amen kick
+		sequence.setSample(sample2, 1); // set to amen snare
 		
 		if (savedInstanceState == null) {
 
