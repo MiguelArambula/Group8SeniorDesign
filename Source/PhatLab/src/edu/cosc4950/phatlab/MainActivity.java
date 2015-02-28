@@ -5,37 +5,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.os.Build;
 
 public class MainActivity extends FragmentActivity {
 	
 	private ViewGroup mPadLayout, mConsoleLayout;
 	private ExternalData data = new ExternalData();
-	private Point p;
+	private Point p; //TODO kill?
 	private List<String> item = null;
 	private List<String> path = null;
 	private String root=Environment.getExternalStorageDirectory()+"/PhatLab/";
 	
+	private String currSamp;
+	private String currPad = "";
+	private TextView pNum = null;
+	private Spinner fSpin = null;
+	private PhatTracks pads = null;
+	private int[][] pGrid = null;
+	
 	SequenceTimer sequence; 
 	int maxBeat, currentBeat;
 	
-	PhatTracks padTracks;
-	
-	String currPad, currSamp;
-	boolean c=false;
+	PhatPadFragment phatPadFragment = new PhatPadFragment();
+	SequencerFragment sequencerFragment = new SequencerFragment();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +53,10 @@ public class MainActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		
-		padTracks = new PhatTracks();
+		FragmentManager fm = getFragmentManager();
 		
 		// TEST CODE
-		sequence = new SequenceTimer(150, 16); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
+		sequence = new SequenceTimer(110, 16); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
 		sequence.setPlayTime(0, 0, -1, -1);
 		PCM sample1 = new ExternalData().loadPCM("amen_kick1");
 		PCM sample2 = new ExternalData().loadPCM("amen_snare1");
@@ -61,53 +70,66 @@ public class MainActivity extends FragmentActivity {
 		if (savedInstanceState == null) {
 
 			mPadLayout = (ViewGroup) findViewById(R.id.activity_main_phat_pad_container);
-			/*
+			
 				if(mPadLayout != null) {
 				
-				/*
-				PhatPadFragment phatPadFragment = new PhatPadFragment();
+				 /*
 				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 				fragmentTransaction.replace(mPadLayout.getId(), phatPadFragment, PhatPadFragment.class.getName());
 				
-				fragmentTransaction.commit();* /
+				fragmentTransaction.commit();//*/
 				
 				
 				// THIS IS TEST CODE. USE THE STUFF ABOVE ^^^
-				SequencerFragment sequencerFragment = new SequencerFragment();
-				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-				fragmentTransaction.replace(mPadLayout.getId(), sequencerFragment, SequencerFragment.class.getName());
 				
-				fragmentTransaction.commit();
+				getSupportFragmentManager().beginTransaction()
+					.add(R.id.activity_main_phat_pad_container, phatPadFragment).commit();
+					
+				// Add SequencerFragment
+				getSupportFragmentManager().beginTransaction()
+					.add(R.id.activity_main_phat_pad_container, sequencerFragment).commit();
+				
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				
+				//ft.replace(mPadLayout.getId(), sequencerFragment, SequencerFragment.class.getName()); //SequencerFragment.class.getName()
+				
+				ft.hide(sequencerFragment);
+				ft.commit();
+				
+				//ft.replace(mPadLayout.getId(), phatPadFragment, null); //PhatPadFragment.class.getName()
+				//ft.hide(phatPadFragment);
+				//ft.show(sequencerFragment);
 			}// * /
 			
 			mConsoleLayout = (ViewGroup) findViewById(R.id.activity_main_console_container);
-			/*if(mConsoleLayout != null) {
+			
+			if(mConsoleLayout != null) {
 				
 				ConsoleFragment consoleFragment = new ConsoleFragment();
+				
 				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 				fragmentTransaction.replace(mConsoleLayout.getId(), consoleFragment, ConsoleFragment.class.getName());
-				
 				fragmentTransaction.commit();
-			}*/
+			}
 		}
 	}
 	
-	/* temporary function until we have our file manager */
-	public void loadTracks() {
+	// the switcheroo bizzness
+	public void swapFrag(String frag) {
+		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-/*
-		padTracks.setTrack(1, 0, "airhorn");			//pad02
-		padTracks.setTrack(2, 0, "blame_the_coders");		//pad03
-		padTracks.setTrack(3, 0, "amen_crash1");	//pad04
+		// if pad hide seq and show pad
+		if(frag == "pad") {
+			ft.hide(sequencerFragment);
+			ft.show(phatPadFragment);
+		}
+		else if(frag == "sequencer") {
+			ft.hide(phatPadFragment);
+			ft.show(sequencerFragment);
+		}
 		
-		padTracks.setTrack(0, 1, "hackd_kick1");	//pad05
-		padTracks.setTrack(2, 1, "amen_snare1");	//pad06
-		padTracks.setTrack(3, 1, "amen_hat1");		//pad07
-		
-		padTracks.setTrack(0, 2, "amen_kick1");		//pad09
-		padTracks.setTrack(1, 2, "amen_kick2");		//pad10
-		padTracks.setTrack(3, 2, "909_hat1");		//pad12
-		*/
+		ft.commit();
 	}
 
 	@Override
@@ -143,7 +165,7 @@ public class MainActivity extends FragmentActivity {
 	public void getDir(String dirPath){
 		//myPath.setText("Location"  + dirPath);
 		item = new ArrayList<String>();
-		item.add("");
+		item.add("No Sample");
 		path = new ArrayList<String>();
 		File f = new File(dirPath);
 		File[] files = f.listFiles();
@@ -177,6 +199,10 @@ public class MainActivity extends FragmentActivity {
 		return item;
 	}
 	
+	public int getCurBeat(){
+		return currentBeat;
+	}
+	
 	public int getMaxBeat(){
 		return maxBeat;
 	}
@@ -194,19 +220,96 @@ public class MainActivity extends FragmentActivity {
 		return maxBeat;
 	}
 	
-	public void setCurrPad(String s){
+	public int changeCur(String c){
+		if(c=="add"){
+			currentBeat += 1;
+		} else if(c=="sub"){
+			if(currentBeat>0){
+				currentBeat -= 1;
+			} else {
+				currentBeat += 0;
+			}
+		}
+		return currentBeat;
+	}
+	
+	public void setTextView(TextView v){
+		pNum = v;
+	}
+	
+	public void setText(String s){
+		pNum.setText(s);
 		currPad = s;
+	}
+	
+	public String getPad(){
+		return currPad;
+	}
+	
+	public void setSpin(Spinner s){
+		fSpin = s;
+	}
+	
+	public void setSel(String s){
+		if(item.contains(s)){
+			fSpin.setSelection(item.indexOf(s));
+		} else {
+			Toast.makeText(this, "Value not in list of Samples", Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	public void setCurrSamp(String s){
 		currSamp = s;
 	}
 	
-	public String getCurrPad(){
-		return currPad;
+	public void setTracks(PhatTracks pT){
+		pads = pT;
 	}
 	
-	public String getCurrSamp(){
-		return currSamp;
+	public void setGrid(int[][] g){
+		pGrid = g;
+	}
+	
+	public void loadTrack(String pad, String samp){
+		switch(pad){
+		case "Pad 1": loadTrack(0,0,samp); break;
+		case "Pad 2": loadTrack(1,0,samp); break;
+		case "Pad 3": loadTrack(2,0,samp); break;
+		case "Pad 4": loadTrack(3,0,samp); break;
+		case "Pad 5": loadTrack(0,1,samp); break;
+		case "Pad 6": loadTrack(1,1,samp); break;
+		case "Pad 7": loadTrack(2,1,samp); break;
+		case "Pad 8": loadTrack(3,1,samp); break;
+		case "Pad 9": loadTrack(0,2,samp); break;
+		case "Pad 10": loadTrack(1,2,samp); break;
+		case "Pad 11": loadTrack(2,2,samp); break;
+		case "Pad 12": loadTrack(3,2,samp); break;
+		default: Toast.makeText(getApplicationContext(), 
+				"Invalid Pad or Samp", Toast.LENGTH_LONG).show(); break;
+		}
+	}
+	
+	public void loadTrack(int r, int c, String samp){
+		pads.setTrack(r, c, samp);
+		for(int i=0; i<4; i++) {
+			for(int j=0; j<3; j++) {
+				if(pads.getTrack(i, j) != null){
+					pGrid[i][j] = 1;
+				} else {
+					pGrid[i][j] = 0;
+				}
+			}
+		}
+	}
+	
+	public void loadTrack(PhatTracks t, int r, int c, String samp
+			, int[][] m){
+		t.setTrack(r, c, samp);
+		for(int i=0; i<4; i++) {
+			for(int j=0; j<3; j++) {
+				if(t.getTrack(i, j) != null)
+					m[i][j] = 1;
+			}
+		}
 	}
 }

@@ -16,6 +16,9 @@ public class SequencerFragment extends Fragment{
 	
 	/* TODO
 	 * update display of sequencer everytime beat is changed
+	 * update play function of start button
+	 *  for loops
+	 *  for current beat
 	 * 	needs to be in main
 	 * unity between sample on pad and in sequencer
 	 * be able to swap between sequencer and phatpad
