@@ -13,13 +13,15 @@ import android.widget.ImageButton;
 
 public class PhatPadFragment extends Fragment {
 	
+	MainActivity data;
 	int[][] myPad;
-	PhatTracks padTracks;
+	
 	Bitmap bmpEmpty, bmpLoaded, bmpPressed;
 	
 	boolean editEnable = ConsoleFragment.editOn;
-	String currPad = "";
-	String currSamp = "";
+	
+	final PhatTracks tracks = new PhatTracks();
+	final String currPad = "";
 	
 	public PhatPadFragment() {}
 	
@@ -32,20 +34,22 @@ public class PhatPadFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
+		data = (MainActivity) getActivity(); // create instance
+		data.setTracks(tracks);
 		View myView = inflater.inflate(R.layout.fragment_phatpad, container, false);
-		final MainActivity data = (MainActivity) getActivity();
 		/* pad bitmaps */
 		bmpEmpty = BitmapFactory.decodeResource(getResources(), R.drawable.pad_empty);
 		bmpLoaded = BitmapFactory.decodeResource(getResources(), R.drawable.pad_loaded);
 		bmpPressed = BitmapFactory.decodeResource(getResources(), R.drawable.pad_pressed);
 		
 		/* myPad flags if a pad has a sample in it */
+		//final PhatTracks tracks = new PhatTracks();
+		
 		myPad = new int[4][3];
 		initPad();
-		
-		/* our instance of PhatTracks */ //TODO might move this up to MainActivity
-		padTracks = new PhatTracks();
-		loadTracks();
+		data.setGrid(myPad);
+		//loadTracks();
+		update(tracks);
 		
 		/* trigger pads */
 		final ImageButton pad01 = (ImageButton) myView.findViewById(R.id.pad01);
@@ -55,9 +59,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 1");
 					pad01.setImageBitmap(bmpPressed);
-					if(myPad[0][0] != 0)
-	            		padTracks.play(0, 0);
+					if(myPad[0][0] != 0){
+	            		tracks.play(0, 0);
+						data.setSel(tracks.getSampName(0, 0));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[0][0] == 0)
@@ -77,9 +86,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 2");
 					pad02.setImageBitmap(bmpPressed);
-					if(myPad[1][0] != 0)
-	            		padTracks.play(1, 0);
+					if(myPad[1][0] != 0){
+	            		tracks.play(1, 0);
+	            		data.setSel(tracks.getSampName(1, 0));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[1][0] == 0)
@@ -99,9 +113,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 3");
 					pad03.setImageBitmap(bmpPressed);
-					if(myPad[2][0] != 0)
-	            		padTracks.play(2, 0);
+					if(myPad[2][0] != 0){
+	            		tracks.play(2, 0);
+	            		data.setSel(tracks.getSampName(2, 0));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[2][0] == 0)
@@ -121,9 +140,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 4");
 					pad04.setImageBitmap(bmpPressed);
-					if(myPad[3][0] != 0)
-	            		padTracks.play(3, 0);
+					if(myPad[3][0] != 0){
+	            		tracks.play(3, 0);
+	            		data.setSel(tracks.getSampName(3, 0));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[3][0] == 0)
@@ -143,9 +167,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 5");
 					pad05.setImageBitmap(bmpPressed);
-					if(myPad[0][1] != 0)
-	            		padTracks.play(0, 1);
+					if(myPad[0][1] != 0){
+	            		tracks.play(0, 1);
+	            		data.setSel(tracks.getSampName(0, 1));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[0][1] == 0)
@@ -165,9 +194,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 6");
 					pad06.setImageBitmap(bmpPressed);
-					if(myPad[1][1] != 0)
-	            		padTracks.play(1, 1);
+					if(myPad[1][1] != 0){
+	            		tracks.play(1, 1);
+	            		data.setSel(tracks.getSampName(1, 1));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[1][1] == 0)
@@ -187,9 +221,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 7");
 					pad07.setImageBitmap(bmpPressed);
-					if(myPad[2][1] != 0)
-	            		padTracks.play(2, 1);
+					if(myPad[2][1] != 0){
+	            		tracks.play(2, 1);
+	            		data.setSel(tracks.getSampName(2, 1));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[2][1] == 0)
@@ -209,9 +248,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 8");
 					pad08.setImageBitmap(bmpPressed);
-					if(myPad[3][1] != 0)
-	            		padTracks.play(3, 1);
+					if(myPad[3][1] != 0){
+	            		tracks.play(3, 1);
+	            		data.setSel(tracks.getSampName(3, 1));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[3][1] == 0)
@@ -231,10 +275,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 9");
 					pad09.setImageBitmap(bmpPressed);
-					if(myPad[0][2] != 0)
-	            		padTracks.play(0, 2);
-						data.setCurrPad("Pad 9");
+					if(myPad[0][2] != 0){
+	            		tracks.play(0, 2);
+	            		data.setSel(tracks.getSampName(0, 2));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[0][2] == 0)
@@ -254,9 +302,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 10");
 					pad10.setImageBitmap(bmpPressed);
-					if(myPad[1][2] != 0)
-	            		padTracks.play(1, 2);
+					if(myPad[1][2] != 0){
+	            		tracks.play(1, 2);
+	            		data.setSel(tracks.getSampName(1, 2));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[1][2] == 0)
@@ -276,9 +329,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 11");
 					pad11.setImageBitmap(bmpPressed);
-					if(myPad[2][2] != 0)
-	            		padTracks.play(2, 2);
+					if(myPad[2][2] != 0){
+	            		tracks.play(2, 2);
+	            		data.setSel(tracks.getSampName(2, 2));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[2][2] == 0)
@@ -298,9 +356,14 @@ public class PhatPadFragment extends Fragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
+					data.setText("Pad 12");
 					pad12.setImageBitmap(bmpPressed);
-					if(myPad[3][2] != 0)
-	            		padTracks.play(3, 2);
+					if(myPad[3][2] != 0){
+	            		tracks.play(3, 2);
+	            		data.setSel(tracks.getSampName(3, 2));
+					} else {
+						data.setSel("No Sample");
+					}
 					return true;
 				case MotionEvent.ACTION_UP:
 					if(myPad[3][2] == 0)
@@ -327,40 +390,42 @@ public class PhatPadFragment extends Fragment {
 	/* temporary function until we have our file manager */
 	public void loadTracks() {
 		//TODO
-		/*padTracks.setTrack(0, 0, "airhorn");
-		padTracks.setTrack(1, 0, "chant_hey1");
-		padTracks.setTrack(2, 0, "bass_dred");
+		/*data.padTracks.setTrack(0, 0, "airhorn");
+		data.padTracks.setTrack(1, 0, "chant_hey1");
+		data.padTracks.setTrack(2, 0, "bass_dred");
 		
-		padTracks.setTrack(1, 1, "amen_hat2");
-		padTracks.setTrack(2, 1, "amen_snare1");
-		padTracks.setTrack(3, 1, "amen_hat3");
+		data.padTracks.setTrack(1, 1, "amen_hat2");
+		data.padTracks.setTrack(2, 1, "amen_snare1");
+		data.padTracks.setTrack(3, 1, "amen_hat3");
 		
-		padTracks.setTrack(0, 2, "amen_kick1");
-		padTracks.setTrack(1, 2, "amen_kick2");
-		padTracks.setTrack(2, 2, "amen_hat1");*/
+		data.padTracks.setTrack(0, 2, "amen_kick1");
+		data.padTracks.setTrack(1, 2, "amen_kick2");
+		data.padTracks.setTrack(2, 2, "amen_hat1");*/
 		
-		padTracks.setTrack(1, 0, "airhorn");			//pad02
-		padTracks.setTrack(2, 0, "blame_the_coders");		//pad03
-		padTracks.setTrack(3, 0, "amen_crash1");	//pad04
+		//data.loadTrack(tracks, 0, 0, "airhorn", myPad);
 		
-		padTracks.setTrack(0, 1, "hackd_kick1");	//pad05
-		padTracks.setTrack(2, 1, "amen_snare1");	//pad06
-		padTracks.setTrack(3, 1, "amen_hat1");		//pad07
+		/*tracks.setTrack(1, 0, "airhorn");			//pad02
+		tracks.setTrack(2, 0, "blame_the_coders");		//pad03
+		tracks.setTrack(3, 0, "amen_crash1");	//pad04
 		
-		padTracks.setTrack(0, 2, "amen_kick1");		//pad09
-		padTracks.setTrack(1, 2, "amen_kick2");		//pad10
-		padTracks.setTrack(3, 2, "909_hat1");		//pad12
+		tracks.setTrack(0, 1, "hackd_kick1");	//pad05
+		tracks.setTrack(2, 1, "amen_snare1");	//pad06
+		tracks.setTrack(3, 1, "amen_hat1");		//pad07
+		
+		tracks.setTrack(0, 2, "amen_kick1");		//pad09
+		tracks.setTrack(1, 2, "amen_kick2");		//pad10
+		tracks.setTrack(3, 2, "909_hat1");		//pad12
 		
 		/*
 		// Attaches a merged PCM to the first pad
-		padTracks.setTrack(0, 0, padTracks.getTrack(1, 0).mergePCM(padTracks.getTrack(2,0));
+		data.padTracks.setTrack(0, 0, data.padTracks.getTrack(1, 0).mergePCM(data.padTracks.getTrack(2,0));
 		*/
 		
 		/*
 		// Currently, audio is not snappy enough. Must find a fix
 		SequenceTimer demo = new SequenceTimer(140, 16); //Create sequence
-		demo.setSample(padTracks.getTrack(2,1), 0); // Sets track 1's sound
-		demo.setSample(padTracks.getTrack(3,2), 1); //Sets track 2's sound
+		demo.setSample(data.padTracks.getTrack(2,1), 0); // Sets track 1's sound
+		demo.setSample(data.padTracks.getTrack(3,2), 1); //Sets track 2's sound
 		
 		//Add times to play the sounds:
 		for (int i = 0; i < 3; ++i)
@@ -383,9 +448,18 @@ public class PhatPadFragment extends Fragment {
 		
 		
 		/* update myPad */
+		/*for(int i=0; i<4; i++) {
+			for(int j=0; j<3; j++) {
+				if(data.padTracks.getTrack(i, j) != null)
+					myPad[i][j] = 1;
+			}
+		}*/
+	}
+	
+	public void update(PhatTracks p){
 		for(int i=0; i<4; i++) {
 			for(int j=0; j<3; j++) {
-				if(padTracks.getTrack(i, j) != null)
+				if(p.getTrack(i, j) != null)
 					myPad[i][j] = 1;
 			}
 		}

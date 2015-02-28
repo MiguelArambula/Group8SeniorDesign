@@ -28,9 +28,27 @@ public final class R {
         public static final int pad_pressed=0x7f020003;
     }
     public static final class id {
-        public static final int action_settings=0x7f080021;
+        public static final int action_settings=0x7f080033;
         public static final int activity_main_console_container=0x7f080001;
         public static final int activity_main_phat_pad_container=0x7f080000;
+        public static final int btn_start=0x7f080031;
+        public static final int btn_stop=0x7f080032;
+        public static final int btn_track00_step00=0x7f080021;
+        public static final int btn_track00_step01=0x7f080022;
+        public static final int btn_track00_step02=0x7f080023;
+        public static final int btn_track00_step03=0x7f080024;
+        public static final int btn_track00_step04=0x7f080025;
+        public static final int btn_track00_step05=0x7f080026;
+        public static final int btn_track00_step06=0x7f080027;
+        public static final int btn_track00_step07=0x7f080028;
+        public static final int btn_track01_step00=0x7f080029;
+        public static final int btn_track01_step01=0x7f08002a;
+        public static final int btn_track01_step02=0x7f08002b;
+        public static final int btn_track01_step03=0x7f08002c;
+        public static final int btn_track01_step04=0x7f08002d;
+        public static final int btn_track01_step05=0x7f08002e;
+        public static final int btn_track01_step06=0x7f08002f;
+        public static final int btn_track01_step07=0x7f080030;
         public static final int cur_text=0x7f080013;
         public static final int current=0x7f080009;
         public static final int current_display=0x7f080008;
@@ -67,6 +85,7 @@ public final class R {
         public static final int activity_main=0x7f030000;
         public static final int fragment_console=0x7f030001;
         public static final int fragment_phatpad=0x7f030002;
+        public static final int fragment_sequencer=0x7f030003;
     }
     public static final class menu {
         public static final int main=0x7f070000;
@@ -75,7 +94,6 @@ public final class R {
         public static final int action_settings=0x7f050002;
         public static final int app_name=0x7f050000;
         public static final int hello_world=0x7f050001;
-        public static final int sample_prompt=0x7f050003;
     }
     public static final class style {
         /** 

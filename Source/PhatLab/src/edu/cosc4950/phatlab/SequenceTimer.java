@@ -4,10 +4,10 @@ import android.util.Log;
 
 
 /**
- * Sequencer timer is responsible for sorting and playing sequences of samples.
- * This will be used for the overal sequencer or any other sub sequences we might need
  * @author Reuben Shea
  *
+ *	The SequenceTimer class is responsible for creating, sorting, and playing
+ *	A series of PCM samples in a sequence.
  *
  */
 
@@ -57,19 +57,43 @@ public class SequenceTimer implements Runnable
 		sampleList[track] = sample;
 	}
 	
+	
+	public sNode findTrigger(int track, long beat, int step)
+	{
+		return findTrigger(null, track, beat, step);
+	}
+	
+	/**
+	 * Finds a node in a track if it exists. Returns null if it does not.
+	 * @param startNode	The node to start searching at. null starts at the beginning
+	 * @param track
+	 * @param beat
+	 * @param step
+	 * @return
+	 */
+	public sNode findTrigger(sNode startNode, int track, long beat, int step)
+	{
+		track = clamp(track, 0,11);
+		long globalStep = (beat * spb) + step;
+		
+		if (triggerList[track] == null)
+			return null;
+		/*if (sampleList[track] == null)
+			return null;*/
+		
+		if (startNode == null)
+			return triggerList[track].find(globalStep);
+		else
+			return startNode.find(globalStep);
+
+	}
+	
 	public void setPlayTime(long startBeat, int startStep, long endBeat, int endStep )
 	{
 		
 		//Clamping:
 		startPos = (startBeat * spb) + startStep;
 		endPos = (endBeat * spb) + endStep;
-		if (endPos > totalSteps || endPos < 0)
-			endPos = totalSteps;
-		
-		if (startPos > endPos)
-			startPos = endPos;
-		if (startPos < 0)
-			startPos = 0;
 		
 		curPos = startPos;
 		isPlaying = false;
@@ -117,12 +141,12 @@ public class SequenceTimer implements Runnable
 		track = clamp(track, 0, 11);
 		if (triggerList[track] == null)
 			return false;
-		if (sampleList[track] == null)
-			return false;
+		/*if (sampleList[track] == null)
+			return false;*/
 		
 		sNode node = triggerList[track].find(globalStep);
 		if (node != null)
-			node.clear();
+			triggerList[track] = node.clear();
 		
 		return (node == null ? false : true);
 	}
@@ -160,6 +184,16 @@ public class SequenceTimer implements Runnable
 			return;
 		
 		isPlaying = true;
+		
+		// Wrap / clamp timer if needed before playing:
+		if (endPos > totalSteps || endPos < 0)
+			endPos = totalSteps;
+		
+		if (startPos > endPos)
+			startPos = endPos;
+		if (startPos < 0)
+			startPos = 0;
+		
 		run();
 		
 	}
@@ -231,6 +265,13 @@ public class SequenceTimer implements Runnable
 }
 
 
+/**
+ * 
+ * @author reuben
+ *	Class acts as a sample trigger object. It is a linked list of timers that
+ *	specify when a sample should or shouldn't play.
+ *	The "priority" is the beat / step to play at.
+ */
 class sNode
 {
 	sNode next = null,
@@ -322,7 +363,7 @@ class sNode
 		}
 	}
 	
-	public void clear()
+	public sNode clear()
 	{
 		sNode node = this;
 		
@@ -330,5 +371,10 @@ class sNode
 			node.next.setPrev(node.prev);
 		if (node.prev != null)
 			node.prev.setNext(node.next);
+		
+		if (node.prev != null)
+			return node.prev;
+		else
+			return node.next;
 	}
 }
