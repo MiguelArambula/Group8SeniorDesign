@@ -293,7 +293,7 @@ public class SequenceTimer
 				if (sampleList[i] == null)
 					continue;
 				
-				if (sampleList[i].getStream().length * (sampleList[i].getStereo()?2:1) > longestSample)
+				if (sampleList[i].getStream().length * (sampleList[i].getStereo()?1:2) > longestSample)
 					longestSample = sampleList[i].getStream().length * (sampleList[i].getStereo()?2:1);
 			}
 			totalBytes += longestSample; // Add the length of the longest sample to the end
