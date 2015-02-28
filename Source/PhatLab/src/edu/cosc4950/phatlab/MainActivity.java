@@ -32,6 +32,8 @@ public class MainActivity extends FragmentActivity {
 	SequenceTimer sequence; 
 	int maxBeat, currentBeat;
 	
+	PhatTracks padTracks;
+	
 	String currPad, currSamp;
 	boolean c=false;
 	
@@ -42,8 +44,10 @@ public class MainActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		
+		padTracks = new PhatTracks();
+		
 		// TEST CODE
-		sequence = new SequenceTimer(130, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
+		sequence = new SequenceTimer(150, 16); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
 		sequence.setPlayTime(0, 0, -1, -1);
 		PCM sample1 = new ExternalData().loadPCM("amen_kick1");
 		PCM sample2 = new ExternalData().loadPCM("amen_snare1");
@@ -57,7 +61,8 @@ public class MainActivity extends FragmentActivity {
 		if (savedInstanceState == null) {
 
 			mPadLayout = (ViewGroup) findViewById(R.id.activity_main_phat_pad_container);
-			/*if(mPadLayout != null) {
+			/*
+				if(mPadLayout != null) {
 				
 				/*
 				PhatPadFragment phatPadFragment = new PhatPadFragment();
@@ -73,7 +78,7 @@ public class MainActivity extends FragmentActivity {
 				fragmentTransaction.replace(mPadLayout.getId(), sequencerFragment, SequencerFragment.class.getName());
 				
 				fragmentTransaction.commit();
-			}*/
+			}// * /
 			
 			mConsoleLayout = (ViewGroup) findViewById(R.id.activity_main_console_container);
 			/*if(mConsoleLayout != null) {
@@ -85,6 +90,24 @@ public class MainActivity extends FragmentActivity {
 				fragmentTransaction.commit();
 			}*/
 		}
+	}
+	
+	/* temporary function until we have our file manager */
+	public void loadTracks() {
+
+/*
+		padTracks.setTrack(1, 0, "airhorn");			//pad02
+		padTracks.setTrack(2, 0, "blame_the_coders");		//pad03
+		padTracks.setTrack(3, 0, "amen_crash1");	//pad04
+		
+		padTracks.setTrack(0, 1, "hackd_kick1");	//pad05
+		padTracks.setTrack(2, 1, "amen_snare1");	//pad06
+		padTracks.setTrack(3, 1, "amen_hat1");		//pad07
+		
+		padTracks.setTrack(0, 2, "amen_kick1");		//pad09
+		padTracks.setTrack(1, 2, "amen_kick2");		//pad10
+		padTracks.setTrack(3, 2, "909_hat1");		//pad12
+		*/
 	}
 
 	@Override

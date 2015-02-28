@@ -16,6 +16,7 @@ public class SequencerFragment extends Fragment{
 	
 	/* TODO
 	 * update display of sequencer everytime beat is changed
+	 * 	needs to be in main
 	 * unity between sample on pad and in sequencer
 	 * be able to swap between sequencer and phatpad
 	 */
@@ -36,6 +37,8 @@ public class SequencerFragment extends Fragment{
 		
 		View myView = inflater.inflate(R.layout.fragment_sequencer, container, false);
 		data = (MainActivity) getActivity(); // create instance
+		
+		
 		
 		bmpPressed = BitmapFactory.decodeResource(getResources(), R.drawable.pad_pressed);
 		bmpEmpty = BitmapFactory.decodeResource(getResources(), R.drawable.pad_empty);
@@ -477,7 +480,7 @@ public class SequencerFragment extends Fragment{
 			}
 		});
 		
-		/* TEST BUTTONS, REMOVE LATER (GOES IN CONSOLE) */
+		// TEST BUTTONS, REMOVE LATER (GOES IN CONSOLE)
 		// start
 		final ImageButton btnStart = (ImageButton) myView.findViewById(R.id.btn_start);
 		btnStart.setOnTouchListener(new OnTouchListener() {
@@ -519,6 +522,7 @@ public class SequencerFragment extends Fragment{
 				return false;
 			}
 		});
+		
 		
 		return myView;
 	}

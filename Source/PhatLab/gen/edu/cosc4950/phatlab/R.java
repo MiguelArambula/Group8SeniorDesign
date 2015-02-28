@@ -28,27 +28,29 @@ public final class R {
         public static final int pad_pressed=0x7f020003;
     }
     public static final class id {
-        public static final int action_settings=0x7f080033;
+        public static final int action_settings=0x7f080036;
         public static final int activity_main_console_container=0x7f080001;
         public static final int activity_main_phat_pad_container=0x7f080000;
-        public static final int btn_start=0x7f080031;
-        public static final int btn_stop=0x7f080032;
-        public static final int btn_track00_step00=0x7f080021;
-        public static final int btn_track00_step01=0x7f080022;
-        public static final int btn_track00_step02=0x7f080023;
-        public static final int btn_track00_step03=0x7f080024;
-        public static final int btn_track00_step04=0x7f080025;
-        public static final int btn_track00_step05=0x7f080026;
-        public static final int btn_track00_step06=0x7f080027;
-        public static final int btn_track00_step07=0x7f080028;
-        public static final int btn_track01_step00=0x7f080029;
-        public static final int btn_track01_step01=0x7f08002a;
-        public static final int btn_track01_step02=0x7f08002b;
-        public static final int btn_track01_step03=0x7f08002c;
-        public static final int btn_track01_step04=0x7f08002d;
-        public static final int btn_track01_step05=0x7f08002e;
-        public static final int btn_track01_step06=0x7f08002f;
-        public static final int btn_track01_step07=0x7f080030;
+        public static final int btn_dec_beat=0x7f080023;
+        public static final int btn_inc_beat=0x7f080025;
+        public static final int btn_start=0x7f080021;
+        public static final int btn_stop=0x7f080022;
+        public static final int btn_track00_step00=0x7f080026;
+        public static final int btn_track00_step01=0x7f080027;
+        public static final int btn_track00_step02=0x7f080028;
+        public static final int btn_track00_step03=0x7f080029;
+        public static final int btn_track00_step04=0x7f08002a;
+        public static final int btn_track00_step05=0x7f08002b;
+        public static final int btn_track00_step06=0x7f08002c;
+        public static final int btn_track00_step07=0x7f08002d;
+        public static final int btn_track01_step00=0x7f08002e;
+        public static final int btn_track01_step01=0x7f08002f;
+        public static final int btn_track01_step02=0x7f080030;
+        public static final int btn_track01_step03=0x7f080031;
+        public static final int btn_track01_step04=0x7f080032;
+        public static final int btn_track01_step05=0x7f080033;
+        public static final int btn_track01_step06=0x7f080034;
+        public static final int btn_track01_step07=0x7f080035;
         public static final int cur_text=0x7f080013;
         public static final int current=0x7f080009;
         public static final int current_display=0x7f080008;
@@ -78,6 +80,7 @@ public final class R {
         public static final int start=0x7f08000b;
         public static final int stop=0x7f08000c;
         public static final int switch_view=0x7f080002;
+        public static final int tv_current_beat=0x7f080024;
         public static final int volume_text=0x7f08000d;
         public static final int volumebar=0x7f08000e;
     }
