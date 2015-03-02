@@ -15,7 +15,6 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class ConsoleFragment extends Fragment{
 	
-	ConsoleView cv;
 	static boolean editOn;
 	private String root;
 	
@@ -155,15 +154,26 @@ public class ConsoleFragment extends Fragment{
 			}
 			
 		});
-		decMax.setEnabled(false);
-		addMax.setEnabled(false);
-		decCurr.setEnabled(false);
-		addCurr.setEnabled(false);
 		
 		final RadioButton padView = (RadioButton) myView.findViewById(R.id.pad_view);
 		padView.setChecked(true);
-		//final RadioButton seqView = (RadioButton) myView.findViewById(R.id.seq_view);
-		
+		padView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// TODO Auto-generated method stub
+				data.swapFrag("sequencer");
+			}
+		});
+		final RadioButton seqView = (RadioButton) myView.findViewById(R.id.seq_view);
+		seqView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				// TODO Auto-generated method stub
+				data.swapFrag("pad");
+			}
+		});
 		//padNum- TextView for update the status of the last pad pressed. 
 		final TextView padNum = (TextView) myView.findViewById(R.id.pad_num);
 		data.setTextView(padNum);

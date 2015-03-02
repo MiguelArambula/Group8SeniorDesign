@@ -84,7 +84,7 @@
 		   	 		android:layout_width="match_parent"
 		   	 		android:layout_height="wrap_content"
 		   	 		android:paddingRight="5dp"
-		   	 		android:text="Current Pad"/>
+		   	 		android:text="Current Sample"/>
 			
 				<TextView 
 			    	android:id="@+id/pad_num"
@@ -156,7 +156,7 @@
                 	android:id="@+id/max_text"
                 	android:layout_width="wrap_content"
                 	android:layout_height="wrap_content"
-                	/>
+                	android:text="0"/>
             
             	<Button 
                 	android:id="@+id/in_max"
@@ -188,7 +188,7 @@
                 	android:id="@+id/cur_text"
                 	android:layout_width="wrap_content"
                 	android:layout_height="wrap_content"
-                	/>
+                	android:text="0"/>
             
             	<Button 
                 	android:id="@+id/in_cur"

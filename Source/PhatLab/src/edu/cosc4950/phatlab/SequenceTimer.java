@@ -11,13 +11,14 @@ import android.util.Log;
  *
  */
 
-public class SequenceTimer implements Runnable
+public class SequenceTimer
 {
 	int bpm, spb; // Beats per minute, steps per beat
 	PCM sampleList[] = new PCM[12]; // Samples played at triggers
 	sNode triggerList[] = new sNode[12]; // List of sNodes to trigger at time intervals
 	long startPos=0, endPos=0, curPos = 0, totalSteps=0;
-	boolean isPlaying = false;
+	boolean isPlaying = false,
+			playAll = false; // If true, it plays the whole sequence.
 	
 	
 	public SequenceTimer(int bpm, int stepsPerBeat)
@@ -62,7 +63,7 @@ public class SequenceTimer implements Runnable
 	{
 		return findTrigger(null, track, beat, step);
 	}
-	
+
 	/**
 	 * Finds a node in a track if it exists. Returns null if it does not.
 	 * @param startNode	The node to start searching at. null starts at the beginning
@@ -97,6 +98,11 @@ public class SequenceTimer implements Runnable
 		
 		curPos = startPos;
 		isPlaying = false;
+		
+		if (endBeat < 0)
+			playAll = true;
+		else
+			playAll = false;
 	}
 	
 	/**
@@ -118,7 +124,9 @@ public class SequenceTimer implements Runnable
 			triggerList[track].add(trigger);
 		
 		if (totalSteps < globalStep)
-			totalSteps =globalStep;
+			totalSteps = globalStep;
+		Log.i("Phat Lab", "Set to: "+totalSteps);
+		
 	}
 	
 	/**
@@ -147,6 +155,11 @@ public class SequenceTimer implements Runnable
 		sNode node = triggerList[track].find(globalStep);
 		if (node != null)
 			triggerList[track] = node.clear();
+		
+		if (triggerList[track] == null)
+			totalSteps = 0;
+		else if (triggerList[track].next == null)
+			totalSteps = triggerList[track].priority;
 		
 		return (node == null ? false : true);
 	}
@@ -184,9 +197,9 @@ public class SequenceTimer implements Runnable
 			return;
 		
 		isPlaying = true;
-		
+		//Log.i("Phat Lab", "Total Steps: "+totalSteps);
 		// Wrap / clamp timer if needed before playing:
-		if (endPos > totalSteps || endPos < 0)
+		if (endPos > totalSteps || playAll)
 			endPos = totalSteps;
 		
 		if (startPos > endPos)
@@ -194,7 +207,55 @@ public class SequenceTimer implements Runnable
 		if (startPos < 0)
 			startPos = 0;
 		
-		run();
+		
+		new Thread( new Runnable()
+			{
+				public void run()
+				{
+					try 
+					{
+						
+						if (!isPlaying)
+							return;
+						
+						//Play sound until we say stop:
+						while (isPlaying)
+						{
+							
+							//Scan through each track:
+							for (int i = 0; i < 12; ++i)
+							{
+								//If not set, we just skip:
+								if (sampleList[i] == null || triggerList[i] == null)
+									continue;
+								
+								sNode curNode = triggerList[i].find(curPos);
+								if (curNode != null) // If there is a trigger at this time
+									sampleList[i].stream(); //Play the sound on this track
+								
+							}
+							
+							if (curPos >= endPos)
+							{
+								stop();
+								isPlaying = false;
+								break;
+							}
+							//Log.i("Phat Lab", "Step: "+curPos + ": "+endPos);
+							++ curPos;
+							Thread.sleep(60000 / ((bpm * spb) / 4),0);
+						}
+						isPlaying = false;
+					}
+					catch (Exception e)
+					{
+						Log.e("Phat Lab","Error while playing sequence: ", e);
+						isPlaying = false;
+						stop();
+					}
+				}
+			}
+		).start();
 		
 	}
 	
@@ -216,50 +277,75 @@ public class SequenceTimer implements Runnable
 	 */
 	public PCM compileToPCM()
 	{
-		// -- STUB -- //
-		//MUST CREATE A RESAMPLE-FUNCTION FIRST
-		return null;
-	}
-	
-	public void run()
-	{
-		try 
+		try
 		{
-			
-			if (!isPlaying)
-				return;
-			
-			//Play sound until we say stop:
-			while (isPlaying)
+			/*
+			 *  The *16 at the end is:
+			 *  2 (stereo) * 2 (bytes per sample) * 4 (quarter notes per beat)
+			 */
+			int totalBytes = (int) Math.ceil((1.0 / (double)(bpm * spb) * (double)totalSteps) * 60) * 44100 * 16;
+			//Get number of seconds, multiply by sample rate, then by 2 for stereo
+			int longestSample = 0;
+			for (int i = 0; i < 12; ++i)
 			{
+				if (triggerList[i] == null)
+					continue;
+				if (sampleList[i] == null)
+					continue;
 				
-				//Scan through each track:
-				for (int i = 0; i < 12; ++i)
-				{
-					//If not set, we just skip:
-					if (sampleList[i] == null || triggerList[i] == null)
-						continue;
-					
-					sNode curNode = triggerList[i].find(curPos);
-					if (curNode != null)
-						sampleList[i].stream();
-					
-				}
-				
-				if (curPos == endPos)
-				{
-					stop();
-					break;
-				}
-				
-				++ curPos;
-				Thread.sleep(60000 / ((bpm * spb) / 4),0);
+				if (sampleList[i].getStream().length * (sampleList[i].getStereo()?1:2) > longestSample)
+					longestSample = sampleList[i].getStream().length * (sampleList[i].getStereo()?2:1);
 			}
+			totalBytes += longestSample; // Add the length of the longest sample to the end
+			//Create and clear the new byte data
+			byte[] sampleBytes = new byte[totalBytes];
+			for (int i = 0; i < sampleBytes.length; ++i)
+				sampleBytes[i] = 0;
+			
+			for (int i = 0; i < 12; ++i)
+			{
+				//If no sample on this track, just continue:
+				if (triggerList[i] == null)
+					continue;
+				if (sampleList[i] == null)
+					continue;
+				
+				sNode 	first = triggerList[i].findFirst();
+				byte[] samples = sampleList[i].getStream();
+				
+				//Loop through all samples
+				for (sNode j = first; j != null; j = j.next)
+				{
+					//Byte position to start at:
+					int bp = (int)((1.f / (double)(bpm * spb) * (double)j.priority ) * 60.f * 44100.f * 16.f);
+					
+					//If stereo, we just copy it directly:
+					if (sampleList[i].getStereo())
+					{
+						//Log.i("Phat Lab", "Stereo");
+						for (int k = 0; k < samples.length; ++k)
+							sampleBytes[bp + k] += samples[k];
+					}
+					//If not stereo, we copy the mono into both channels:
+					else
+					{
+						//Log.i("Phat Lab", "Mono");
+						for (int k = 0; k < samples.length; ++k)
+						{
+							sampleBytes[bp + (2*k)] = samples[k];
+							sampleBytes[bp + (2*k + 1)] = samples[k];
+						}
+					}
+				}
+			}
+			
+			PCM pcm = new PCM(sampleBytes, 44100 ,true);
+			return pcm;
 		}
 		catch (Exception e)
 		{
-			Log.e("Phat Lab","Error while playing sequence: ", e);
-			stop();
+			Log.e("Phat Lab", "Error generating audio sequence!",e);
+			return null;
 		}
 	}
 }
@@ -303,17 +389,18 @@ class sNode
 			if (next == null)
 				return setNext(item).setPrev(this);
 			
+			//If it belongs as the next item:
 			if (next.priority > item.priority)
 			{
 				next.setPrev(item);
 				item.setNext(next);
 				item.setPrev(this);
 				this.setNext(item);
-				return this;
+				return item;
 			}
 			
-			next.add(item);
-			return this;
+			//If not, call recursively:
+			return next.add(item);
 		}
 		//New item comes before
 
@@ -363,18 +450,32 @@ class sNode
 		}
 	}
 	
+	public sNode findFirst()
+	{
+		if (prev == null)
+			return this;
+		else
+			return prev.findFirst();
+	}
+	
+	public sNode findLast()
+	{
+		if (next == null)
+			return this;
+		else
+			return next.findLast();
+	}
+	
 	public sNode clear()
 	{
-		sNode node = this;
+
+		//Updates the existing prior/next nodes to link to eachother.
+		if (next != null)
+			next.setPrev(prev);
+		if (prev != null)
+			prev.setNext(next);
 		
-		if (node.next != null)
-			node.next.setPrev(node.prev);
-		if (node.prev != null)
-			node.prev.setNext(node.next);
-		
-		if (node.prev != null)
-			return node.prev;
-		else
-			return node.next;
+		//Returns either the previous or next / null
+		return (prev != null ? prev : next);
 	}
 }

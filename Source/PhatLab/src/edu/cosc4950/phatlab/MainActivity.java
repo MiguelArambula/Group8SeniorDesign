@@ -6,12 +6,13 @@ import java.util.List;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,14 +28,10 @@ public class MainActivity extends FragmentActivity {
 	
 	private ViewGroup mPadLayout, mConsoleLayout;
 	private ExternalData data = new ExternalData();
-	private Point p;
+	private Point p; //TODO kill?
 	private List<String> item = null;
 	private List<String> path = null;
 	private String root=Environment.getExternalStorageDirectory()+"/PhatLab/";
-	
-	SequenceTimer sequence; 
-	int maxBeat = 1; 
-	int currentBeat = 0;
 	
 	private String currSamp;
 	private String currPad = "";
@@ -43,8 +40,11 @@ public class MainActivity extends FragmentActivity {
 	private PhatTracks pads = null;
 	private int[][] pGrid = null;
 	
-	FragmentManager fragMan;
-	FragmentTransaction fragTrans;
+	SequenceTimer sequence; 
+	int maxBeat, currentBeat;
+	
+	PhatPadFragment phatPadFragment = new PhatPadFragment();
+	SequencerFragment sequencerFragment = new SequencerFragment();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,48 +53,83 @@ public class MainActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		
+		FragmentManager fm = getFragmentManager();
 		
 		// TEST CODE
-		/*sequence = new SequenceTimer(130, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
+		sequence = new SequenceTimer(110, 16); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
 		sequence.setPlayTime(0, 0, -1, -1);
 		PCM sample1 = new ExternalData().loadPCM("amen_kick1");
-		PCM sample2 = new ExternalData().loadPCM("amen_snare1");*/
-
+		PCM sample2 = new ExternalData().loadPCM("amen_snare1");
 		
-		/*sequence.setSample(sample1, 0); // set to amen kick
-		sequence.setSample(sample2, 1); // set to amen snare*/
+		maxBeat = 1;
+		currentBeat = 0;
+		
+		sequence.setSample(sample1, 0); // set to amen kick
+		sequence.setSample(sample2, 1); // set to amen snare
 		
 		if (savedInstanceState == null) {
 
 			mPadLayout = (ViewGroup) findViewById(R.id.activity_main_phat_pad_container);
-			/*if(mPadLayout != null) {
+			
+				if(mPadLayout != null) {
 				
-				/*
-				PhatPadFragment phatPadFragment = new PhatPadFragment();
+				 /*
 				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 				fragmentTransaction.replace(mPadLayout.getId(), phatPadFragment, PhatPadFragment.class.getName());
 				
-				fragmentTransaction.commit();* /
+				fragmentTransaction.commit();//*/
 				
 				
 				// THIS IS TEST CODE. USE THE STUFF ABOVE ^^^
-				SequencerFragment sequencerFragment = new SequencerFragment();
-				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-				fragmentTransaction.replace(mPadLayout.getId(), sequencerFragment, SequencerFragment.class.getName());
 				
-				fragmentTransaction.commit();
-			}*/
+				getSupportFragmentManager().beginTransaction()
+					.add(R.id.activity_main_phat_pad_container, phatPadFragment).commit();
+					
+				// Add SequencerFragment
+				getSupportFragmentManager().beginTransaction()
+					.add(R.id.activity_main_phat_pad_container, sequencerFragment).commit();
+				
+				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+				
+				//ft.replace(mPadLayout.getId(), sequencerFragment, SequencerFragment.class.getName()); //SequencerFragment.class.getName()
+				
+				ft.hide(sequencerFragment);
+				ft.commit();
+				
+				//ft.replace(mPadLayout.getId(), phatPadFragment, null); //PhatPadFragment.class.getName()
+				//ft.hide(phatPadFragment);
+				//ft.show(sequencerFragment);
+			}// * /
 			
 			mConsoleLayout = (ViewGroup) findViewById(R.id.activity_main_console_container);
-			/*if(mConsoleLayout != null) {
+			
+			if(mConsoleLayout != null) {
 				
 				ConsoleFragment consoleFragment = new ConsoleFragment();
+				
 				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 				fragmentTransaction.replace(mConsoleLayout.getId(), consoleFragment, ConsoleFragment.class.getName());
-				
 				fragmentTransaction.commit();
-			}*/
+			}
 		}
+	}
+	
+	// the switcheroo bizzness
+	public void swapFrag(String frag) {
+		
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+		// if pad hide seq and show pad
+		if(frag == "pad") {
+			ft.hide(sequencerFragment);
+			ft.show(phatPadFragment);
+		}
+		else if(frag == "sequencer") {
+			ft.hide(phatPadFragment);
+			ft.show(sequencerFragment);
+		}
+		
+		ft.commit();
 	}
 
 	@Override
@@ -276,9 +311,5 @@ public class MainActivity extends FragmentActivity {
 					m[i][j] = 1;
 			}
 		}
-	}
-	
-	public void changeFrag(String view){
-		
 	}
 }

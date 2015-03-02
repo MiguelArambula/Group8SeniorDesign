@@ -30,13 +30,8 @@ public class PhatTracks {
 		
 		//ExternalData ed = new ExternalData();
 		//byte[] tmp = ed.loadPCM16bit(sample);
-		if(sample.equals("No Sample")){
-			myTracks[padRow][padCol] = null;
-			sampleNames[padRow][padCol]="";
-		} else {
-			myTracks[padRow][padCol] = new ExternalData().loadPCM(sample);//new PCM(tmp, 44100, true, false);
-			sampleNames[padRow][padCol]=sample;
-		}
+		myTracks[padRow][padCol] = new ExternalData().loadPCM(sample);//new PCM(tmp, 44100, true, false);
+		sampleNames[padRow][padCol]=sample;
 	}
 	
 	public void setTrack(int padRow, int padCol, PCM pcm)
