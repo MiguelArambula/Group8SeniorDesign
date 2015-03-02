@@ -42,6 +42,8 @@ public class MainActivity extends FragmentActivity {
 	
 	SequenceTimer sequence; 
 	int maxBeat, currentBeat;
+	int loopLength;
+	boolean loopOn;
 	
 	PhatPadFragment phatPadFragment = new PhatPadFragment();
 	SequencerFragment sequencerFragment = new SequencerFragment();
@@ -56,13 +58,15 @@ public class MainActivity extends FragmentActivity {
 		FragmentManager fm = getFragmentManager();
 		
 		// TEST CODE
-		sequence = new SequenceTimer(110, 16); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
+		sequence = new SequenceTimer(160, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
 		sequence.setPlayTime(0, 0, -1, -1);
 		PCM sample1 = new ExternalData().loadPCM("amen_kick1");
 		PCM sample2 = new ExternalData().loadPCM("amen_snare1");
 		
 		maxBeat = 1;
 		currentBeat = 0;
+		loopLength = 0;
+		loopOn = false;
 		
 		sequence.setSample(sample1, 0); // set to amen kick
 		sequence.setSample(sample2, 1); // set to amen snare
