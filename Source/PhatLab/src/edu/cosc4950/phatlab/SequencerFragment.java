@@ -82,8 +82,6 @@ public class SequencerFragment extends Fragment{
 		final TextView tvLoop = (TextView) myView.findViewById(R.id.tv_loop);
 		if(data.currentBeat+data.loopLength <= data.maxBeat)
 			tvLoop.setText((data.currentBeat + 1) + ":" + (data.currentBeat + 1 + data.loopLength));
-		else // this shouldn't happen but here's a case to cover it in case it does
-			tvLoop.setText((data.currentBeat + 1) + ":" + (data.maxBeat + 1));
 		
 		final TextView tvBeat = (TextView) myView.findViewById(R.id.tv_current_beat);
 		
@@ -94,7 +92,7 @@ public class SequencerFragment extends Fragment{
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
-					if(data.loopLength != 1) {
+					if(data.loopLength != 0) {
 						data.loopLength--;
 						tvLoop.setText((data.currentBeat + 1) + ":" + (data.currentBeat + 1 + data.loopLength));
 					}
@@ -136,6 +134,7 @@ public class SequencerFragment extends Fragment{
 					if(data.currentBeat > 0) {
 						data.currentBeat--;
 						tvBeat.setText(data.currentBeat + 1 +"");
+						tvLoop.setText((data.currentBeat + 1) + ":" + (data.currentBeat + 1 + data.loopLength));
 						updateTracks();
 					}
 					return true;
@@ -156,6 +155,7 @@ public class SequencerFragment extends Fragment{
 					if(data.currentBeat < data.maxBeat) {
 						data.currentBeat++;
 						tvBeat.setText(data.currentBeat + 1 +"");
+						tvLoop.setText((data.currentBeat + 1) + ":" + (data.currentBeat + 1 + data.loopLength));
 						updateTracks();
 					}
 					return true;
@@ -547,7 +547,7 @@ public class SequencerFragment extends Fragment{
 					btnStart.setImageBitmap(bmpPressed);
 					if(data.loopOn) {
 						data.sequence.setPlayTime(data.currentBeat, 0, data.currentBeat + data.loopLength, 7);
-						data.sequence.start();
+						data.sequence.loop();
 					}
 					else {
 						data.sequence.setPlayTime(0, 0, -1, -1);
@@ -571,11 +571,9 @@ public class SequencerFragment extends Fragment{
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					data.sequence.stop();
-					//Log.i("Phat Lab", "stop");
 					btnStop.setImageBitmap(bmpPressed);
 					return true;
 				case MotionEvent.ACTION_UP:
-					// nothing functionally
 					btnStop.setImageBitmap(bmpEmpty);
 					return true;
 				}
