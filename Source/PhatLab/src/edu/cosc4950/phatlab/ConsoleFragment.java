@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -42,7 +44,7 @@ public class ConsoleFragment extends Fragment{
 				String x = (String) spin.getSelectedItem();
 				//Toast.makeText(getActivity(), "made it here", Toast.LENGTH_SHORT).show();
 				if(spin.isEnabled()){
-					data.loadTrack(data.getPad(), x);
+					data.loadTrack(data.getCurrPad(), x);
 				}
 				//Toast.makeText(getActivity(), String.valueOf(spin.getSelectedItem()), Toast.LENGTH_SHORT).show();
 			}
@@ -177,6 +179,48 @@ public class ConsoleFragment extends Fragment{
 		//padNum- TextView for update the status of the last pad pressed. 
 		final TextView padNum = (TextView) myView.findViewById(R.id.pad_num);
 		data.setTextView(padNum);
+		
+		final Button btnStart = (Button) myView.findViewById(R.id.start);
+		btnStart.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					//btnStart.setImageBitmap(bmpPressed);
+					if(data.loopOn) {
+						data.sequence.setPlayTime(data.currentBeat, 0, data.currentBeat + data.loopLength, 7);
+						data.sequence.loop();
+					}
+					else {
+						data.sequence.setPlayTime(0, 0, -1, -1);
+						data.sequence.start();
+					}
+					return true;
+				case MotionEvent.ACTION_UP:
+					//btnStart.setImageBitmap(bmpEmpty);
+					return true;
+				}
+				return false;
+			}
+		});
+		
+		final Button btnStop = (Button) myView.findViewById(R.id.stop);
+		btnStop.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					data.sequence.stop();
+					//btnStop.setImageBitmap(bmpPressed);
+					return true;
+				case MotionEvent.ACTION_UP:
+					//btnStop.setImageBitmap(bmpEmpty);
+					return true;
+				}
+				return false;
+			}
+		});
 		
 		return myView;
 	}

@@ -124,9 +124,8 @@ public class SequencerFragment extends Fragment{
 		});
 		
 		// Current Beat Control
-		final ImageButton btnDecBeat = (ImageButton) myView.findViewById(R.id.btn_dec_beat);
+		final Button btnDecBeat = (Button) myView.findViewById(R.id.btn_dec_beat);
 		btnDecBeat.setOnTouchListener(new OnTouchListener() {
-			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
@@ -145,9 +144,8 @@ public class SequencerFragment extends Fragment{
 			}
 		});
 		
-		final ImageButton btnIncBeat = (ImageButton) myView.findViewById(R.id.btn_inc_beat);
+		final Button btnIncBeat = (Button) myView.findViewById(R.id.btn_inc_beat);
 		btnIncBeat.setOnTouchListener(new OnTouchListener() {
-			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()) {
@@ -536,52 +534,6 @@ public class SequencerFragment extends Fragment{
 				return false;
 			}
 		});
-		
-		// TEST BUTTONS, REMOVE LATER (GOES IN CONSOLE)
-		final ImageButton btnStart = (ImageButton) myView.findViewById(R.id.btn_start);
-		btnStart.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				switch(event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					btnStart.setImageBitmap(bmpPressed);
-					if(data.loopOn) {
-						data.sequence.setPlayTime(data.currentBeat, 0, data.currentBeat + data.loopLength, 7);
-						data.sequence.loop();
-					}
-					else {
-						data.sequence.setPlayTime(0, 0, -1, -1);
-						data.sequence.start();
-					}
-					return true;
-				case MotionEvent.ACTION_UP:
-					btnStart.setImageBitmap(bmpEmpty);
-					return true;
-				}
-				
-				return false;
-			}
-		});
-		
-		final ImageButton btnStop = (ImageButton) myView.findViewById(R.id.btn_stop);
-		btnStop.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				
-				switch(event.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					data.sequence.stop();
-					btnStop.setImageBitmap(bmpPressed);
-					return true;
-				case MotionEvent.ACTION_UP:
-					btnStop.setImageBitmap(bmpEmpty);
-					return true;
-				}
-				
-				return false;
-			}
-		});
-		
 		
 		return myView;
 	}
