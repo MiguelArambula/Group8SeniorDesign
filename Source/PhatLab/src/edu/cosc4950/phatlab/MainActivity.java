@@ -60,16 +60,19 @@ public class MainActivity extends FragmentActivity {
 		// TEST CODE
 		sequence = new SequenceTimer(180, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
 		sequence.setPlayTime(0, 0, -1, -1);
-		PCM sample1 = new ExternalData().loadPCM("amen_kick1");
-		PCM sample2 = new ExternalData().loadPCM("amen_snare1");
+		//PCM sample1 = new ExternalData().loadPCM("amen_kick1");
+		//PCM sample2 = new ExternalData().loadPCM("amen_snare1");
 		
 		maxBeat = 1;
 		currentBeat = 0;
 		loopLength = 0;
 		loopOn = false;
 		
-		sequence.setSample(sample1, 0); // set to amen kick
-		sequence.setSample(sample2, 1); // set to amen snare
+		// initialize sequencer tracks to null
+		initTracks();
+		
+		//sequence.setSample(sample1, 0); // set to amen kick
+		//sequence.setSample(sample2, 1); // set to amen snare
 		
 		if (savedInstanceState == null) {
 
@@ -258,8 +261,8 @@ public class MainActivity extends FragmentActivity {
 	
 	public void loadTrack(String pad, String samp){
 		switch(pad){
-		case "Pad 1": loadTrack(0,0,samp); break;
-		case "Pad 2": loadTrack(1,0,samp); break;
+		case "Pad 1": loadTrack(0,0,samp); loadSeqTrack(samp, 0); break;
+		case "Pad 2": loadTrack(1,0,samp); loadSeqTrack(samp, 1); break;
 		case "Pad 3": loadTrack(2,0,samp); break;
 		case "Pad 4": loadTrack(3,0,samp); break;
 		case "Pad 5": loadTrack(0,1,samp); break;
@@ -296,6 +299,17 @@ public class MainActivity extends FragmentActivity {
 				if(t.getTrack(i, j) != null)
 					m[i][j] = 1;
 			}
+		}
+	}
+	
+	public void loadSeqTrack(String sampleName, int track) {
+		PCM sample = new ExternalData().loadPCM(sampleName);
+		sequence.setSample(sample, track);
+	}
+	
+	public void initTracks() {
+		for(int i=0; i<12; i++) {
+			sequence.setSample(null, i);
 		}
 	}
 }
