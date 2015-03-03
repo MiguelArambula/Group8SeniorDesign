@@ -9,29 +9,8 @@
 		android:layout_height="match_parent"
 		android:layout_weight="5"
 		android:orientation="horizontal" >
-        
-        <ImageButton
-	        android:id="@+id/btn_start"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:text="Start"
-	        android:layout_weight="1" />
-    
-    	<ImageButton
-	        android:id="@+id/btn_stop"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:text="Stop"
-	        android:layout_weight="1" />
     	
     	<!-- Loop Control -->
-    	<ToggleButton
-    	    android:id="@+id/toggle_loop"
-    	    android:layout_width="match_parent"
-    	    android:layout_height="match_parent"
-    	    android:layout_weight="1"
-    	    android:text="LOOP" />
-    	
     	<Button
     	    android:id="@+id/btn_dec_loop"
     	    android:layout_width="match_parent"
@@ -52,12 +31,20 @@
     	    android:layout_weight="1"
     	    android:text="+" />
     	
+    	<ToggleButton
+    	    android:id="@+id/toggle_loop"
+    	    android:layout_width="match_parent"
+    	    android:layout_height="match_parent"
+    	    android:layout_weight=".95"
+    	    android:textOn="LOOP"
+            android:textOff="LOOP" />
+    	
     	<Space 
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
-	        android:layout_weight="1" />
+	        android:layout_weight=".85" />
         
-        <ImageButton
+        <Button
 	        android:id="@+id/btn_dec_beat"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
@@ -72,7 +59,7 @@
 	        android:layout_weight="1"
             />
         
-        <ImageButton
+        <Button
 	        android:id="@+id/btn_inc_beat"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
