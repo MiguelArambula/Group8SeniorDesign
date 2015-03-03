@@ -58,7 +58,7 @@ public class MainActivity extends FragmentActivity {
 		FragmentManager fm = getFragmentManager();
 		
 		// TEST CODE
-		sequence = new SequenceTimer(160, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
+		sequence = new SequenceTimer(360, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
 		sequence.setPlayTime(0, 0, -1, -1);
 		PCM sample1 = new ExternalData().loadPCM("amen_kick1");
 		PCM sample2 = new ExternalData().loadPCM("amen_snare1");
@@ -75,17 +75,7 @@ public class MainActivity extends FragmentActivity {
 
 			mPadLayout = (ViewGroup) findViewById(R.id.activity_main_phat_pad_container);
 			
-				if(mPadLayout != null) {
-				
-				 /*
-				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-				fragmentTransaction.replace(mPadLayout.getId(), phatPadFragment, PhatPadFragment.class.getName());
-				
-				fragmentTransaction.commit();//*/
-				
-				
-				// THIS IS TEST CODE. USE THE STUFF ABOVE ^^^
-				
+			if(mPadLayout != null) {
 				getSupportFragmentManager().beginTransaction()
 					.add(R.id.activity_main_phat_pad_container, phatPadFragment).commit();
 					
@@ -94,21 +84,13 @@ public class MainActivity extends FragmentActivity {
 					.add(R.id.activity_main_phat_pad_container, sequencerFragment).commit();
 				
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				
-				//ft.replace(mPadLayout.getId(), sequencerFragment, SequencerFragment.class.getName()); //SequencerFragment.class.getName()
-				
 				ft.hide(sequencerFragment);
 				ft.commit();
-				
-				//ft.replace(mPadLayout.getId(), phatPadFragment, null); //PhatPadFragment.class.getName()
-				//ft.hide(phatPadFragment);
-				//ft.show(sequencerFragment);
-			}// * /
+			}
 			
 			mConsoleLayout = (ViewGroup) findViewById(R.id.activity_main_console_container);
 			
 			if(mConsoleLayout != null) {
-				
 				ConsoleFragment consoleFragment = new ConsoleFragment();
 				
 				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -246,7 +228,7 @@ public class MainActivity extends FragmentActivity {
 		currPad = s;
 	}
 	
-	public String getPad(){
+	public String getCurrPad(){
 		return currPad;
 	}
 	

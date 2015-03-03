@@ -558,7 +558,6 @@ public class SequencerFragment extends Fragment{
 					btnStart.setImageBitmap(bmpEmpty);
 					return true;
 				}
-				
 				return false;
 			}
 		});

@@ -42,7 +42,7 @@ public class ConsoleFragment extends Fragment{
 				String x = (String) spin.getSelectedItem();
 				//Toast.makeText(getActivity(), "made it here", Toast.LENGTH_SHORT).show();
 				if(spin.isEnabled()){
-					data.loadTrack(data.getPad(), x);
+					data.loadTrack(data.getCurrPad(), x);
 				}
 				//Toast.makeText(getActivity(), String.valueOf(spin.getSelectedItem()), Toast.LENGTH_SHORT).show();
 			}
