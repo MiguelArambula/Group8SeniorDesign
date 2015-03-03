@@ -153,6 +153,8 @@ public class SequencerFragment extends Fragment{
 					if(data.currentBeat < data.maxBeat) {
 						data.currentBeat++;
 						tvBeat.setText(data.currentBeat + 1 +"");
+						if(data.currentBeat + data.loopLength > data.maxBeat)
+							data.loopLength--;
 						tvLoop.setText((data.currentBeat + 1) + ":" + (data.currentBeat + 1 + data.loopLength));
 						updateTracks();
 					}

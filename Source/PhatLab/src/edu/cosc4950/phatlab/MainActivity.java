@@ -58,7 +58,7 @@ public class MainActivity extends FragmentActivity {
 		FragmentManager fm = getFragmentManager();
 		
 		// TEST CODE
-		sequence = new SequenceTimer(360, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
+		sequence = new SequenceTimer(180, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
 		sequence.setPlayTime(0, 0, -1, -1);
 		PCM sample1 = new ExternalData().loadPCM("amen_kick1");
 		PCM sample2 = new ExternalData().loadPCM("amen_snare1");
