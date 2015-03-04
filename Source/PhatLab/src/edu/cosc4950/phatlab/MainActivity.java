@@ -263,16 +263,16 @@ public class MainActivity extends FragmentActivity {
 		switch(pad){
 		case "Pad 1": loadTrack(0,0,samp); loadSeqTrack(samp, 0); break;
 		case "Pad 2": loadTrack(1,0,samp); loadSeqTrack(samp, 1); break;
-		case "Pad 3": loadTrack(2,0,samp); break;
-		case "Pad 4": loadTrack(3,0,samp); break;
-		case "Pad 5": loadTrack(0,1,samp); break;
-		case "Pad 6": loadTrack(1,1,samp); break;
-		case "Pad 7": loadTrack(2,1,samp); break;
-		case "Pad 8": loadTrack(3,1,samp); break;
-		case "Pad 9": loadTrack(0,2,samp); break;
-		case "Pad 10": loadTrack(1,2,samp); break;
-		case "Pad 11": loadTrack(2,2,samp); break;
-		case "Pad 12": loadTrack(3,2,samp); break;
+		case "Pad 3": loadTrack(2,0,samp); loadSeqTrack(samp, 2); break;
+		case "Pad 4": loadTrack(3,0,samp); loadSeqTrack(samp, 3); break;
+		case "Pad 5": loadTrack(0,1,samp); loadSeqTrack(samp, 4); break;
+		case "Pad 6": loadTrack(1,1,samp); loadSeqTrack(samp, 5); break;
+		case "Pad 7": loadTrack(2,1,samp); loadSeqTrack(samp, 6); break;
+		case "Pad 8": loadTrack(3,1,samp); loadSeqTrack(samp, 7); break;
+		case "Pad 9": loadTrack(0,2,samp); loadSeqTrack(samp, 8); break;
+		case "Pad 10": loadTrack(1,2,samp); loadSeqTrack(samp, 9); break;
+		case "Pad 11": loadTrack(2,2,samp); loadSeqTrack(samp, 10); break;
+		case "Pad 12": loadTrack(3,2,samp); loadSeqTrack(samp, 11); break;
 		default: Toast.makeText(getApplicationContext(), 
 				"Invalid Pad or Samp", Toast.LENGTH_LONG).show(); break;
 		}
