@@ -126,7 +126,6 @@ public class SequenceTimer
 		
 		if (totalSteps < globalStep)
 			totalSteps = globalStep;
-		Log.i("Phat Lab", "Set to: "+totalSteps);
 		
 	}
 	
@@ -255,12 +254,10 @@ public class SequenceTimer
 									break;
 								}
 								else
-								{
 									curPos = startPos;
-								}
 							}
-							//Log.i("Phat Lab", "Step: "+curPos + ": "+endPos);
-							++ curPos;
+							else
+								++ curPos;
 							Thread.sleep(60000 / ((bpm * spb) / 4),0);
 						}
 						isPlaying = false;
