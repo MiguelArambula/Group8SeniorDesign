@@ -18,7 +18,8 @@ public class SequenceTimer
 	sNode triggerList[] = new sNode[12]; // List of sNodes to trigger at time intervals
 	long startPos=0, endPos=0, curPos = 0, totalSteps=0;
 	boolean isPlaying = false,
-			playAll = false; // If true, it plays the whole sequence.
+			playAll = false, // If true, it plays the whole sequence.
+			loopSequence = false;
 	
 	
 	public SequenceTimer(int bpm, int stepsPerBeat)
@@ -193,6 +194,15 @@ public class SequenceTimer
 	
 	public void start()
 	{
+		start(false);
+	}
+	public void loop()
+	{
+		start(true);
+	}
+	
+	public void start(boolean loop)
+	{
 		if (isPlaying == true)
 			return;
 		
@@ -207,6 +217,7 @@ public class SequenceTimer
 		if (startPos < 0)
 			startPos = 0;
 		
+		loopSequence = loop;
 		
 		new Thread( new Runnable()
 			{
@@ -237,9 +248,16 @@ public class SequenceTimer
 							
 							if (curPos >= endPos)
 							{
-								stop();
-								isPlaying = false;
-								break;
+								if (loopSequence == false)
+								{
+									stop();
+									isPlaying = false;
+									break;
+								}
+								else
+								{
+									curPos = startPos;
+								}
 							}
 							//Log.i("Phat Lab", "Step: "+curPos + ": "+endPos);
 							++ curPos;
@@ -261,12 +279,14 @@ public class SequenceTimer
 	
 	public void stop()
 	{
+		loopSequence = false;
 		isPlaying = false;
 		curPos = startPos;
 	}
 	
 	public void pause()
 	{
+		loopSequence = false;
 		isPlaying = false;
 	}
 	

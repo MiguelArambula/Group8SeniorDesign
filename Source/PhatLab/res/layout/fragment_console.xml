@@ -84,7 +84,7 @@
 		   	 		android:layout_width="match_parent"
 		   	 		android:layout_height="wrap_content"
 		   	 		android:paddingRight="5dp"
-		   	 		android:text="Current Sample"/>
+		   	 		android:text="Current Pad:"/>
 			
 				<TextView 
 			    	android:id="@+id/pad_num"
@@ -172,30 +172,13 @@
             	android:layout_height="wrap_content"
             	android:orientation="horizontal"
             	android:padding="5dp">
-            
-            	<TextView 
-                	android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:text="Current Beat"/>
-            
-            	<Button 
-                	android:id="@+id/dec_cur"
-                	android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:text="-"/>
-            
-            	<TextView 
-                	android:id="@+id/cur_text"
-                	android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:text="0"/>
-            
-            	<Button 
-                	android:id="@+id/in_cur"
-                	android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:text="+"/>
-            
+            	
+       		    <Button 
+       		        android:id="@+id/record"
+       		        android:layout_width="wrap_content"
+       		        android:layout_height="wrap_content"
+       		        android:text="Record"/>
+                      
        		</LinearLayout>
     	</LinearLayout>
     	    

@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -42,7 +44,7 @@ public class ConsoleFragment extends Fragment{
 				String x = (String) spin.getSelectedItem();
 				//Toast.makeText(getActivity(), "made it here", Toast.LENGTH_SHORT).show();
 				if(spin.isEnabled()){
-					data.loadTrack(data.getPad(), x);
+					data.loadTrack(data.getCurrPad(), x);
 				}
 				//Toast.makeText(getActivity(), String.valueOf(spin.getSelectedItem()), Toast.LENGTH_SHORT).show();
 			}
@@ -106,7 +108,7 @@ public class ConsoleFragment extends Fragment{
 		
 		//Changes the max amount beats. 
 		final TextView maxText = (TextView) myView.findViewById(R.id.max_text);
-		maxText.setText(Integer.toString(data.getMaxBeat()));
+		maxText.setText(Integer.toString(data.getMaxBeat()+1));
 		final Button decMax = (Button) myView.findViewById(R.id.dec_max);
 		decMax.setOnClickListener(new OnClickListener(){
 
@@ -114,7 +116,7 @@ public class ConsoleFragment extends Fragment{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				int x = data.changeMax("sub");
-				maxText.setText(Integer.toString(x));
+				maxText.setText(Integer.toString(x)+1);
 			}
 			
 		});
@@ -125,35 +127,11 @@ public class ConsoleFragment extends Fragment{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				int x = data.changeMax("add");
-				maxText.setText(Integer.toString(x));
+				maxText.setText(Integer.toString(x)+1);
 			}
 			
 		});
-		//Changing the current pad that is being looked out
-		final TextView currText = (TextView) myView.findViewById(R.id.cur_text);
-		currText.setText(Integer.toString(data.getCurBeat()));
-		final Button decCurr = (Button) myView.findViewById(R.id.dec_cur);
-		decCurr.setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				int x = data.changeCur("sub");
-				currText.setText(Integer.toString(x));
-			}
-			
-		});
-		final Button addCurr = (Button) myView.findViewById(R.id.in_cur);
-		addCurr.setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				int x = data.changeCur("add");
-				currText.setText(Integer.toString(x));
-			}
-			
-		});
+		
 		
 		final RadioButton padView = (RadioButton) myView.findViewById(R.id.pad_view);
 		padView.setChecked(true);
@@ -177,6 +155,48 @@ public class ConsoleFragment extends Fragment{
 		//padNum- TextView for update the status of the last pad pressed. 
 		final TextView padNum = (TextView) myView.findViewById(R.id.pad_num);
 		data.setTextView(padNum);
+		
+		final Button btnStart = (Button) myView.findViewById(R.id.start);
+		btnStart.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					//btnStart.setImageBitmap(bmpPressed);
+					if(data.loopOn) {
+						data.sequence.setPlayTime(data.currentBeat, 0, data.currentBeat + data.loopLength, 7);
+						data.sequence.loop();
+					}
+					else {
+						data.sequence.setPlayTime(0, 0, -1, -1);
+						data.sequence.start();
+					}
+					return true;
+				case MotionEvent.ACTION_UP:
+					//btnStart.setImageBitmap(bmpEmpty);
+					return true;
+				}
+				return false;
+			}
+		});
+		
+		final Button btnStop = (Button) myView.findViewById(R.id.stop);
+		btnStop.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				
+				switch(event.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					data.sequence.stop();
+					//btnStop.setImageBitmap(bmpPressed);
+					return true;
+				case MotionEvent.ACTION_UP:
+					//btnStop.setImageBitmap(bmpEmpty);
+					return true;
+				}
+				return false;
+			}
+		});
 		
 		return myView;
 	}

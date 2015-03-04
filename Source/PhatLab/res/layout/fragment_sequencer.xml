@@ -3,32 +3,48 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
+    <!-- loop and beat indexing interface -->
     <LinearLayout
         android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_weight="5"
 		android:orientation="horizontal" >
-        
-        <ImageButton
-	        android:id="@+id/btn_start"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:text="Start"
-	        android:layout_weight="1" />
-    
-    	<ImageButton
-	        android:id="@+id/btn_stop"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:text="Stop"
-	        android:layout_weight="1" />
+    	
+    	<!-- Loop Control -->
+    	<Button
+    	    android:id="@+id/btn_dec_loop"
+    	    android:layout_width="match_parent"
+    	    android:layout_height="match_parent"
+    	    android:layout_weight="1"
+    	    android:text="-" />
+    	
+    	<TextView
+    	    android:id="@+id/tv_loop"
+    	    android:layout_width="match_parent"
+    	    android:layout_height="match_parent"
+    	    android:layout_weight="1" />
+    	
+    	<Button
+    	    android:id="@+id/btn_inc_loop"
+    	    android:layout_width="match_parent"
+    	    android:layout_height="match_parent"
+    	    android:layout_weight="1"
+    	    android:text="+" />
+    	
+    	<ToggleButton
+    	    android:id="@+id/toggle_loop"
+    	    android:layout_width="match_parent"
+    	    android:layout_height="match_parent"
+    	    android:layout_weight=".95"
+    	    android:textOn="LOOP"
+            android:textOff="LOOP" />
     	
     	<Space 
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
-	        android:layout_weight=".75" />
+	        android:layout_weight=".85" />
         
-        <ImageButton
+        <Button
 	        android:id="@+id/btn_dec_beat"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
@@ -43,7 +59,7 @@
 	        android:layout_weight="1"
             />
         
-        <ImageButton
+        <Button
 	        android:id="@+id/btn_inc_beat"
 	        android:layout_width="match_parent"
 	        android:layout_height="match_parent"
@@ -52,6 +68,7 @@
         
     </LinearLayout>
     
+	<!-- trigger buttons -->    
     <ScrollView 
         android:layout_width="match_parent"
 		android:layout_height="match_parent"
@@ -63,123 +80,139 @@
 			android:layout_height="match_parent"
 			android:orientation="vertical" >
         
+            <!-- TRACK 00 -->
 		    <LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:layout_weight="2"
+				android:layout_weight="1"
 				android:orientation="horizontal" >
 				
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="01" />
+		        
 		        <ImageButton
 			        android:id="@+id/btn_track00_step00"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track00_step01"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track00_step02"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track00_step03"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track00_step04"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track00_step05"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track00_step06"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track00_step07"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 			</LinearLayout>
 			
+		    <!-- TRACK 01 -->
 		    <LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:layout_weight="2"
+				android:layout_weight="1"
 				android:orientation="horizontal" >
-				
+		        
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="02" />
+		        
 		        <ImageButton
 			        android:id="@+id/btn_track01_step00"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track01_step01"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track01_step02"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track01_step03"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track01_step04"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track01_step05"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 		        
 		        <ImageButton
 			        android:id="@+id/btn_track01_step06"
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:src="@drawable/pad_empty"
+			        android:src="@drawable/pad_empty_sm"
 			        android:layout_weight="1" />
 
 		        <ImageButton
@@ -187,16 +220,731 @@
 		            android:layout_width="match_parent"
 		            android:layout_height="match_parent"
 		            android:layout_weight="1"
-		            android:src="@drawable/pad_empty" />
+		            android:src="@drawable/pad_empty_sm" />
+		        
+			</LinearLayout>
+		    
+		    <!-- TRACK 02 -->
+		    <LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:orientation="horizontal" >
+				
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="03" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track02_step00"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track02_step01"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track02_step02"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track02_step03"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track02_step04"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track02_step05"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track02_step06"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track02_step07"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
 		        
 			</LinearLayout>
 		    		    
-		    <Space 
-		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-		        android:layout_weight="3" />
+		    <!-- TRACK 03 -->
+		    <LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:orientation="horizontal" >
+				
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="04" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track03_step00"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track03_step01"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track03_step02"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track03_step03"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track03_step04"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track03_step05"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track03_step06"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track03_step07"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+			</LinearLayout>
 		    
-		    </LinearLayout>
+		    <!-- TRACK 04 -->
+		    <LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:orientation="horizontal" >
+				
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="05" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track04_step00"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track04_step01"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track04_step02"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track04_step03"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track04_step04"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track04_step05"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track04_step06"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track04_step07"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+			</LinearLayout>
+			
+		    <!-- TRACK 05 -->
+		    <LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:orientation="horizontal" >
+				
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="06" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track05_step00"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track05_step01"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track05_step02"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track05_step03"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track05_step04"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track05_step05"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track05_step06"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track05_step07"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+			</LinearLayout>
+		    
+		    <!-- TRACK 06 -->
+		    <LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:orientation="horizontal" >
+				
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="07" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track06_step00"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track06_step01"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track06_step02"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track06_step03"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track06_step04"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track06_step05"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track06_step06"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track06_step07"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+			</LinearLayout>
+		    
+		    <!-- TRACK 07 -->
+		    <LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:orientation="horizontal" >
+				
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="08" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track07_step00"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track07_step01"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track07_step02"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track07_step03"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track07_step04"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track07_step05"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track07_step06"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track07_step07"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+			</LinearLayout>
+		    
+		    <!-- TRACK 08 -->
+		    <LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:orientation="horizontal" >
+				
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="09" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track08_step00"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track08_step01"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track08_step02"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track08_step03"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track08_step04"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track08_step05"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track08_step06"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track08_step07"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+			</LinearLayout>
+			
+		    <!-- TRACK 09 -->
+		    <LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:orientation="horizontal" >
+				
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="10" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track09_step00"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track09_step01"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track09_step02"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track09_step03"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track09_step04"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track09_step05"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track09_step06"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track09_step07"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+			</LinearLayout>
+			
+		    <!-- TRACK 10 -->
+		    <LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:orientation="horizontal" >
+				
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="11" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track10_step00"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track10_step01"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track10_step02"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track10_step03"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track10_step04"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track10_step05"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track10_step06"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track10_step07"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+			</LinearLayout>
+		    
+		    <!-- TRACK 11 -->
+		    <LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:orientation="horizontal" >
+				
+		        <TextView 
+		            android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_weight="1"
+			        android:gravity="center"
+			        android:text="12" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track11_step00"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track11_step01"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track11_step02"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track11_step03"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track11_step04"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track11_step05"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track11_step06"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+		        <ImageButton
+			        android:id="@+id/btn_track11_step07"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:src="@drawable/pad_empty_sm"
+			        android:layout_weight="1" />
+		        
+			</LinearLayout>
+		    
+		</LinearLayout>
     
     </ScrollView>
 	

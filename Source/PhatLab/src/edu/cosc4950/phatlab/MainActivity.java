@@ -42,6 +42,8 @@ public class MainActivity extends FragmentActivity {
 	
 	SequenceTimer sequence; 
 	int maxBeat, currentBeat;
+	int loopLength;
+	boolean loopOn;
 	
 	PhatPadFragment phatPadFragment = new PhatPadFragment();
 	SequencerFragment sequencerFragment = new SequencerFragment();
@@ -56,32 +58,27 @@ public class MainActivity extends FragmentActivity {
 		FragmentManager fm = getFragmentManager();
 		
 		// TEST CODE
-		sequence = new SequenceTimer(110, 16); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
+		sequence = new SequenceTimer(180, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
 		sequence.setPlayTime(0, 0, -1, -1);
-		PCM sample1 = new ExternalData().loadPCM("amen_kick1");
-		PCM sample2 = new ExternalData().loadPCM("amen_snare1");
+		//PCM sample1 = new ExternalData().loadPCM("amen_kick1");
+		//PCM sample2 = new ExternalData().loadPCM("amen_snare1");
 		
 		maxBeat = 1;
 		currentBeat = 0;
+		loopLength = 0;
+		loopOn = false;
 		
-		sequence.setSample(sample1, 0); // set to amen kick
-		sequence.setSample(sample2, 1); // set to amen snare
+		// initialize sequencer tracks to null
+		initTracks();
+		
+		//sequence.setSample(sample1, 0); // set to amen kick
+		//sequence.setSample(sample2, 1); // set to amen snare
 		
 		if (savedInstanceState == null) {
 
 			mPadLayout = (ViewGroup) findViewById(R.id.activity_main_phat_pad_container);
 			
-				if(mPadLayout != null) {
-				
-				 /*
-				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-				fragmentTransaction.replace(mPadLayout.getId(), phatPadFragment, PhatPadFragment.class.getName());
-				
-				fragmentTransaction.commit();//*/
-				
-				
-				// THIS IS TEST CODE. USE THE STUFF ABOVE ^^^
-				
+			if(mPadLayout != null) {
 				getSupportFragmentManager().beginTransaction()
 					.add(R.id.activity_main_phat_pad_container, phatPadFragment).commit();
 					
@@ -90,21 +87,13 @@ public class MainActivity extends FragmentActivity {
 					.add(R.id.activity_main_phat_pad_container, sequencerFragment).commit();
 				
 				FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				
-				//ft.replace(mPadLayout.getId(), sequencerFragment, SequencerFragment.class.getName()); //SequencerFragment.class.getName()
-				
 				ft.hide(sequencerFragment);
 				ft.commit();
-				
-				//ft.replace(mPadLayout.getId(), phatPadFragment, null); //PhatPadFragment.class.getName()
-				//ft.hide(phatPadFragment);
-				//ft.show(sequencerFragment);
-			}// * /
+			}
 			
 			mConsoleLayout = (ViewGroup) findViewById(R.id.activity_main_console_container);
 			
 			if(mConsoleLayout != null) {
-				
 				ConsoleFragment consoleFragment = new ConsoleFragment();
 				
 				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -242,7 +231,7 @@ public class MainActivity extends FragmentActivity {
 		currPad = s;
 	}
 	
-	public String getPad(){
+	public String getCurrPad(){
 		return currPad;
 	}
 	
@@ -272,18 +261,18 @@ public class MainActivity extends FragmentActivity {
 	
 	public void loadTrack(String pad, String samp){
 		switch(pad){
-		case "Pad 1": loadTrack(0,0,samp); break;
-		case "Pad 2": loadTrack(1,0,samp); break;
-		case "Pad 3": loadTrack(2,0,samp); break;
-		case "Pad 4": loadTrack(3,0,samp); break;
-		case "Pad 5": loadTrack(0,1,samp); break;
-		case "Pad 6": loadTrack(1,1,samp); break;
-		case "Pad 7": loadTrack(2,1,samp); break;
-		case "Pad 8": loadTrack(3,1,samp); break;
-		case "Pad 9": loadTrack(0,2,samp); break;
-		case "Pad 10": loadTrack(1,2,samp); break;
-		case "Pad 11": loadTrack(2,2,samp); break;
-		case "Pad 12": loadTrack(3,2,samp); break;
+		case "Pad 1": loadTrack(0,0,samp); loadSeqTrack(samp, 0); break;
+		case "Pad 2": loadTrack(1,0,samp); loadSeqTrack(samp, 1); break;
+		case "Pad 3": loadTrack(2,0,samp); loadSeqTrack(samp, 2); break;
+		case "Pad 4": loadTrack(3,0,samp); loadSeqTrack(samp, 3); break;
+		case "Pad 5": loadTrack(0,1,samp); loadSeqTrack(samp, 4); break;
+		case "Pad 6": loadTrack(1,1,samp); loadSeqTrack(samp, 5); break;
+		case "Pad 7": loadTrack(2,1,samp); loadSeqTrack(samp, 6); break;
+		case "Pad 8": loadTrack(3,1,samp); loadSeqTrack(samp, 7); break;
+		case "Pad 9": loadTrack(0,2,samp); loadSeqTrack(samp, 8); break;
+		case "Pad 10": loadTrack(1,2,samp); loadSeqTrack(samp, 9); break;
+		case "Pad 11": loadTrack(2,2,samp); loadSeqTrack(samp, 10); break;
+		case "Pad 12": loadTrack(3,2,samp); loadSeqTrack(samp, 11); break;
 		default: Toast.makeText(getApplicationContext(), 
 				"Invalid Pad or Samp", Toast.LENGTH_LONG).show(); break;
 		}
@@ -310,6 +299,17 @@ public class MainActivity extends FragmentActivity {
 				if(t.getTrack(i, j) != null)
 					m[i][j] = 1;
 			}
+		}
+	}
+	
+	public void loadSeqTrack(String sampleName, int track) {
+		PCM sample = new ExternalData().loadPCM(sampleName);
+		sequence.setSample(sample, track);
+	}
+	
+	public void initTracks() {
+		for(int i=0; i<12; i++) {
+			sequence.setSample(null, i);
 		}
 	}
 }
