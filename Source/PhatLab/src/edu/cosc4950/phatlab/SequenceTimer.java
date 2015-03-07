@@ -126,6 +126,8 @@ public class SequenceTimer
 		
 		if (totalSteps < globalStep)
 			totalSteps = globalStep;
+		//Log.i("Phat Lab", "Set to: "+totalSteps);
+		
 		
 	}
 	
@@ -158,8 +160,8 @@ public class SequenceTimer
 		
 		if (triggerList[track] == null)
 			totalSteps = 0;
-		else if (triggerList[track].next == null)
-			totalSteps = triggerList[track].priority;
+		else
+			totalSteps = triggerList[track].findLast().priority;
 		
 		return (node == null ? false : true);
 	}
@@ -188,6 +190,32 @@ public class SequenceTimer
 		
 		for (long i = startPos; i <= endPos; ++i)
 			clearTrigger(track, i);
+		
+	}
+	
+	public void setBPM(int newBpm)
+	{
+		double scale = (double)newBpm / (double) bpm ;
+		
+		//Loop through each sample playlist:
+		totalSteps = 0;
+		for (int i = 0; i < 12; ++i)
+		{
+			if (sampleList[i] == null)
+				continue;
+			if (triggerList[i] == null)
+				continue;
+			
+			//Start at the front:
+			sNode n = triggerList[i].findFirst();
+			
+			//Recursively set all new BPM
+			//n.resetBPM(scale);
+			long totalStepSub = n.findLast().priority;
+			totalSteps = (totalSteps < totalStepSub? totalStepSub : totalSteps);
+		}
+		
+		bpm = newBpm;
 		
 	}
 	
@@ -258,6 +286,8 @@ public class SequenceTimer
 							}
 							else
 								++ curPos;
+							//Log.i("Phat Lab", "Step: "+curPos + ": "+endPos);
+							
 							Thread.sleep(60000 / ((bpm * spb) / 4),0);
 						}
 						isPlaying = false;
@@ -381,6 +411,13 @@ class sNode
 		  prev = null;
 	long  priority;
 	
+	public void resetBPM(double scalar)
+	{
+		//Log.i("Phat Lab", "Old: " + priority + " : "+priority * scalar);
+		this.priority*= scalar;
+		if (next != null)
+			next.resetBPM(scalar);
+	}
 	public sNode(long priority)
 	{
 		this.priority = priority;
