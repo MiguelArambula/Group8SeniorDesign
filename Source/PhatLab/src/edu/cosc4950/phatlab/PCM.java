@@ -515,6 +515,11 @@ public class PCM{
 		_hasSet = false;
 	}
 	
+	public boolean isPlaying()
+	{
+		return (audio.getPlayState() == AudioTrack.PLAYSTATE_PLAYING);
+	}
+	
 	/**
 	 * Plays the audio file through the speakers
 	 * @param byteOffset	Where to start playing the file, in bytes
