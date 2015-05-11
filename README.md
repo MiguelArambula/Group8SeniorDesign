@@ -1,7 +1,7 @@
 Project PhatLab
 =========================================
 **Project Title:** *PhatLab*   
-**Group Title:** *Team 4-bits of 8 (Working Title)*   
+**Group Title:** *PhatLabs*   
 
 **Group Members:**
 *   Jake Harper
