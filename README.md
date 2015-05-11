@@ -37,3 +37,11 @@ The Recorder class is responsible for reading data in from the mic. The class es
 *SequenceTimer:* 
 
 The SequenceTimer class is responsible for the sequencing backend. It controls the actual timer and triggers the audio samples. It is also responsible for the merging of multiple samples into one large sample and passing the result to ExternalData for export.
+
+
+===========================================
+**Brief Usage Summary** 
+
+The ConsoleFragment, SequencerFragemnt, and PhatPadFragment classes are used for interfacing with the user. These fragemnts create and trigger the appropriate PCM, Recorder, SequencTimer, and ExternalData classes to accomplish the desired tasks. When audio is loaded or exported, an ExternalData object is used and interfaces with a PCM object, where the data is stored and manipulated. Upon load, a PCM object will be created to store the data. Upon export, the PCM data will be passed to ExternalData so as to write it onto the hard-drive.
+
+When the recording interface is used, the Recorder class is used to catch the data from the mic. When the user is finished, this data is converted into a PCM object for easy manipulation later. When creating a sequence, the SequenceTimer class is used to mark where PCM files should be played automatically. The SequenceTimer contains a timing system to step through the triggers, thus playing all the audio as specified. When the sequence is finished, the SequenceTimer can compile all the PCMs into a single PCM that can then be exported through ExternalData as a final track.
