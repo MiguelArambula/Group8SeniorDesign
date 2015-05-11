@@ -18,33 +18,16 @@ Project PhatLab
 * /Source/PhatLab/src/edu/cosc4950/phatlab/
 
 =========================================
-***For Reference:***
-* **Source:** This is where you should place all of your source code.  If your project
-  uses multiple languages, you may find it useful to have subdirectories, e.g.,
-  Source/java, Source/html, Source/images, etc.  If you are using an IDE that has
-  a project directory, you may wish to start the project here.  For example, the
-  Source directory could contain an Xcode project repository or a VisualStudio
-  project.
+**Classes:** 
 
-* **Documents:** Here will be the documents you write to describe your project.  The
-  boiler plate includes a use case template and a sample use case.  Both of these
-  are taken from [Cockburn's use cases website][1], which contains many other useful tips
-  on writing effective use cases (as does his book).  The use cases are written
-  down in [Markdown][2] format.  You may convert them to your word processor of
-  choice.  This folder also includes a sample specification document from a real
-  software company.  That is a good example of what a requirements document for this
-  class should look like.
+*ExternalData:* 
+The ExternalData class handles all the file loading and exporting. Essentially any data that needs to be handled that is not directily part of the Java codebase is handled through this class.
 
-* **Resources:** This is where you can place files that are useful to your project.
-  For example, you may place here helpful articles downloaded from the internet.
+*PCM:* 
+The PCM class represents an audio sample. It contains all the byte data for a single sample as well as any properties that are required. This class also provides the functions to manipulate its data, such as resampling and adjusting gain.
 
-**Project elements can change int he future, but warn Gamboa of any substantive changes.**
+*Recorder:* 
+The Recorder class is responsible for reading data in from the mic. The class essentially is triggered to stream in data, and it is written into a buffer. Once all the data is recorded, it creates a new PCM to contain the audio.
 
-This file should also give him a good description of the files and folders that you want 
-him to look for grading purposes.  For example, if your code is in Java, you may describe 
-the most important Java packages and the order in which he should view them to understand 
-your code.  He will probably take a look at everything that is in the repository, but your
-guidance will make it easier for him to navigate the project. [Gamboa]
-  
-[1]: http://alistair.cockburn.us/Basic+use+case+template "Alistair Cockburn on Use Cases"
-[2]: http://daringfireball.net/projects/markdown/ "Markdown Documentation"
+*SequenceTimer:* 
+The SequenceTimer class is responsible for the sequencing backend. It controls the actual timer and triggers the audio samples. It is also responsible for the merging of multiple samples into one large sample and passing the result to ExternalData for export.
