@@ -1,19 +1,19 @@
 package edu.cosc4950.phatlab;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.LinkedList;
 import java.util.List;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.media.audiofx.AutomaticGainControl;
 import android.media.audiofx.NoiseSuppressor;
 import android.util.Log;
 
 /**
  * 
- * @author reuben
+ * @author Reuben Shea
  * This class handles recording from the device's mic and creating a PCM
  * file for it.
  * 
@@ -26,14 +26,14 @@ public class Recorder {
 	private boolean isRecording = false;
 	private Thread rthread = null; // For grabbing data from the recording.
 	private int buffSize = 0;
-	private float volumeScale = 0.01f;
+	private float volumeScale = 1.f;
 	private List<short[]> streamData = new LinkedList<short[]>();
 	private NoiseSuppressor ns = null;
 	
 	
 	public Recorder()
 	{
-		
+		//44100 SHOULD be supported on all devices, but some people are stating they are not.
 		buffSize = AudioRecord.getMinBufferSize(44100, 
 				    						    AudioFormat.CHANNEL_IN_MONO,
 				    						    AudioFormat.ENCODING_PCM_16BIT);
@@ -48,8 +48,6 @@ public class Recorder {
 	
 	/**
 	 * Sets the volume for recorded audio.
-	 * NOTE: For some reason on my phone I had to lower to 1% to
-	 * avoid destroying my speakers.
 	 * @param scale
 	 */
 	public void setVolume(float scale)
@@ -57,6 +55,13 @@ public class Recorder {
 		volumeScale = scale / 100;
 	}
 	
+	public boolean isRecording(){
+		return isRecording;
+	}
+	
+	/*
+	 * Read audio data from the mic.
+	 */
 	private void readStream()
 	{
 		
@@ -144,17 +149,25 @@ public class Recorder {
 			
 			try
 			{
+				int bsize = 0;
+				for (short[] a : streamData)
+					bsize += a.length * 2;
+				
 				//Copy all audio data into a final array:
-				ByteBuffer bb = ByteBuffer.allocate(buffSize * streamData.size() * 2);
+				ByteBuffer bb = ByteBuffer.allocate(bsize);
+				bb.order(ByteOrder.LITTLE_ENDIAN);
 				for (short[] a : streamData)
 				{
 					for (int i= 0; i < a.length; ++i)
 						bb.putShort((short)(a[i] * volumeScale));
 				}
+				
 				if (bb.hasArray())
 					recordedSample = new PCM(bb.array(), 44100, false); // Create PCM
 				else
 					Log.e("Phat Lab", "Error creating byte buffer!");
+				
+				recordedSample.stream();
 				
 				streamData.clear(); // Wipe all audio data.
 				

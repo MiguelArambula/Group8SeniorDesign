@@ -1,5 +1,17 @@
+
 package edu.cosc4950.phatlab;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import android.os.Environment;
 import android.util.Log;
 
 
@@ -7,7 +19,8 @@ import android.util.Log;
  * @author Reuben Shea
  *
  *	The SequenceTimer class is responsible for creating, sorting, and playing
- *	A series of PCM samples in a sequence.
+ *	A series of PCM samples in a sequence. This class handles the backend, not
+ *  the GUI aspects
  *
  */
 
@@ -42,6 +55,9 @@ public class SequenceTimer
 		}
 	}
 	
+	/*
+		Clamps a value between two values.
+	 */
 	private int clamp(int track, int from, int to)
 	{
 		return (track > to ? to : (track < from ? from : track));
@@ -59,7 +75,9 @@ public class SequenceTimer
 		sampleList[track] = sample;
 	}
 	
-	
+	/*
+		Returns the trigger at the specified position
+ 	 */
 	public sNode findTrigger(int track, long beat, int step)
 	{
 		return findTrigger(null, track, beat, step);
@@ -90,6 +108,9 @@ public class SequenceTimer
 
 	}
 	
+	/*
+		Sets the number of beats to start at and play through.
+ 	 */
 	public void setPlayTime(long startBeat, int startStep, long endBeat, int endStep )
 	{
 		
@@ -198,6 +219,13 @@ public class SequenceTimer
 		
 	}
 	
+	public int getBPM(){
+		return bpm;
+	}
+	
+	/*
+		Changes the tempo of the sequence
+ 	 */
 	public void setBPM(int newBpm)
 	{
 		double scale = (double)newBpm / (double) bpm ;
@@ -323,6 +351,129 @@ public class SequenceTimer
 	}
 	
 	/**
+	 * Exports the sequence into a text file
+	 * 
+	 * Returns if sucesfull
+	 */
+	public boolean save(String filename)
+	{
+		//Open the file for reading:
+		try
+		{
+			File file = new File(Environment.getExternalStorageDirectory()+"/PhatLab/Sequencer/",filename+".seq");
+			BufferedWriter bOut = new BufferedWriter(new FileWriter(file));
+			
+			String newline = "\n";
+			bOut.append(""+bpm + newline); // Save bpm
+			bOut.append(""+spb + newline); // Save bpm
+			for (int i = 0; i < 12; ++i)
+			{
+				bOut.append("Track "+i + newline);//Specifies which track the timing is for.
+				if (triggerList[i] == null)//Skip if no triggers:
+					continue;
+				
+				sNode n= triggerList[i].findFirst();
+				
+				//Loops until the end:
+				while (n != null)
+				{
+					bOut.append(""+n.priority + newline);
+					n = n.next;
+				}
+			}
+			
+			//Write from the buffer and close:
+			bOut.flush();
+			bOut.close();
+		}
+		catch (Exception e)
+		{
+			Log.e("Phat Lab", "Error saving sequence!", e);
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Imports a sequence, overwriting all the current data.
+	 * 
+	 * Returns if succesful
+	 */
+	public boolean load(String filename)
+	{
+		try
+		{
+			File file = new File(Environment.getExternalStorageDirectory()+"/PhatLab/Sequencer/",filename+".seq");
+			BufferedReader bIn = new BufferedReader(new FileReader(file));
+			
+			//Grab BPM:
+			String line = bIn.readLine();
+			if (line == null)
+			{
+				bIn.close();
+				return false;
+			}
+			bpm = Integer.parseInt(line);
+			
+			//Grab SPB:
+			line = bIn.readLine();
+			if (line == null)
+			{
+				bIn.close();
+				return false;
+			}
+			spb = Integer.parseInt(line);
+			
+			//Read all the sequencer data:
+			int currentTrack = 0;
+			totalSteps = 0;
+			while ((line = bIn.readLine()) != null)
+			{
+				//Scan for change in track:
+				Pattern p = Pattern.compile("Track (\\d{1,2})");
+				Matcher m = p.matcher(line);
+				if (m.matches())
+				{
+					currentTrack = Integer.parseInt(m.group(1));
+					if (currentTrack < 0 || currentTrack > 11)
+					{
+						bIn.close();
+						return false;
+					}
+					continue;
+				}
+				
+				//Check for actual timing:
+				p = Pattern.compile("(\\d+)");
+				m = p.matcher(line);
+				if (m.matches())
+				{
+					if (totalSteps < Integer.parseInt(line))
+						totalSteps = Integer.parseInt(line);
+					
+					if (triggerList[currentTrack] == null)
+						triggerList[currentTrack] = new sNode(Integer.parseInt(line));
+					else
+						triggerList[currentTrack].add(new sNode(Integer.parseInt(line)));
+					continue;
+				}
+					
+				//No recognizable data:
+				bIn.close();
+				return false;	
+			}
+			
+			bIn.close();
+		}
+		catch (Exception e)
+		{
+			Log.e("Phat Lab", "Failed to load sequence!", e);
+			return false;
+		}
+		return true;
+	}
+	
+	/**
 	 * Compiles the sequence into a PCM audio object, ready to
 	 * save onto the harddrive
 	 * @return
@@ -332,8 +483,8 @@ public class SequenceTimer
 		try
 		{
 			/*
-			 *  The *16 at the end is:
-			 *  2 (stereo) * 2 (bytes per sample) * 4 (quarter notes per beat)
+			 *  The * 8 at the end is:
+			 *  2 (stereo) * 4 (quarter notes per beat)
 			 */
 			int totalBytes = (int) Math.ceil((1.0 / (double)(bpm * spb) * (double)totalSteps) * 60) * 44100 * 16;
 			//Get number of seconds, multiply by sample rate, then by 2 for stereo
@@ -348,11 +499,20 @@ public class SequenceTimer
 				if (sampleList[i].getStream().length * (sampleList[i].getStereo()?1:2) > longestSample)
 					longestSample = sampleList[i].getStream().length * (sampleList[i].getStereo()?2:1);
 			}
-			totalBytes += longestSample; // Add the length of the longest sample to the end
+			totalBytes += longestSample*2; // Add the length of the longest sample to the end
 			//Create and clear the new byte data
-			byte[] sampleBytes = new byte[totalBytes];
+			/*byte[] sampleBytes = new byte[totalBytes];
 			for (int i = 0; i < sampleBytes.length; ++i)
-				sampleBytes[i] = 0;
+				sampleBytes[i] = 0;*/
+			
+			short[] sampleShorts = new short[totalBytes / 2];
+			float[] sampleFloats = new float[totalBytes / 2]; // Use floats to avoid clipping
+			
+			for (int i = 0; i < sampleShorts.length; ++i)
+			{
+				sampleShorts[i] = 0;
+				sampleFloats[i] = 0.f;
+			}
 			
 			for (int i = 0; i < 12; ++i)
 			{
@@ -363,35 +523,64 @@ public class SequenceTimer
 					continue;
 				
 				sNode 	first = triggerList[i].findFirst();
-				byte[] samples = sampleList[i].getStream();
+				//byte[] samples = sampleList[i].getStream();
+				
+				//Copy all the byte data into short array:
+				short [] pcmShorts = new short[sampleList[i].getStream().length / 2];
+				
+				
+				ByteBuffer bb = ByteBuffer.wrap(sampleList[i].getStream(), 0, sampleList[i].getStream().length);
+				bb.order(ByteOrder.LITTLE_ENDIAN);
+					//Scale to the gain:
+				for (int j = 0 ; j < sampleList[i].getStream().length / 2; ++j)
+					pcmShorts[j] = (short) ((float) (bb.getShort()) * sampleList[i].getGain() * 0.01); // 0.01 scales the volume. WE ALSO NEED TO HANDLE CLIPPING!
+				//byte[] pcmBytes = new byte[sampleList[i].getStream().length];
 				
 				//Loop through all samples
 				for (sNode j = first; j != null; j = j.next)
 				{
 					//Byte position to start at:
-					int bp = (int)((1.f / (double)(bpm * spb) * (double)j.priority ) * 60.f * 44100.f * 16.f);
+					int bp = (int)((1.f / (double)(bpm * spb) * (double)j.priority ) * 60.f * 44100.f * 8.f);
 					
 					//If stereo, we just copy it directly:
 					if (sampleList[i].getStereo())
 					{
 						//Log.i("Phat Lab", "Stereo");
-						for (int k = 0; k < samples.length; ++k)
-							sampleBytes[bp + k] += samples[k];
+						for (int k = 0; k < pcmShorts.length; ++k)
+							sampleFloats[bp + k] += ((float)(pcmShorts[k]) / 32767.f); // Scale between [-1..1];
 					}
 					//If not stereo, we copy the mono into both channels:
 					else
 					{
 						//Log.i("Phat Lab", "Mono");
-						for (int k = 0; k < samples.length; ++k)
+						for (int k = 0; k < pcmShorts.length; ++k)
 						{
-							sampleBytes[bp + (2*k)] = samples[k];
-							sampleBytes[bp + (2*k + 1)] = samples[k];
+							sampleFloats[bp + (2*k)] += (float)(pcmShorts[k]) / 32767.f;
+							sampleFloats[bp + (2*k + 1)] += (float) (pcmShorts[k]) / 32767.f;
 						}
 					}
 				}
 			}
+			/*float maxOverflowSize = 0.f; // How much the loudest samples goes over by
 			
-			PCM pcm = new PCM(sampleBytes, 44100 ,true);
+			// -- STUB -- // For some reason I am getting clipping, but the audio levels
+						  // don't even get CLOSE to the range of the data type?
+			
+			//Calculate max overflow:
+			for (int i = 0; i < totalBytes / 2; ++i)
+			{
+				if (Math.abs(sampleFloats[i]) - 1.f > maxOverflowSize)
+					maxOverflowSize = Math.abs(sampleFloats[i] - 1.f);
+			}*/
+			
+			//Compensate for overflow:
+			for (int i = 0; i < totalBytes / 2; ++i)
+				sampleShorts[i] = (short)((32767.f * sampleFloats[i]) / 12); // -- STUB -- // Temporary clipping fix
+				//sampleShorts[i] = (short)((32767.f * sampleFloats[i]) * Math.abs(maxOverflowSize-1.f));
+			
+			//Log.i("Phat Lab", "" + maxOverflowSize + ":" + maxOverflowSize * 32767.f);
+			
+			PCM pcm = new PCM(sampleShorts, 44100 ,true);
 			return pcm;
 		}
 		catch (Exception e)
@@ -405,7 +594,7 @@ public class SequenceTimer
 
 /**
  * 
- * @author reuben
+ * @author Reuben Shea
  *	Class acts as a sample trigger object. It is a linked list of timers that
  *	specify when a sample should or shouldn't play.
  *	The "priority" is the beat / step to play at.

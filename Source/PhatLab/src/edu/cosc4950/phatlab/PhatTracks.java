@@ -30,8 +30,13 @@ public class PhatTracks {
 		
 		//ExternalData ed = new ExternalData();
 		//byte[] tmp = ed.loadPCM16bit(sample);
+		if(!sample.equals("No Sample")){
 		myTracks[padRow][padCol] = new ExternalData().loadPCM(sample);//new PCM(tmp, 44100, true, false);
 		sampleNames[padRow][padCol]=sample;
+		} else {
+			myTracks[padRow][padCol] = null;//new PCM(tmp, 44100, true, false);
+			sampleNames[padRow][padCol]=null;
+		}
 	}
 	
 	public void setTrack(int padRow, int padCol, PCM pcm)
@@ -43,11 +48,35 @@ public class PhatTracks {
 		return myTracks[padRow][padCol];
 	}
 	
+	public boolean isPadEmpty(int padRow, int padCol){	
+		if(myTracks[padRow][padCol]==null){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public String getSampName(int padRow, int padCol){
-		return sampleNames[padRow][padCol].toString();
+		if(isPadEmpty(padRow,padCol)){
+			return "No Sample";
+		} else {
+			return sampleNames[padRow][padCol].toString();
+		}
 	}
 	
 	public void play(int padRow, int padCol) {
 		myTracks[padRow][padCol].stream();
 	}
+	
+	public int getSampVol(int padRow, int padCol){
+		if(myTracks[padRow][padCol] != null){
+		return Math.round(myTracks[padRow][padCol].getGain());}
+		else { return 1; }
+	}
+	
+	public void setSampVol(int padRow, int padCol, float gain){
+		myTracks[padRow][padCol].setGain(gain);
+	}
+	
+
 }

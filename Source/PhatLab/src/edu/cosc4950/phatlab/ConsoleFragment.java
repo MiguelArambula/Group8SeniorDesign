@@ -1,6 +1,10 @@
 package edu.cosc4950.phatlab;
 
+import java.io.IOException;
+
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,9 +27,20 @@ public class ConsoleFragment extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		final MainActivity data = (MainActivity) getActivity();
+		final SequenceTimer sT = data.getTimer();
+		final Recorder reCord = new Recorder();
 		View myView = inflater.inflate(R.layout.fragment_console, container, false);
 		root = Environment.getExternalStorageDirectory()+"/PhatLab/";
-		data.getDir(root);
+		String samples = Environment.getExternalStorageDirectory()+"/PhatLab/Samples/";
+		data.getDir(samples);
+		data.getProfs(Environment.getExternalStorageDirectory()+"/PhatLab/Profiles/");
+		
+		//Export, Save and Load Sequence Buttons
+		//Export Sequence will compile the pcm of all the samples in the sequence to a .wav file
+		final Button expSeq = (Button) myView.findViewById(R.id.export_seq);
+		expSeq.setEnabled(false);
+		final Button changeRate = (Button) myView.findViewById(R.id.change_rate);
+		changeRate.setEnabled(false);
 		
 		//spin- Spinner for changing samples in pad. 
 		final Spinner spin = (Spinner) myView.findViewById(R.id.spin);
@@ -106,6 +121,38 @@ public class ConsoleFragment extends Fragment{
 			}
 		});
 		
+		final SeekBar sampVol = (SeekBar) myView.findViewById(R.id.sample_volumebar);
+		sampVol.setMax(manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+		data.setSampVolBar(sampVol);
+		data.setSampVolBar();
+		sampVol.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
+			float y=0;
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+				seekBar.setProgress(progress);
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				int x = seekBar.getProgress();
+				y = ((float) x)/100;
+				seekBar.setProgress(x);
+				data.setSampVol(y);
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				int x = seekBar.getProgress();
+				seekBar.setProgress(x);
+				y = ((float) x)/100;
+				data.setSampVol(y);
+			}
+		});
+		
 		//Changes the max amount beats. 
 		final TextView maxText = (TextView) myView.findViewById(R.id.max_text);
 		maxText.setText(Integer.toString(data.getMaxBeat()));
@@ -131,31 +178,6 @@ public class ConsoleFragment extends Fragment{
 			}
 			
 		});
-		//Changing the current pad that is being looked out
-		final TextView currText = (TextView) myView.findViewById(R.id.cur_text);
-		currText.setText(Integer.toString(data.getCurBeat()));
-		final Button decCurr = (Button) myView.findViewById(R.id.dec_cur);
-		decCurr.setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				int x = data.changeCur("sub");
-				currText.setText(Integer.toString(x));
-			}
-			
-		});
-		final Button addCurr = (Button) myView.findViewById(R.id.in_cur);
-		addCurr.setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				int x = data.changeCur("add");
-				currText.setText(Integer.toString(x));
-			}
-			
-		});
 		
 		final RadioButton padView = (RadioButton) myView.findViewById(R.id.pad_view);
 		padView.setChecked(true);
@@ -165,6 +187,8 @@ public class ConsoleFragment extends Fragment{
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// TODO Auto-generated method stub
 				data.swapFrag("sequencer");
+				expSeq.setEnabled(true);
+				changeRate.setEnabled(true);
 			}
 		});
 		final RadioButton seqView = (RadioButton) myView.findViewById(R.id.seq_view);
@@ -174,6 +198,8 @@ public class ConsoleFragment extends Fragment{
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// TODO Auto-generated method stub
 				data.swapFrag("pad");
+				expSeq.setEnabled(false);
+				changeRate.setEnabled(false);
 			}
 		});
 		//padNum- TextView for update the status of the last pad pressed. 
@@ -188,7 +214,6 @@ public class ConsoleFragment extends Fragment{
 				case MotionEvent.ACTION_DOWN:
 					//btnStart.setImageBitmap(bmpPressed);
 					if(data.loopOn) {
-						data.sequence.setPlayTime(data.currentBeat, 0, data.currentBeat + data.loopLength, 7);
 						data.sequence.loop();
 					}
 					else {
@@ -221,6 +246,224 @@ public class ConsoleFragment extends Fragment{
 				return false;
 			}
 		});
+		
+		//Save sequence code
+		//Pop-up and intakes the name. 
+		expSeq.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				final LayoutInflater lf = LayoutInflater.from(getActivity());
+				View savePrompt = lf.inflate(R.layout.saveseq_prompt, null);
+				
+				final EditText saveName = (EditText) savePrompt.findViewById(R.id.save_name);
+				
+				AlertDialog.Builder saveDialogBuild = new AlertDialog.Builder(getActivity());
+				saveDialogBuild.setView(savePrompt);
+				saveDialogBuild.setCancelable(false)
+				.setPositiveButton("SAVE", new DialogInterface.OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						String newName = saveName.getText().toString();
+						PCM seq = sT.compileToPCM();
+						data.savePCM(seq, newName);
+						ArrayAdapter<String> adapter = new ArrayAdapter<String>
+						(getActivity(), android.R.layout.simple_spinner_item, data.getItems());
+						adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+						spin.setAdapter(adapter);
+					}
+					
+				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						dialog.cancel();
+					}
+					
+				});
+				AlertDialog seqSave = saveDialogBuild.create();
+				seqSave.show();
+			}
+			
+		});
+		
+		Button record = (Button) myView.findViewById(R.id.record);
+		record.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				final LayoutInflater lf = LayoutInflater.from(getActivity());
+				View recordPrompt = lf.inflate(R.layout.record_prompt, null);
+				
+				final EditText saveName = (EditText) recordPrompt.findViewById(R.id.name_record);
+				final Button recordBTN = (Button) recordPrompt.findViewById(R.id.btn_record);
+				recordBTN.setOnClickListener(new OnClickListener(){
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						if(!reCord.isRecording()){
+							reCord.start();
+							recordBTN.setText("Stop");
+						} else {
+							reCord.stop();
+							recordBTN.setText("Start");
+						}
+						
+					}
+					
+				});
+				
+				AlertDialog.Builder recordDialogBuild = new AlertDialog.Builder(getActivity());
+				recordDialogBuild.setView(recordPrompt);
+				recordDialogBuild.setCancelable(false)
+				.setPositiveButton("SAVE", new DialogInterface.OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						String newName = saveName.getText().toString();
+						PCM recFile = reCord.getSample();
+						data.savePCM(recFile, newName);
+						data.getDir(Environment.getExternalStorageDirectory()+"/PhatLab/Samples/");
+						ArrayAdapter<String> adapter = new ArrayAdapter<String>
+						(getActivity(), android.R.layout.simple_spinner_item, data.getItems());
+						adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+						spin.setAdapter(adapter);
+					}
+					
+				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						dialog.cancel();
+					}
+					
+				});
+				AlertDialog recSave = recordDialogBuild.create();
+				recSave.show();
+			}
+			
+		});
+		
+		final Spinner selProf = (Spinner) myView.findViewById(R.id.sel_profile);
+		ArrayAdapter<String> profAdapter = new ArrayAdapter<String>
+		(getActivity(), android.R.layout.simple_spinner_item, data.getAllProfiles());
+		selProf.setAdapter(profAdapter);
+		selProf.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				try {
+					data.loadProfile(selProf.getSelectedItem().toString());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		
+		final Button createProf = (Button) myView.findViewById(R.id.create_pro);
+		createProf.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				final LayoutInflater lf = LayoutInflater.from(getActivity());
+				View createPrompt = lf.inflate(R.layout.profile_prompt, null);
+				
+				final EditText saveName = (EditText) createPrompt.findViewById(R.id.prof_name);
+				
+				AlertDialog.Builder createDialogBuild = new AlertDialog.Builder(getActivity());
+				createDialogBuild.setView(createPrompt);
+				createDialogBuild.setCancelable(false)
+				.setPositiveButton("SAVE", new DialogInterface.OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						String newName = saveName.getText().toString();
+						data.createProfile(newName);
+						data.getProfs(Environment.getExternalStorageDirectory()+"/PhatLab/Profiles/");
+						ArrayAdapter<String> profAdapter = new ArrayAdapter<String>
+						(getActivity(), android.R.layout.simple_spinner_item, data.getAllProfiles());
+						selProf.setAdapter(profAdapter);
+					}
+					
+				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						dialog.cancel();
+					}
+					
+				});
+				AlertDialog createProfile = createDialogBuild.create();
+				createProfile.show();
+			}		
+			
+		});
+		
+		//Changing the sample rate
+		final TextView currRate = (TextView) myView.findViewById(R.id.curr_rate);
+		currRate.setText(Integer.toString(data.getBPM()));
+		
+		
+		
+		changeRate.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				final LayoutInflater lf = LayoutInflater.from(getActivity());
+				View createPrompt = lf.inflate(R.layout.changerate_prompt, null);
+				
+				final EditText newRate = (EditText) createPrompt.findViewById(R.id.new_rate);
+				
+				AlertDialog.Builder createDialogBuild = new AlertDialog.Builder(getActivity());
+				createDialogBuild.setView(createPrompt);
+				createDialogBuild.setCancelable(false)
+				.setPositiveButton("SAVE", new DialogInterface.OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						int x = Integer.parseInt(newRate.getText().toString());
+						data.setBPM(x);
+						currRate.setText(Integer.toString(data.getBPM()));
+					}
+					
+				}).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						dialog.cancel();
+					}
+					
+				});
+				AlertDialog createProfile = createDialogBuild.create();
+				createProfile.show();
+			}		
+			
+		});
+		
 		
 		return myView;
 	}

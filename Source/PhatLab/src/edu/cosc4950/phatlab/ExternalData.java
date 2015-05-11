@@ -94,6 +94,9 @@ public class ExternalData
 	{
 		try{
 			//Error loading, also checks if file exists:
+			if(filename.equals("No Sample") || filename == null){
+				return false;
+			}
 			byte[] data = loadPCM16bit(filename);
 			if (data == null)
 				return false;
@@ -226,15 +229,15 @@ public class ExternalData
 		byte audio[];// = new byte[8192]; // Create audio array
 		try
 		{
-			if (!fileExists(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".wav"))
+			if (!fileExists(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/Samples/"+filename+".wav"))
 				throw new Exception();
 			
-			InputStream	impS = new FileInputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".wav");
+			InputStream	impS = new FileInputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/Samples/"+filename+".wav");
 			BufferedInputStream	buffImp = new BufferedInputStream(impS);
 			DataInputStream	dataImp = new DataInputStream(buffImp);
 			
 			//Loads file into byte array
-			audio = new byte[(int) getFileSize(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".wav")];
+			audio = new byte[(int) getFileSize(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/Samples/"+filename+".wav")];
 			dataImp.readFully(audio);
 			
 			//Close the stream
@@ -318,7 +321,7 @@ public class ExternalData
 			if (!isWritable())
 				throw null;
 			
-			OutputStream outS = new FileOutputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/"+filename+".wav");
+			OutputStream outS = new FileOutputStream(Environment.getExternalStorageDirectory()+File.separator+"PhatLab/Samples/"+filename+".wav");
 			BufferedOutputStream	buffOut = new BufferedOutputStream(outS);
 			DataOutputStream	dataOut = new DataOutputStream(buffOut);
 			

@@ -4,15 +4,9 @@
  * 
  * Description:
  * The PCM class is designed to handle audio playback and manipulation for
- * individual audio tracks.
+ * individual audio tracks. This class will contain all the audio for a single
+ * sample at the byte level, as well as any associated properites
  * 
- */
-
-/*
- *  TODO: Make sure ALL AUDIO is resampled to 44100hz upon load.
- *  We will only export to 44100 as well. We are limiting this because that
- *  is the only guaranteed frequency that can be RECORDED from the mic. This
- *  should keep everything equal.
  */
 
 package edu.cosc4950.phatlab;
@@ -25,26 +19,20 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.util.Log;
 
-
-/*
- * Look up "Lossless resampling algorithm" for resampling. May need to
- * do float manip rather than short manip to prevent artifacts.
- * 
- * Also, need a way to find native device sample rate. If I can't find it,
- * it might be a good idea to auto-resample all loaded data to
- * either 44.1khz. Not sure if 44.1khz or 48khz is the better option.
- * Do research.
- */
-
 public class PCM{
 	
 	private AudioTrack audio = null;
 	private byte[] stream = null;
 	private boolean _hasSet = false,
 					stereo = false;
-	private int bitrate=-1;//, startPlay, endPlay;
+	private float gain = 1.f; 	// Percent
+	private int bitrate=-1;
 	
 	
+	public PCM(short[] stream, int samplerate, boolean stereo)
+	{
+		set16bit(stream, samplerate, stereo);
+	}
 	
 	public PCM(byte[] stream, int samplerate, boolean stereo)
 	{
@@ -88,6 +76,33 @@ public class PCM{
 	}
 	
 	/**
+	 * Sets the gain or "volume" of the sound. 1.0 = full, 0.5 = half, etc
+	 *
+	 */
+	public void setGain(float gain)
+	{
+		if (!isSet())
+		{
+			Log.e("Phat Lab", "Cannot adjust gain of uninitialized PCM!");
+			return;
+		}
+		try
+		{
+			audio.setStereoVolume(gain, gain);
+			this.gain = gain;
+		}
+		catch (Exception e)
+		{
+			Log.e("Phat Lab", "Failed to set gain.", e);
+		}
+	}
+	
+	public float getGain()
+	{
+		return gain;
+	}
+	
+	/**
 	 * Sets the start / end samples to play from the PCM object.
 	 * @param start		Sample to start at
 	 * @param end		Sample to end at
@@ -125,92 +140,6 @@ public class PCM{
 		return (value > to ? to : (value < from ? from : value));
 	}
 	
-	/**
-	 * Performs a fast-fourier transform on a single channel of samples
-	 * Code credit to: https://sites.google.com/site/mikescoderama/pitch-shifting
-	 * 
-	 * NOTE: Not currently used, but may be needed if we use better resampling
-	 * @param samples		List of samples to use
-	 * @param framesize		Framesize in samples (power of 2)
-	 * @param inverse		Whether or not to use inverse fourier transform
-	 * @return				The converted samples
-	 */
-	private short[] fft(short[] osamples, long framesize, boolean inverse)
-	{
-		//Make sure is a power of 2:
-		double isPowerOf2 = Math.log10((double) framesize) / Math.log10(2);
-		if (Math.floor(isPowerOf2) != isPowerOf2)
-		{
-			Log.e("Phat Lab","Frame size not a power of 2! Skipping...");
-			return osamples;
-		}
-		//Convert samples to floats:
-		float[] samples = new float[osamples.length];
-		for (int i = 0; i < samples.length; ++i)
-			samples[i] = ((float) osamples[i]) / 32768;
-		
-		for (int i = 2; i < (2 * framesize) - 2; i += 2)
-		{
-			int k = 0;
-			for (int j = 2; j < 2 * framesize; j <<= 1)
-			{
-				if ((i & j) !=0)
-					++k;
-				
-				k <<= 1;
-			}
-			
-			//Shift
-			if (i < k)
-			{
-				float _temp = samples[i];
-				samples[i] = samples[k];
-				samples[k] = _temp;
-				
-				_temp = samples[i + 1];
-				samples[i + 1] = samples[k + 1];
-				samples[k + 1] = _temp;
-			}
-		}
-		
-		int max = (int) (Math.log(framesize) / Math.log(2.f) + 0.5);
-		
-		for (int l = 0, le = 2; l < max; ++l)
-		{
-			le <<= 1;
-			int le2 = le >> 1;
-			float ur =1.f,
-				  ui = 0.f,
-				  arg = (float) (Math.PI / (le2 >> 1));
-			float wr = (float) Math.cos(arg),
-				  wi = (float) ((inverse ? 1: -1) * Math.sin(arg)),
-				  tr,ti;
-			
-			for (int j = 0; j < le2; j += 2)
-			{
-				for (int i = j; i < 2 * framesize; i += le)
-				{
-					tr = samples[i + le2] * ur - samples[i + le2 + 1] * ui;
-					ti = samples[i + le2] * ui + samples[i + le2 + 1] * ur;
-					
-					samples[i + le2] = samples[i] - tr;
-					samples[i + le2 + 1] = samples[i + 1] - ti;
-					samples[i] += tr;
-					samples[i + 1] += ti;
-				}
-				
-				tr = (ur * wr) - (ui * wi);
-				ui = (ur * wi) + (ui * wr);
-				ur = tr;
-			}
-		}
-		
-		//Convert samples back to shorts:
-		for (int i = 0; i < samples.length; ++i)
-			osamples[i] = (short) (samples[i] * 32768);
-		
-		return osamples;
-	}
 	
 	/**
 	 * Merges the current and provided PCM objects into a single PCM audio
@@ -291,6 +220,10 @@ public class PCM{
 		return newpcm;
 	}
 	
+	/*
+		Generates the header data for the wave file and returns the
+		data in a byte array
+	 */
 	public byte[] generateHeader()
 	{
 		byte[] header;
@@ -334,6 +267,9 @@ public class PCM{
 		return header;
 	}
 	
+	/**
+	 * Various functions to set the byte data for the audio.
+	 */
 	public void set16bit(short[] stream, boolean stereo)
 	{
 		ByteBuffer bb = ByteBuffer.allocate(stream.length*2);
@@ -374,10 +310,7 @@ public class PCM{
 			
 			if (isSet())
 				clear();
-			
-			/*int minBuffer = AudioTrack.getMinBufferSize(samplerate,
-														(stereo ? AudioFormat.CHANNEL_OUT_STEREO:AudioFormat.CHANNEL_OUT_MONO),
-														AudioFormat.ENCODING_PCM_16BIT);*/
+
 			audio = new AudioTrack(AudioManager.STREAM_MUSIC, 
 								   samplerate, 
 								   (stereo ? AudioFormat.CHANNEL_OUT_STEREO:AudioFormat.CHANNEL_OUT_MONO), 
@@ -401,17 +334,17 @@ public class PCM{
 	}
 	
 	//Credit to Jacquet Wong
-	//Currently causes decent artifacts
+	//Currently causes decent artifacts with bad ratios
 	private short[] linearInterpolate(int min, int max, short[] values)
 	{
-		if (min == max)
-			return values;
+		//if (min == max)
+		//	return values;
 		
 		int length = (int)Math.round(((float)values.length / min) * max);
 		float scale = (length / ((float) values.length));
 		
 		short[] result = new short[length];
-		//Log.i("Phat Lab", length + ", " + values.length + ", " + scale + ", " + min + ", " + max);
+
 		//Interpolate using y = mx + c
 		for (int i = 0; i < length; ++i)
 		{
@@ -428,7 +361,7 @@ public class PCM{
 			float posFromLeft = currentPos - nearestLeft;
 			
 			result[i] = (short)(slope * posFromLeft + values[nearestLeft]);
-			result[i] *= 0.01; // Lower volume
+
 		}
 		
 		return result;
@@ -453,10 +386,11 @@ public class PCM{
 			
 			//Grab actual samples:
 			short[] amps = new short[totalSamples];
-			ByteBuffer bb = ByteBuffer.wrap(stream, 0, stream.length);
-			bb.order(ByteOrder.LITTLE_ENDIAN);
+			ByteBuffer bb = ByteBuffer.wrap(stream);
+			//bb.order(ByteOrder.LITTLE_ENDIAN);
 			for (int i = 0; i < totalSamples; ++i)
 				amps[i] = bb.getShort();
+			
 			//Interpolate the samples:
 			short[] resample;
 			if (!getStereo())
@@ -484,6 +418,7 @@ public class PCM{
 
 			//May need a digital filter to remove high frequencies
 			set16bit(resample,targetRate, getStereo());
+			//set16bit(amps,targetRate, getStereo());
 		}
 		catch (Exception e)
 		{

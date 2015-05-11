@@ -23,6 +23,20 @@ public class PhatPadFragment extends Fragment {
 	final PhatTracks tracks = new PhatTracks();
 	final String currPad = "";
 	
+	//Trigger Pads
+	private ImageButton pad01;
+	private ImageButton pad02;
+	private ImageButton pad03;
+	private ImageButton pad04;
+	private ImageButton pad05;
+	private ImageButton pad06;
+	private ImageButton pad07;
+	private ImageButton pad08;
+	private ImageButton pad09;
+	private ImageButton pad10;
+	private ImageButton pad11;
+	private ImageButton pad12;
+	
 	public PhatPadFragment() {}
 	
 	@Override
@@ -37,6 +51,7 @@ public class PhatPadFragment extends Fragment {
 		data = (MainActivity) getActivity(); // create instance
 		data.setTracks(tracks);
 		View myView = inflater.inflate(R.layout.fragment_phatpad, container, false);
+		
 		/* pad bitmaps */
 		bmpEmpty = BitmapFactory.decodeResource(getResources(), R.drawable.pad_empty);
 		bmpLoaded = BitmapFactory.decodeResource(getResources(), R.drawable.pad_loaded);
@@ -52,7 +67,7 @@ public class PhatPadFragment extends Fragment {
 		update(tracks);
 		
 		/* trigger pads */
-		final ImageButton pad01 = (ImageButton) myView.findViewById(R.id.pad01);
+		pad01 = (ImageButton) myView.findViewById(R.id.pad01);
 		if(myPad[0][0] == 1) pad01.setImageBitmap(bmpLoaded);
 		pad01.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -79,7 +94,7 @@ public class PhatPadFragment extends Fragment {
 			}
 		});
 		
-		final ImageButton pad02 = (ImageButton) myView.findViewById(R.id.pad02);
+		pad02 = (ImageButton) myView.findViewById(R.id.pad02);
 		if(myPad[1][0] == 1) pad02.setImageBitmap(bmpLoaded);
 		pad02.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -106,7 +121,7 @@ public class PhatPadFragment extends Fragment {
 			}
 		});
 		
-		final ImageButton pad03 = (ImageButton) myView.findViewById(R.id.pad03);
+		pad03 = (ImageButton) myView.findViewById(R.id.pad03);
 		if(myPad[2][0] == 1) pad03.setImageBitmap(bmpLoaded);
 		pad03.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -133,7 +148,7 @@ public class PhatPadFragment extends Fragment {
 			}
 		});
 		
-		final ImageButton pad04 = (ImageButton) myView.findViewById(R.id.pad04);
+		pad04 = (ImageButton) myView.findViewById(R.id.pad04);
 		if(myPad[3][0] == 1) pad04.setImageBitmap(bmpLoaded);
 		pad04.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -160,7 +175,7 @@ public class PhatPadFragment extends Fragment {
 			}
 		});
 		
-		final ImageButton pad05 = (ImageButton) myView.findViewById(R.id.pad05);
+		pad05 = (ImageButton) myView.findViewById(R.id.pad05);
 		if(myPad[0][1] == 1) pad05.setImageBitmap(bmpLoaded);
 		pad05.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -187,7 +202,7 @@ public class PhatPadFragment extends Fragment {
 			}
 		});
 		
-		final ImageButton pad06 = (ImageButton) myView.findViewById(R.id.pad06);
+		pad06 = (ImageButton) myView.findViewById(R.id.pad06);
 		if(myPad[1][1] == 1) pad06.setImageBitmap(bmpLoaded);
 		pad06.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -214,7 +229,7 @@ public class PhatPadFragment extends Fragment {
 			}
 		});
 		
-		final ImageButton pad07 = (ImageButton) myView.findViewById(R.id.pad07);
+		pad07 = (ImageButton) myView.findViewById(R.id.pad07);
 		if(myPad[2][1] == 1) pad07.setImageBitmap(bmpLoaded);
 		pad07.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -241,7 +256,7 @@ public class PhatPadFragment extends Fragment {
 			}
 		});
 		
-		final ImageButton pad08 = (ImageButton) myView.findViewById(R.id.pad08);
+		pad08 = (ImageButton) myView.findViewById(R.id.pad08);
 		if(myPad[3][1] == 1) pad08.setImageBitmap(bmpLoaded);
 		pad08.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -268,7 +283,7 @@ public class PhatPadFragment extends Fragment {
 			}
 		});
 		
-		final ImageButton pad09 = (ImageButton) myView.findViewById(R.id.pad09);
+		pad09 = (ImageButton) myView.findViewById(R.id.pad09);
 		if(myPad[0][2] == 1) pad09.setImageBitmap(bmpLoaded);
 		pad09.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -295,7 +310,7 @@ public class PhatPadFragment extends Fragment {
 			}
 		});
 		
-		final ImageButton pad10 = (ImageButton) myView.findViewById(R.id.pad10);
+		pad10 = (ImageButton) myView.findViewById(R.id.pad10);
 		if(myPad[1][2] == 1) pad10.setImageBitmap(bmpLoaded);
 		pad10.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -322,7 +337,7 @@ public class PhatPadFragment extends Fragment {
 			}
 		});
 		
-		final ImageButton pad11 = (ImageButton) myView.findViewById(R.id.pad11);
+		pad11 = (ImageButton) myView.findViewById(R.id.pad11);
 		if(myPad[2][2] == 1) pad11.setImageBitmap(bmpLoaded);
 		pad11.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -349,7 +364,7 @@ public class PhatPadFragment extends Fragment {
 			}
 		});
 		
-		final ImageButton pad12 = (ImageButton) myView.findViewById(R.id.pad12);
+		pad12 = (ImageButton) myView.findViewById(R.id.pad12);
 		if(myPad[3][2] == 1) pad12.setImageBitmap(bmpLoaded);
 		pad12.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -379,6 +394,7 @@ public class PhatPadFragment extends Fragment {
 		return myView;
 	}
 	
+	//Fills the 2D array with the empty logic value
 	public void initPad() {
 		for(int i=0; i<4; i++) {
 			for(int j=0; j<3; j++) {
@@ -387,6 +403,7 @@ public class PhatPadFragment extends Fragment {
 		}
 	}
 	
+	//updates the 2D array that contains the logic behind empty and loaded pads. 
 	public void update(PhatTracks p){
 		for(int i=0; i<4; i++) {
 			for(int j=0; j<3; j++) {
@@ -395,4 +412,68 @@ public class PhatPadFragment extends Fragment {
 			}
 		}
 	}
+	
+	public void updatePads(){
+		if(myPad[0][0] == 1){ 
+			pad01.setImageBitmap(bmpLoaded);
+		} else {
+			pad01.setImageBitmap(bmpEmpty);
+		}
+		if(myPad[1][0] == 1){
+			pad02.setImageBitmap(bmpLoaded);
+		} else {
+			pad02.setImageBitmap(bmpEmpty);
+		}
+		if(myPad[2][0] == 1){
+			pad03.setImageBitmap(bmpLoaded);
+		} else {
+			pad03.setImageBitmap(bmpEmpty);
+		}
+		if(myPad[3][0] == 1){
+			pad04.setImageBitmap(bmpLoaded);
+		} else {
+			pad04.setImageBitmap(bmpEmpty);
+		}
+		if(myPad[0][1] == 1){
+			pad05.setImageBitmap(bmpLoaded);
+		}else {
+			pad05.setImageBitmap(bmpEmpty);
+		}
+		if(myPad[1][1] == 1){
+			pad06.setImageBitmap(bmpLoaded);
+		}else {
+			pad06.setImageBitmap(bmpEmpty);
+		}
+		if(myPad[2][1] == 1){
+			pad07.setImageBitmap(bmpLoaded);
+		} else {
+			pad07.setImageBitmap(bmpEmpty);
+		}
+		if(myPad[3][1] == 1){
+			pad08.setImageBitmap(bmpLoaded);
+		} else {
+			pad08.setImageBitmap(bmpEmpty);
+		}
+		if(myPad[0][2] == 1){
+			pad09.setImageBitmap(bmpLoaded);
+		} else {
+			pad09.setImageBitmap(bmpEmpty);
+		}	
+		if(myPad[1][2] == 1){
+			pad10.setImageBitmap(bmpLoaded);
+		} else {
+			pad10.setImageBitmap(bmpEmpty);
+		}
+		if(myPad[2][2] == 1){
+			pad11.setImageBitmap(bmpLoaded);
+		} else {
+			pad11.setImageBitmap(bmpEmpty);
+		}
+		if(myPad[3][2] == 1){
+			pad12.setImageBitmap(bmpLoaded);
+		} else {
+			pad12.setImageBitmap(bmpEmpty);
+		}
+	}
+	
 }
