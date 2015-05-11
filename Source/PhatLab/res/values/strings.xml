@@ -4,5 +4,6 @@
     <string name="app_name">PhatLab</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <string name="padcontrol_title">-----Pad Controls-----</string>
+	<string name="seqcontrol_title">---Sequencer Controls---</string>
 </resources>

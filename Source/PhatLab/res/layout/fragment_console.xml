@@ -20,26 +20,68 @@
    			android:id="@+id/switch_view"
    	    	android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
+    		android:layout_weight="1"
     		android:orientation="horizontal">
     	        
-       	<RadioButton 
-    	 	android:id="@+id/pad_view"
-    	 	android:layout_width="wrap_content"
-    	 	android:layout_height="wrap_content"
-    	 	android:text="Pads"/>
-    	        
-    	<RadioButton
-    	    android:id="@+id/seq_view"
-            android:layout_width="wrap_content"
- 	        android:layout_height="wrap_content"
-    	    android:text="Sequencer"/>
+	       	<RadioButton 
+	    	 	android:id="@+id/pad_view"
+	    	 	android:layout_width="wrap_content"
+	    	 	android:layout_height="wrap_content"
+	    	 	android:text="Pads"/>
+	    	        
+	    	<RadioButton
+	    	    android:id="@+id/seq_view"
+	            android:layout_width="wrap_content"
+	 	        android:layout_height="wrap_content"
+	    	    android:text="Sequencer"/>
     	</RadioGroup>
+    	
+       <!-- System volume control -->
+       <LinearLayout
+           	android:layout_width="fill_parent"
+           	android:layout_height="wrap_content"
+           	android:orientation="horizontal"
+           	android:layout_weight="1"
+           	android:padding="5dp">
+            
+           	<TextView 
+               	android:id="@+id/volume_text"
+               	android:layout_width="wrap_content"
+               	android:layout_height="wrap_content"
+                android:text="Volume"/>
+            
+            <SeekBar 
+                android:id="@+id/volumebar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        
+       <!-- Sample volume control -->
+       <LinearLayout
+           	android:layout_width="fill_parent"
+           	android:layout_height="wrap_content"
+           	android:orientation="horizontal"
+           	android:layout_weight="1"
+           	android:padding="5dp">
+            
+           	<TextView 
+               	android:id="@+id/sampvol_text"
+               	android:layout_width="wrap_content"
+               	android:layout_height="wrap_content"
+                android:text="Sample Volume"/>
+            
+            <SeekBar 
+                android:id="@+id/sample_volumebar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
     	
     	<!-- Add Scroll view here -->
     	<ScrollView 
     	    android:id="@+id/scroll"
     	    android:layout_width="fill_parent"
     	    android:layout_height="wrap_content"
+    	    android:layout_weight="24"
     	    android:fillViewport="true">
     	
     	    <LinearLayout 
@@ -47,6 +89,13 @@
     	        android:layout_height="wrap_content"
     	        android:orientation="vertical"
     	        >
+    	        
+    	        <!-- Control Divider: Sequence -->
+    	        <TextView 
+    	        android:layout_width="wrap_content"
+    	        android:layout_height="wrap_content"
+    	        android:layout_gravity="center_horizontal"
+    	        android:text="@string/padcontrol_title"/>
     	        
     	        <!-- Edit and Change Sample buttons -->
        			<LinearLayout 
@@ -69,7 +118,7 @@
                 	android:layout_width="fill_parent"
                 	android:layout_height="wrap_content"
                 	/>
-            </LinearLayout>
+            	</LinearLayout>
         
        		<!-- Current Sample Display -->
         	<LinearLayout 
@@ -84,7 +133,7 @@
 		   	 		android:layout_width="match_parent"
 		   	 		android:layout_height="wrap_content"
 		   	 		android:paddingRight="5dp"
-		   	 		android:text="Current Sample"/>
+		   	 		android:text="Current Pad:"/>
 			
 				<TextView 
 			    	android:id="@+id/pad_num"
@@ -93,46 +142,90 @@
 		   	 		android:text="No Pad picked"/>
 	
 			</LinearLayout>
-		
-       	 	<!-- Start and Stop -->
-        	<LinearLayout 
-            	android:layout_width="fill_parent"
-            	android:layout_height="wrap_content"
-            	android:orientation="horizontal">
 			
-            	<Button
-                	android:id="@+id/start"
-                	android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:text="Start"/>
-            
-            	<Button 
-                	android:id="@+id/stop"
-                	android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:text="Stop"/>
-            
+        	<!-- Profile -->
+        	<LinearLayout 
+        	    android:layout_width="fill_parent"
+        	    android:layout_height="wrap_content"
+        	    android:orientation="vertical">
+				
+        	    <LinearLayout 
+        	    android:layout_width="fill_parent"
+        	    android:layout_height="wrap_content"
+        	    android:orientation="horizontal">
+				
+        	    <TextView 
+        	        android:id="@+id/curr_profile"
+        	        android:layout_width="wrap_content"
+        	        android:layout_height="wrap_content"
+        	        android:padding="5dp"
+        	        android:text="Current Profile:"/>
+        	    
+        	    <Spinner 
+        	        android:id="@+id/sel_profile"
+        	        android:layout_width="wrap_content"
+        	        android:layout_height="wrap_content"/>
+        	    
+        		</LinearLayout>
+        		
+        	    <Button 
+        	        android:id="@+id/create_pro"
+        	        android:layout_width="wrap_content"
+        	        android:layout_height="wrap_content"
+        	        android:text="Create Profile"/>
+        	    
         	</LinearLayout>
+        	
+        	<!-- Record -->
+        	<Button
+        	    android:id="@+id/record"
+        	    android:layout_width="wrap_content"
+        	    android:layout_height="wrap_content"
+        	    android:text="Record">
+        	</Button>
+        	
+        	<!-- Control Divider: Sequence -->
+        	<TextView 
+    	        android:layout_width="wrap_content"
+    	        android:layout_height="wrap_content"
+    	        android:layout_gravity="center_horizontal"
+    	        android:padding="5dp"
+    	        android:text="@string/seqcontrol_title"/>    	
+
+        	<!-- Export Sequence -->
+        	<Button
+        	    android:id="@+id/export_seq"
+        	    android:layout_width="wrap_content"
+        	    android:layout_height="wrap_content"
+        	    android:text="Export Sequence">
+        	</Button>
 		
-        	<!-- System volume control -->
-        	<LinearLayout
-            	android:layout_width="fill_parent"
-            	android:layout_height="wrap_content"
-            	android:orientation="horizontal"
-            	android:padding="5dp">
-            
-            	<TextView 
-                	android:id="@+id/volume_text"
-                	android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:text="Volume"/>
-            
-            	<SeekBar 
-                	android:id="@+id/volumebar"
-                	android:layout_width="fill_parent"
-                	android:layout_height="wrap_content"/>
+       	 	<LinearLayout 
+        	    android:layout_width="fill_parent"
+        	    android:layout_height="wrap_content"
+        	    android:orientation="horizontal"
+        	    >
+        	    
+        	    <TextView 
+        	        android:layout_width="wrap_content"
+        	        android:layout_height="wrap_content"
+        	        android:text="Current Rate: "/>
+        	    
+        	    <TextView 
+        	        android:id="@+id/curr_rate"
+        	        android:layout_width="wrap_content"
+        	        android:layout_height="wrap_content"
+        	        android:padding="5dp"
+        	        android:text=" "/>
+        	    
+        	    <Button 
+        	        android:id="@+id/change_rate"
+        	        android:layout_width="wrap_content"
+        	        android:layout_height="wrap_content"
+        	        android:text="Change Rate"/>
+        	    
         	</LinearLayout>
-        
+		       
         	<!-- Increase and Decrease the max number of 
         	beats sections -->
         	<LinearLayout
@@ -164,40 +257,29 @@
                 	android:layout_height="wrap_content"
                 	android:text="+"/>
             
-        	</LinearLayout>
-        
-        	<!-- Moves focus of current step -->
-       		<LinearLayout
-            	android:layout_width="fill_parent"
-            	android:layout_height="wrap_content"
-            	android:orientation="horizontal"
-            	android:padding="5dp">
+        	</LinearLayout>      
+
+    	</LinearLayout> 	    
+    </ScrollView>  
+    
+    <!-- Start and Stop -->
+  	<LinearLayout 
+           	android:layout_width="fill_parent"
+           	android:layout_height="wrap_content"
+           	android:layout_weight="1"
+           	android:orientation="horizontal">
+			
+           	<Button
+               	android:id="@+id/start"
+               	android:layout_width="wrap_content"
+               	android:layout_height="wrap_content"
+               	android:text="Start"/>
             
-            	<TextView 
-                	android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:text="Current Beat"/>
-            
-            	<Button 
-                	android:id="@+id/dec_cur"
-                	android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:text="-"/>
-            
-            	<TextView 
-                	android:id="@+id/cur_text"
-                	android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:text="0"/>
-            
-            	<Button 
-                	android:id="@+id/in_cur"
-                	android:layout_width="wrap_content"
-                	android:layout_height="wrap_content"
-                	android:text="+"/>
-            
-       		</LinearLayout>
-    	</LinearLayout>
-    	    
-    </ScrollView>        	
+           	<Button 
+               	android:id="@+id/stop"
+               	android:layout_width="wrap_content"
+               	android:layout_height="wrap_content"
+               	android:text="Stop"/>
+           
+    </LinearLayout>	
 </LinearLayout>
