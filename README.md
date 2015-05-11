@@ -23,13 +23,17 @@ The above folder contains all the important source files.
 **Classes:** 
 
 *ExternalData:* 
+
 The ExternalData class handles all the file loading and exporting. Essentially any data that needs to be handled that is not directily part of the Java codebase is handled through this class.
 
 *PCM:* 
+
 The PCM class represents an audio sample. It contains all the byte data for a single sample as well as any properties that are required. This class also provides the functions to manipulate its data, such as resampling and adjusting gain.
 
 *Recorder:* 
+
 The Recorder class is responsible for reading data in from the mic. The class essentially is triggered to stream in data, and it is written into a buffer. Once all the data is recorded, it creates a new PCM to contain the audio.
 
 *SequenceTimer:* 
+
 The SequenceTimer class is responsible for the sequencing backend. It controls the actual timer and triggers the audio samples. It is also responsible for the merging of multiple samples into one large sample and passing the result to ExternalData for export.
