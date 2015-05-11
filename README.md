@@ -38,6 +38,12 @@ The Recorder class is responsible for reading data in from the mic. The class es
 
 The SequenceTimer class is responsible for the sequencing backend. It controls the actual timer and triggers the audio samples. It is also responsible for the merging of multiple samples into one large sample and passing the result to ExternalData for export.
 
+*Console Fragment:* 
+
+This class is for the fragment that appears on the right-hand side of the app.
+This fragment is responsible for allowing user to control audio location, saving of Profiles and Sequences
+and other control feature over the application or individual samples. 
+
 
 ===========================================
 **Brief Usage Summary** 
