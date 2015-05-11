@@ -15,7 +15,8 @@ Project PhatLab
   This piece of software will contain a means to loop audio samples that are placed via a sequencer, an interactive sample pad where you can trigger samples using touch, as well as a means to record and insert personal audio samples. We are aiming for an intuative and effective interface that splits the screen into a local and global interface, the local interface switching between the sequencer and trigger pads, while the global interface handles items such as BPM and other project-related settings.
   
 **Important Files / Documents:**
-* /Source/PhatLab/src/edu/cosc4950/phatlab/
+* /Source/PhatLab/src/edu/cosc4950/phatlab/ 
+
 The above folder contains all the important source files.
 
 =========================================
