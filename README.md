@@ -17,7 +17,7 @@ Project PhatLab
 **Important Files / Documents:**
 * /Source/PhatLab/src/edu/cosc4950/phatlab/ 
 
-The above folder contains all the important source files.
+The above folder contains all the source files that relate to the classes explained below.
 
 =========================================
 **Classes:** 
