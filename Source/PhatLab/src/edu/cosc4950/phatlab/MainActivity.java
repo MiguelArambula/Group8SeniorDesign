@@ -1,5 +1,8 @@
 package edu.cosc4950.phatlab;
 
+//Main Activity
+//This class is responsible for passing information between the fragments and initial setup of the application. 
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,7 +39,7 @@ public class MainActivity extends FragmentActivity {
 	//ViewGroup, allows the app to switch the views of the work station. 
 	private ViewGroup mPadLayout, mConsoleLayout;
 	private SeekBar sampleVBar;
-	//
+	
 	private ExternalData data = new ExternalData();
 	private Point p; //TODO kill?
 	//List of all the samples in the Samples folder. 
@@ -339,15 +342,6 @@ public class MainActivity extends FragmentActivity {
 	public void loadTrack(int r, int c, String samp){
 		pads.setTrack(r, c, samp);
 		phatPadFragment.update(pads);
-		/*for(int i=0; i<4; i++) {
-			for(int j=0; j<3; j++) {
-				if(pads.getTrack(i, j) != null){
-					pGrid[i][j] = 1;
-				} else {
-					pGrid[i][j] = 0;
-				}
-			}
-		}*/
 	}
 	
 	public void loadTrack(PhatTracks t, int r, int c, String samp
