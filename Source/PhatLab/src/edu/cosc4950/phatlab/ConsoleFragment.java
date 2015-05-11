@@ -1,5 +1,11 @@
 package edu.cosc4950.phatlab;
 
+//Console Fragment
+//This class is for the fragment that appears on the right-hand side of the app.
+//This fragment is responsible for allowing user to control audio location, saving of Profiles and Sequences
+//and other control feature over the application or individual samples. 
+
+
 import java.io.IOException;
 
 import android.app.AlertDialog;
@@ -26,6 +32,7 @@ public class ConsoleFragment extends Fragment{
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		//Primary setup of the needed items for the Console Fragment. 
 		final MainActivity data = (MainActivity) getActivity();
 		final SequenceTimer sT = data.getTimer();
 		final Recorder reCord = new Recorder();
@@ -53,15 +60,13 @@ public class ConsoleFragment extends Fragment{
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
+				//Grab the name of the desired sample and loads it into the selected pad. 
 				spin.setFocusable(true);
 				spin.setSelection(position);
 				String x = (String) spin.getSelectedItem();
-				//Toast.makeText(getActivity(), "made it here", Toast.LENGTH_SHORT).show();
 				if(spin.isEnabled()){
 					data.loadTrack(data.getCurrPad(), x);
 				}
-				//Toast.makeText(getActivity(), String.valueOf(spin.getSelectedItem()), Toast.LENGTH_SHORT).show();
 			}
 
 			@Override
@@ -91,7 +96,7 @@ public class ConsoleFragment extends Fragment{
 			
 		});
 		
-		//volume-uses manager to change the volume of the app. 
+		//Master Volume-uses manager to change the volume of the app. 
 		final AudioManager manager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 		final SeekBar volume = (SeekBar) myView.findViewById(R.id.volumebar);
 		volume.setMax(manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
@@ -121,6 +126,7 @@ public class ConsoleFragment extends Fragment{
 			}
 		});
 		
+		//Sample Volume-allows the user to user to change the volume of the current sample if one is selected. 
 		final SeekBar sampVol = (SeekBar) myView.findViewById(R.id.sample_volumebar);
 		sampVol.setMax(manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
 		data.setSampVolBar(sampVol);
@@ -153,9 +159,9 @@ public class ConsoleFragment extends Fragment{
 			}
 		});
 		
-		//Changes the max amount beats. 
+		//Changes the max amount beats in the sequence.  
 		final TextView maxText = (TextView) myView.findViewById(R.id.max_text);
-		maxText.setText(Integer.toString(data.getMaxBeat()));
+		maxText.setText(Integer.toString(data.getMaxBeat()+1));
 		final Button decMax = (Button) myView.findViewById(R.id.dec_max);
 		decMax.setOnClickListener(new OnClickListener(){
 
@@ -163,7 +169,7 @@ public class ConsoleFragment extends Fragment{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				int x = data.changeMax("sub");
-				maxText.setText(Integer.toString(x));
+				maxText.setText(Integer.toString(x+1));
 			}
 			
 		});
@@ -174,11 +180,12 @@ public class ConsoleFragment extends Fragment{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				int x = data.changeMax("add");
-				maxText.setText(Integer.toString(x));
+				maxText.setText(Integer.toString(x+1));
 			}
 			
 		});
 		
+		//These buttons allow the user to switch the view of the work station between 
 		final RadioButton padView = (RadioButton) myView.findViewById(R.id.pad_view);
 		padView.setChecked(true);
 		padView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -202,10 +209,12 @@ public class ConsoleFragment extends Fragment{
 				changeRate.setEnabled(false);
 			}
 		});
+		
 		//padNum- TextView for update the status of the last pad pressed. 
 		final TextView padNum = (TextView) myView.findViewById(R.id.pad_num);
 		data.setTextView(padNum);
 		
+		//Start Button for beginning the play back of the sequence in the work station. 
 		final Button btnStart = (Button) myView.findViewById(R.id.start);
 		btnStart.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -229,6 +238,7 @@ public class ConsoleFragment extends Fragment{
 			}
 		});
 		
+		//Stop Button for stopping the playback of the sequence. 
 		final Button btnStop = (Button) myView.findViewById(R.id.stop);
 		btnStop.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -291,6 +301,9 @@ public class ConsoleFragment extends Fragment{
 			
 		});
 		
+		//Record, prompts the user with a box with a text box for enter the name of the recording
+		//and a button to start and stop the recording. Once the recording is done the users can just hit
+		//the Save button or cancel it if it was not to their liking. 
 		Button record = (Button) myView.findViewById(R.id.record);
 		record.setOnClickListener(new OnClickListener(){
 
@@ -352,6 +365,7 @@ public class ConsoleFragment extends Fragment{
 			
 		});
 		
+		//A spinner that will contain a list of saved profiles for the user to load. 
 		final Spinner selProf = (Spinner) myView.findViewById(R.id.sel_profile);
 		ArrayAdapter<String> profAdapter = new ArrayAdapter<String>
 		(getActivity(), android.R.layout.simple_spinner_item, data.getAllProfiles());
@@ -378,6 +392,9 @@ public class ConsoleFragment extends Fragment{
 			
 		});
 		
+		//Prompts the user with a text box to give a profile a name.
+		//Once the user hits the save button it will save the information of the location of loaded samples
+		//and any info of a inprogress sequence if one is the Sequencer Workstation. 
 		final Button createProf = (Button) myView.findViewById(R.id.create_pro);
 		createProf.setOnClickListener(new OnClickListener(){
 
@@ -423,9 +440,6 @@ public class ConsoleFragment extends Fragment{
 		//Changing the sample rate
 		final TextView currRate = (TextView) myView.findViewById(R.id.curr_rate);
 		currRate.setText(Integer.toString(data.getBPM()));
-		
-		
-		
 		changeRate.setOnClickListener(new OnClickListener(){
 
 			@Override
