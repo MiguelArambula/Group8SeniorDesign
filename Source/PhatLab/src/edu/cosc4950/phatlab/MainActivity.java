@@ -34,6 +34,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Build;
 
+/*
+ * @author Jake Harper
+ * @author Patrick Weingardt
+ * @author Rueben Shea
+ * @author Miguel Arambula
+ *
+ * Stores some composition data. Creates the fragments that house the PhatPad, Sequencer, and Console.
+ */
+
 public class MainActivity extends FragmentActivity {
 	
 	//ViewGroup, allows the app to switch the views of the work station. 
@@ -41,7 +50,7 @@ public class MainActivity extends FragmentActivity {
 	private SeekBar sampleVBar;
 	
 	private ExternalData data = new ExternalData();
-	private Point p; //TODO kill?
+	private Point p;
 	//List of all the samples in the Samples folder. 
 	private List<String> item = null;
 	private List<String> path = null;
@@ -106,22 +115,15 @@ public class MainActivity extends FragmentActivity {
 		
 		FragmentManager fm = getFragmentManager();
 		
-		// TEST CODE
-		sequence = new SequenceTimer(360, 8); // default to 130 bpm and 8 steps per beat TODO adjust in SequenceTimer
-		sequence.setPlayTime(0, 0, -1, -1);
-		//PCM sample1 = new ExternalData().loadPCM("amen_kick1");
-		//PCM sample2 = new ExternalData().loadPCM("amen_snare1");
+		sequence = new SequenceTimer(130, 8); // default to 130 bpm and 8 steps per beat
+		sequence.setPlayTime(0, 0, -1, -1);   // initialize play time to beginning of composition
 		
 		maxBeat = 1;
 		currentBeat = 0;
 		loopLength = 0;
 		loopOn = false;
 		
-		// initialize sequencer tracks to null
-		initTracks();
-		
-		//sequence.setSample(sample1, 0); // set to amen kick
-		//sequence.setSample(sample2, 1); // set to amen snare
+		initTracks(); // initialize sequencer tracks to null
 		
 		if (savedInstanceState == null) {
 
@@ -152,7 +154,7 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
-	// the switcheroo bizzness
+	// switches between PhatPad and Sequencer fragments
 	public void swapFrag(String frag) {
 		
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -170,25 +172,6 @@ public class MainActivity extends FragmentActivity {
 		
 		ft.commit();
 	}
-	
-	// the switcheroo bizzness
-		public void loadFrag() {
-			
-			FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			
-			// if pad hide seq and show pad
-			if(currFrag == "pad") {
-				
-				ft.hide(sequencerFragment);
-				ft.show(phatPadFragment);
-			}
-			else if(currFrag == "sequencer") {
-				ft.hide(phatPadFragment);
-				ft.show(sequencerFragment);
-			}
-			
-			ft.commit();
-		}
 
 	@Override
 	public void onStart() {
@@ -198,7 +181,6 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		//loadFrag();
 	}
 
 	@Override
@@ -221,12 +203,11 @@ public class MainActivity extends FragmentActivity {
 		super.onDestroy();
 	}	
 	
+	//Retrives the name of the audio clips inside the Samples Folder on the device. 
 	public void getDir(String dirPath){
-		//myPath.setText("Location"  + dirPath);
 		item = new ArrayList<String>();
 		item.add("No Sample");
 		path = new ArrayList<String>();
-		//if(dirPath.equals(sampF)){
 		File f = new File(dirPath);
 		File[] files = f.listFiles();
 		for(int i=0;i<files.length;i++){
@@ -241,18 +222,22 @@ public class MainActivity extends FragmentActivity {
 
 	}
 	
+	//Returns a List of the audio clip names
 	public List<String> getItems(){
 		return item;
 	}
 	
+	//Returns the current beat in the sequence being worked on. 
 	public int getCurBeat(){
 		return currentBeat;
 	}
 	
+	//Returns the max number of beats of the sequence
 	public int getMaxBeat(){
 		return maxBeat;
 	}
 	
+	//Change the max number of beats in the sequence
 	public int changeMax(String c){
 		if(c=="add"){
 			maxBeat += 1;
@@ -266,6 +251,7 @@ public class MainActivity extends FragmentActivity {
 		return maxBeat;
 	}
 	
+	//Change which current beat is being looked at.
 	public int changeCur(String c){
 		if(c=="add"){
 			currentBeat += 1;
@@ -279,27 +265,33 @@ public class MainActivity extends FragmentActivity {
 		return currentBeat;
 	}
 	
+	//Sets the TextView that tells the user the current pad of the PhatPad for further use. 
 	public void setTextView(TextView v){
 		pNum = v;
 	}
 	
+	//Sets the TextView that tells the user of the current BPM of the sequence for further use. 
 	public void setCRTextView(TextView v){
 		currRate = v;
 	}
 	
+	//Updates the last pad that was pressed. 
 	public void setText(String s){
 		pNum.setText(s);
 		currPad = s;
 	}
 	
+	//Return the name of the pad last pressed. 
 	public String getCurrPad(){
 		return currPad;
 	}
 	
+	//Sets the spinner of audio clips avaible to the user for further use. 
 	public void setSpin(Spinner s){
 		fSpin = s;
 	}
 	
+	//Sets the spinner to the lasted selected audio clip
 	public void setSel(String s){
 		if(item.contains(s)){
 			fSpin.setSelection(item.indexOf(s));
@@ -308,18 +300,22 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
+	//Sets the name of the current selected audio clip.
 	public void setCurrSamp(String s){
 		currSamp = s;
 	}
 	
+	//Sets the PhatTracks for use of changing values. 
 	public void setTracks(PhatTracks pT){
 		pads = pT;
 	}
 	
+	//Sets the grid so changes to the grid can be updated from other classes.
 	public void setGrid(int[][] g){
 		pGrid = g;
 	}
 	
+	//Give a pad number and audio clip name, connects the current audio clip to the desired pad. 
 	public void loadTrack(String pad, String samp){
 		switch(pad){
 		case "Pad 1": loadTrack(0,0,samp); loadSeqTrack(samp, 0); break;
@@ -339,11 +335,13 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
+	//Give a PhatTrack location and audio clip name, update the location with the given name. 
 	public void loadTrack(int r, int c, String samp){
 		pads.setTrack(r, c, samp);
 		phatPadFragment.update(pads);
 	}
 	
+	//Given a PhatTrack object, the location and a audio clip name, update the location in the PhatTrack with the given name. 
 	public void loadTrack(PhatTracks t, int r, int c, String samp
 			, int[][] m){
 		t.setTrack(r, c, samp);
@@ -355,29 +353,35 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
+	//Connects the audio clip to the given track of the sequence. 
 	public void loadSeqTrack(String sampleName, int track) {
 		PCM sample = new ExternalData().loadPCM(sampleName);
 		sequence.setSample(sample, track);
 	}
 	
+	//Initialize the tracks of the sequence.
 	public void initTracks() {
 		for(int i=0; i<12; i++) {
 			sequence.setSample(null, i);
 		}
 	}
 	
+	//Return the timer or set of play triggers of the sequence.
 	public SequenceTimer getTimer(){
 		return sequence;
 	}
 	
+	//Given a pcm and name, save the wanted PCM into the Sample Folder of the application. 
 	public void savePCM(PCM pcm, String filename){
 		data.savePCM(pcm, filename);
 	}
 	
+	//Return a list of all saved profiles on the application.
 	public List<String> getAllProfiles(){
 		return profiles;
 	}
 	
+	//Get the name of the profiles from the Profile folder of the applcation. 
 	public void getProfs(String dirPath){
 		profiles = new ArrayList<String>();
 		profiles.add("No Profile");
@@ -489,6 +493,8 @@ public class MainActivity extends FragmentActivity {
 		sampleVBar = p;
 	}
 	
+	//Set the Sample Volume Bar to the selected audio clips volume.
+	//(*still in progress*)
 	public void setSampVolBar(){
 		switch(currPad){
 		case "Pad 1": sampleVBar.setProgress(pads.getSampVol(0, 0)); break; 
@@ -507,6 +513,7 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
+	//Given a valume from the Sample Volume bar, set the current sample to the given volume. 
 	public void setSampVol(float gain){
 		switch(currPad){
 		case "Pad 1": pads.setSampVol(0, 0, gain); break;
@@ -525,10 +532,12 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
+	//Return the current BPM of the sequence.
 	public int getBPM(){
 		return sequence.getBPM();
 	}
 	
+	//Update the sequence's BPM with the given value. 
 	public void setBPM(int x){
 		sequence.setBPM(x);
 	}
