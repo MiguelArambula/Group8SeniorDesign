@@ -269,7 +269,8 @@ public class SequencerFragment extends Fragment{
 			}
 		});
 		
-		/* Trigger Buttons
+		/* 
+		 * Trigger Buttons
 		 * When pressed, these toggles will store a trigger in a linked list of when each audio clip will play.
 		 * Each of the 12 AudioTracks are affected by rows of 8 buttons.
 		 * Each column of buttons represent 1/8 step of the beat.
