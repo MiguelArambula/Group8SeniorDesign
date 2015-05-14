@@ -80,6 +80,9 @@ public class PhatPadFragment extends Fragment {
 		 * When pressed, a pad will play the audio clip associated with it, if it has been linked with one.
 		 * When pressed, a pad will light up blue.
 		 * When released, a pad will return to being white.
+		 * If a pad doesn't contain a sample, it will not play. Prevents playing a null. Whether a pad
+		     contains a sample or not is determined by the myPad[][] associated with that pad where
+		     0 is empty and 1 contains an audio clip.
 		 */
 		pad01 = (ImageButton) myView.findViewById(R.id.pad01);
 		if(myPad[0][0] == 1) pad01.setImageBitmap(bmpLoaded);
