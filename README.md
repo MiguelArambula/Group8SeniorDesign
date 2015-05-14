@@ -22,6 +22,10 @@ The above folder contains all the source files that relate to the classes explai
 =========================================
 **Classes:** 
 
+*MainActivity:*
+
+Stores some composition data. Creates the fragments that house the PhatPad, Sequencer, and Console.
+
 *ExternalData:* 
 
 The ExternalData class handles all the file loading and exporting. Essentially any data that needs to be handled that is not directily part of the Java codebase is handled through this class.
@@ -30,6 +34,10 @@ The ExternalData class handles all the file loading and exporting. Essentially a
 
 The PCM class represents an audio sample. It contains all the byte data for a single sample as well as any properties that are required. This class also provides the functions to manipulate its data, such as resampling and adjusting gain.
 
+*PhatTracks:*
+
+Keeps track of which pads contain audio clips.
+
 *Recorder:* 
 
 The Recorder class is responsible for reading data in from the mic. The class essentially is triggered to stream in data, and it is written into a buffer. Once all the data is recorded, it creates a new PCM to contain the audio.
@@ -37,6 +45,14 @@ The Recorder class is responsible for reading data in from the mic. The class es
 *SequenceTimer:* 
 
 The SequenceTimer class is responsible for the sequencing backend. It controls the actual timer and triggers the audio samples. It is also responsible for the merging of multiple samples into one large sample and passing the result to ExternalData for export.
+
+*PhatPad Fragment:*
+
+Contains the I/O for the PhatPad functionality of the workspace. When trigger pads are pressed, an associated audio clip is played.
+
+*Sequencer Fragment:*
+
+The Sequencer allows users to program in when audio clips will trigger in respect to the steps of a beat. Each pad/track has an associated step sequencer (row of toggle buttons) on a scroll view. Loop control allows users to toggle whether the sequence will loop. The beat index allows users to navigate the composition.
 
 *Console Fragment:* 
 
