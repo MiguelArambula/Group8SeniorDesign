@@ -1,11 +1,5 @@
 package edu.cosc4950.phatlab;
 
-//Console Fragment
-//This class is for the fragment that appears on the right-hand side of the app.
-//This fragment is responsible for allowing user to control audio location, saving of Profiles and Sequences
-//and other control feature over the application or individual samples. 
-
-
 import java.io.IOException;
 
 import android.app.AlertDialog;
@@ -24,6 +18,14 @@ import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+
+/**
+ *  @author Miguel Arambula
+ *  @author Jake Harper
+ * 
+ * Allows users to adjust parameters of the composition and to modify which samples are stored in each trigger pad of
+ * the PhatPad.
+ */
 
 public class ConsoleFragment extends Fragment{
 	
