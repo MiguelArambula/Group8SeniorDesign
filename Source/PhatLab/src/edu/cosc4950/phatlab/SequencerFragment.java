@@ -16,19 +16,23 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+/**
+ * @author Jake Harper
+ * @author Patrick Weingardt
+ * @author Miguel Arambula
+ * 
+ * The Sequencer allows users to program in when audio clips will trigger in respect to the steps of a beat. Each
+ * pad/track has an associated step sequencer (row of toggle buttons) on a scroll view. Loop control allows users
+ * to toggle whether the sequence will loop. The beat index allows users to navigate the composition.
+ */
+
 public class SequencerFragment extends Fragment{
 	
-	/* TODO
-	 * TELL Miguel to update max beat text
-	 * HELP Miguel implement start and stop commands including looped play
-	 * 
-	 * ADD looped play
-	 * ADD unity between sample on pad and in sequencer
-	 */
+	MainActivity data;				// instance of MainActivity to reference composition data
+	Bitmap bmpPressed, bmpEmpty;			// button images
 	
-	MainActivity data;
-	Bitmap bmpPressed, bmpEmpty;
-	
+	// instances of buttons within the twelve step sequencers
+	// each button represents a step within a beat associated with a track/pad
 	private ImageButton btnTrack0Step0;
 	private ImageButton btnTrack0Step1;
 	private ImageButton btnTrack0Step2;
@@ -137,6 +141,9 @@ public class SequencerFragment extends Fragment{
 	private ImageButton btnTrack11Step6;
 	private ImageButton btnTrack11Step7;
 	
+	/*
+	* empty default constructor
+	*/
 	public SequencerFragment() {}
 	
 	@Override
@@ -148,11 +155,11 @@ public class SequencerFragment extends Fragment{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
+		// inflate view to screen
 		View myView = inflater.inflate(R.layout.fragment_sequencer, container, false);
-		data = (MainActivity) getActivity(); // create instance
+		data = (MainActivity) getActivity(); // initialize reference to composition data
 		
-		
-		
+		// define button images
 		bmpPressed = BitmapFactory.decodeResource(getResources(), R.drawable.pad_pressed_sm);
 		bmpEmpty = BitmapFactory.decodeResource(getResources(), R.drawable.pad_empty_sm);
 		
@@ -162,6 +169,7 @@ public class SequencerFragment extends Fragment{
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if(isChecked)
+					// if on, sequence will loop
 					data.loopOn = true;
 				else
 					data.loopOn = false;
@@ -173,8 +181,10 @@ public class SequencerFragment extends Fragment{
 		if(data.currentBeat+data.loopLength <= data.maxBeat)
 			tvLoop.setText((data.currentBeat + 1) + ":" + (data.currentBeat + 1 + data.loopLength));
 		
+		// display current beat
 		final TextView tvBeat = (TextView) myView.findViewById(R.id.tv_current_beat);
 		
+		// decrement loop length by one measure
 		final Button btnDecLoop = (Button) myView.findViewById(R.id.btn_dec_loop);
 		btnDecLoop.setOnTouchListener(new OnTouchListener() {
 			
@@ -183,7 +193,7 @@ public class SequencerFragment extends Fragment{
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					if(data.loopLength != 0) {
-						data.loopLength--;
+						data.loopLength--; // if loop length is larger than zero, decrement
 						tvLoop.setText((data.currentBeat + 1) + ":" + (data.currentBeat + 1 + data.loopLength));
 					}
 					return true;
@@ -194,6 +204,7 @@ public class SequencerFragment extends Fragment{
 			}
 		});
 		
+		// increment loop length by one measure
 		final Button btnIncLoop = (Button) myView.findViewById(R.id.btn_inc_loop);
 		btnIncLoop.setOnTouchListener(new OnTouchListener() {
 			
@@ -202,7 +213,7 @@ public class SequencerFragment extends Fragment{
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					if(data.currentBeat+data.loopLength != data.maxBeat) {
-						data.loopLength++;
+						data.loopLength++; // if loop length won't exceed total composition length, increment
 						tvLoop.setText((data.currentBeat + 1) + ":" + (data.currentBeat + 1 + data.loopLength));
 					}
 					return true;
@@ -214,6 +225,7 @@ public class SequencerFragment extends Fragment{
 		});
 		
 		// Current Beat Control
+		// index to previous beat in composition
 		final Button btnDecBeat = (Button) myView.findViewById(R.id.btn_dec_beat);
 		btnDecBeat.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -221,10 +233,10 @@ public class SequencerFragment extends Fragment{
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					if(data.currentBeat > 0) {
-						data.currentBeat--;
-						tvBeat.setText(data.currentBeat + 1 +"");
+						data.currentBeat--; 			  // if not on first beat, index backwards
+						tvBeat.setText(data.currentBeat + 1 +""); // update text views
 						tvLoop.setText((data.currentBeat + 1) + ":" + (data.currentBeat + 1 + data.loopLength));
-						updateTracks();
+						updateTracks();				  // update button images
 					}
 					return true;
 				case MotionEvent.ACTION_UP:
@@ -234,6 +246,7 @@ public class SequencerFragment extends Fragment{
 			}
 		});
 		
+		// index to next beat in composition
 		final Button btnIncBeat = (Button) myView.findViewById(R.id.btn_inc_beat);
 		btnIncBeat.setOnTouchListener(new OnTouchListener() {
 			@Override
@@ -241,12 +254,12 @@ public class SequencerFragment extends Fragment{
 				switch(event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					if(data.currentBeat < data.maxBeat) {
-						data.currentBeat++;
-						tvBeat.setText(data.currentBeat + 1 +"");
+						data.currentBeat++;			  // if not on last beat, index forwards
+						tvBeat.setText(data.currentBeat + 1 +""); // update text views
 						if(data.currentBeat + data.loopLength > data.maxBeat)
-							data.loopLength--;
+							data.loopLength--;		  // if loop length exceeds compostion, decrement
 						tvLoop.setText((data.currentBeat + 1) + ":" + (data.currentBeat + 1 + data.loopLength));
-						updateTracks();
+						updateTracks();				  // update button images
 					}
 					return true;
 				case MotionEvent.ACTION_UP:
@@ -256,7 +269,16 @@ public class SequencerFragment extends Fragment{
 			}
 		});
 		
-		// Trigger Buttons
+		/* Trigger Buttons
+		 * When pressed, these toggles will store a trigger in a linked list of when each audio clip will play.
+		 * Each of the 12 AudioTracks are affected by rows of 8 buttons.
+		 * Each column of buttons represent 1/8 step of the beat.
+		 * Each button has the track and step that it is associated with defined in its listener.
+		 * If a toggle representing a step within the sequence doesn't contain a trigger,
+		     a button will add a start time for its sample to the linked list relative to its location when pressed.
+		 * If a toggle representing a step within the sequence does cotain a trigger,
+		 *   a button will remove that trigger from the linked list.
+		 */
 		btnTrack0Step0 = (ImageButton) myView.findViewById(R.id.btn_track00_step00);
 		btnTrack0Step0.setOnTouchListener(new OnTouchListener() {
 			int track = 0; int step = 0;
@@ -2482,7 +2504,10 @@ public class SequencerFragment extends Fragment{
 	}
 	
 	/**
-	 * 
+	 * Called when the beat index is changed to update button images.
+	 * Checks each of the 8 steps of each of the 12 tracks.
+	 * If that step represents a location that contains a trigger, set image to "pressed"
+	 * Else, set image to "empty"
 	 */
 	public void updateTracks() {
 		// for loop : iterate through all 12 tracks
