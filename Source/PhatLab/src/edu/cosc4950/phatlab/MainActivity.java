@@ -1,8 +1,5 @@
 package edu.cosc4950.phatlab;
 
-//Main Activity
-//This class is responsible for passing information between the fragments and initial setup of the application. 
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
