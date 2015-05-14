@@ -11,17 +11,26 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+/**
+ * @author Jake Harper
+ * @author Patrick Weingardt
+ * @author Miguel Arambula
+ * 
+ * Contains the I/O for the PhatPad functionality of the workspace. When trigger pads are
+ * pressed, an associated audio clip is played.
+ */
+
 public class PhatPadFragment extends Fragment {
 	
-	MainActivity data;
-	int[][] myPad;
+	MainActivity data;				// instance of MainActivity to reference composition data
+	int[][] myPad;					
 	
-	Bitmap bmpEmpty, bmpLoaded, bmpPressed;
+	Bitmap bmpEmpty, bmpLoaded, bmpPressed;		// button images
 	
-	boolean editEnable = ConsoleFragment.editOn;
+	boolean editEnable = ConsoleFragment.editOn;	// edit boolean
 	
-	final PhatTracks tracks = new PhatTracks();
-	final String currPad = "";
+	final PhatTracks tracks = new PhatTracks();	// initilization of PhatTracks
+	final String currPad = "";			// the pad last interfaced with: displayed in console
 	
 	//Trigger Pads
 	private ImageButton pad01;
@@ -37,6 +46,9 @@ public class PhatPadFragment extends Fragment {
 	private ImageButton pad11;
 	private ImageButton pad12;
 	
+	/*
+	 * empty default constructor
+	 */
 	public PhatPadFragment() {}
 	
 	@Override
@@ -48,7 +60,7 @@ public class PhatPadFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
-		data = (MainActivity) getActivity(); // create instance
+		data = (MainActivity) getActivity(); // initialize reference to composition data
 		data.setTracks(tracks);
 		View myView = inflater.inflate(R.layout.fragment_phatpad, container, false);
 		
@@ -58,15 +70,17 @@ public class PhatPadFragment extends Fragment {
 		bmpPressed = BitmapFactory.decodeResource(getResources(), R.drawable.pad_pressed);
 		
 		/* myPad flags if a pad has a sample in it */
-		//final PhatTracks tracks = new PhatTracks();
-		
 		myPad = new int[4][3];
-		initPad();
+		initPad(); // initialize pad
 		data.setGrid(myPad);
-		//loadTracks();
 		update(tracks);
 		
-		/* trigger pads */
+		/*
+		 * trigger pads
+		 * When pressed, a pad will play the audio clip associated with it, if it has been linked with one.
+		 * When pressed, a pad will light up blue.
+		 * When released, a pad will return to being white.
+		 */
 		pad01 = (ImageButton) myView.findViewById(R.id.pad01);
 		if(myPad[0][0] == 1) pad01.setImageBitmap(bmpLoaded);
 		pad01.setOnTouchListener(new OnTouchListener() {
@@ -413,6 +427,10 @@ public class PhatPadFragment extends Fragment {
 		}
 	}
 	
+	/*
+	 * Can be used to change pad colors.
+	 * At present, this feature is "disabled" as both "loaded" and "empty" pad images are the same.
+	 */
 	public void updatePads(){
 		if(myPad[0][0] == 1){ 
 			pad01.setImageBitmap(bmpLoaded);
