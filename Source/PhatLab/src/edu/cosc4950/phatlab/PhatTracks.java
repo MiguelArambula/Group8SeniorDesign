@@ -1,5 +1,12 @@
 package edu.cosc4950.phatlab;
 
+/**
+ * @author Jake Harper
+ * @author Miguel Arambula
+ * 
+ * Keeps track of which pads contain audio clips.
+ */
+
 public class PhatTracks {
 	PCM[][] myTracks;
 	String[][] sampleNames;
@@ -39,15 +46,18 @@ public class PhatTracks {
 		}
 	}
 	
+	//Given the location, set the pcm to be associated to that location. 
 	public void setTrack(int padRow, int padCol, PCM pcm)
 	{
 		myTracks[padRow][padCol] = pcm;
 	}
 
+	//Return the PCM associated with the given location. 
 	public PCM getTrack(int padRow, int padCol) {
 		return myTracks[padRow][padCol];
 	}
 	
+	//Returns the boolean value that states if the location has audio clip association with it. 
 	public boolean isPadEmpty(int padRow, int padCol){	
 		if(myTracks[padRow][padCol]==null){
 			return true;
@@ -56,6 +66,7 @@ public class PhatTracks {
 		}
 	}
 	
+	//Return the name of the audio clip associated with the given location. 
 	public String getSampName(int padRow, int padCol){
 		if(isPadEmpty(padRow,padCol)){
 			return "No Sample";
@@ -64,16 +75,19 @@ public class PhatTracks {
 		}
 	}
 	
+	//Play back the audio clip at the given location. 
 	public void play(int padRow, int padCol) {
 		myTracks[padRow][padCol].stream();
 	}
 	
+	//Return the current volume of the audio clip at the given location. 
 	public int getSampVol(int padRow, int padCol){
 		if(myTracks[padRow][padCol] != null){
 		return Math.round(myTracks[padRow][padCol].getGain());}
 		else { return 1; }
 	}
 	
+	//Set the volume of the audio clip at the given location. 
 	public void setSampVol(int padRow, int padCol, float gain){
 		myTracks[padRow][padCol].setGain(gain);
 	}
